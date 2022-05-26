@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     # my apps
     'creator.apps.CreatorConfig',
     # third party apps
+    'rest_framework',
     'corsheaders',
 ]
 

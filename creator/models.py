@@ -49,7 +49,7 @@ class AppUser(AbstractUser):
     last_name = models.CharField(_("Last Name"), max_length=255, blank=True, null=True)
     other_name = models.CharField(_("Other Name"), max_length=255, blank=True, null=True)
     email = models.EmailField(_("Email Address"), unique=True, max_length=255, blank=False)
-    is_verified = models.BooleanField(_("Verified User"), default=False, help_text=_("Designates whether this user has verified their email address"))
+    is_verified = models.BooleanField(_("Verified User"), default=False, help_text=_("Designates whether this user has verified their email address."))
 
 
     objects = AppUserManager()
