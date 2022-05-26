@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import AppUser
 
 
-class AppUserModelAdmin(admin.ModelAdmin):
+class AppUserAdmin(admin.ModelAdmin):
     list_display = ('id', 'uid', 'username', 'email')
     list_display_links = ('id', 'uid', 'username')
 
@@ -18,4 +18,4 @@ class AppUserModelAdmin(admin.ModelAdmin):
     ordering = ('-id',)
 
 
-admin.site.register(AppUser, AppUserModelAdmin)
+admin.site.register(AppUser, AppUserAdmin)

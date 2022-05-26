@@ -1,9 +1,13 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
-from django.utils.crypto import get_random_string
 from django.db import models
 from typing import List
 import uuid
+
+
+# Functiuon to create random ints
+def get_random_int():
+    return str(uuid.uuid4().int)[:15]
 
 
 class AppUserManager(BaseUserManager):
@@ -20,7 +24,7 @@ class AppUserManager(BaseUserManager):
 
         user = self.model(username=username, email=self.normalize_email(email.lower()))
         user.is_active = True
-        user.is_staff = True
+        user.is_staff = False
         user.set_password(password)
         user.save(using=self._db)
 
@@ -34,6 +38,7 @@ class AppUserManager(BaseUserManager):
             password=password
         )
 
+        user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
 
@@ -43,7 +48,7 @@ class AppUserManager(BaseUserManager):
 class AppUser(AbstractUser):
 
     id = models.BigAutoField(_("ID"), unique=True, primary_key=True, editable=False)
-    uid = models.CharField(_("USER ID"), unique=True, max_length=50, blank=False)
+    uid = models.CharField(_("USER ID"), unique=True, editable=False, default=get_random_int, max_length=50, blank=False)
     username = models.CharField(_("Username"), max_length=255, unique=True, blank=False)
     first_name = models.CharField(_("First Name"), max_length=255, blank=True, null=True)
     last_name = models.CharField(_("Last Name"), max_length=255, blank=True, null=True)
@@ -58,10 +63,6 @@ class AppUser(AbstractUser):
     USERNAME_FIELD: str = 'username'
     REQUIRED_FIELDS: List[str] = ['email',]
 
-
-    def save(self, *args, **kwargs) -> None:
-        self.uid = str(uuid.uuid4().int)[:15]
-        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.username

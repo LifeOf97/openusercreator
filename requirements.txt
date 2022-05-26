@@ -1,9 +1,12 @@
 asgiref==3.5.2
 astroid==2.11.5
+defusedxml==0.7.1
 dill==0.3.5.1
 Django==4.0.4
 django-cors-headers==3.12.0
 djangorestframework==3.13.1
+djangorestframework-xml==2.0.0
+djangorestframework-yaml==2.0.0
 isort==5.10.1
 lazy-object-proxy==1.7.1
 mccabe==0.7.0
@@ -14,6 +17,7 @@ psycopg2-binary==2.9.3
 pylint==2.13.9
 python-dotenv==0.20.0
 pytz==2022.1
+PyYAML==6.0
 sqlparse==0.4.2
 tomli==2.0.1
 typing-extensions==4.2.0
