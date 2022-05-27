@@ -14,7 +14,8 @@ urlpatterns = [
     path("creators/<str:username>/delete/", apis.AppUserList.as_view({'delete': 'destroy'}), name="creators-delete"),
 
     # auth urls
-    path("auth/session/", apis.LoginApiView.as_view(), name="login-with-session"),
+    path("auth/session/login/", apis.LoginApiView.as_view(), name="login-with-session"),
+    path("auth/session/logout/", apis.LogoutApiView.as_view(), name="logout-with-session"),
     path("auth/token/", views.obtain_auth_token, name="Login-with-token"),
 ]
 

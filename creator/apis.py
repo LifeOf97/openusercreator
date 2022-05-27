@@ -1,6 +1,7 @@
+from pickle import NONE
 from rest_framework import status, views, viewsets, permissions
+from django.contrib.auth import authenticate, login, logout
 from . import serializers, permissions as custom_perm
-from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 
@@ -35,6 +36,14 @@ class LoginApiView(views.APIView):
 
         return Response(data={"detail": "wrong username/password"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class LogoutApiView(views.APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request, format=None):
+        logout(request)
+        return Response(data={"detail": "Logged out successfully"})
 
 
 # class AppUserList(generics.GenericAPIView):
