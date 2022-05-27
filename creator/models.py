@@ -22,7 +22,7 @@ class AppUserManager(BaseUserManager):
             raise ValueError(_("Users must provide email address"))
 
 
-        user = self.model(username=username, email=self.normalize_email(email.lower()))
+        user = self.model(username=username.lower(), email=self.normalize_email(email.lower()))
         user.is_active = True
         user.is_staff = False
         user.set_password(password)

@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 
 
-class IsOwner(BasePermission):
+class IsOwnerOrStaff(BasePermission):
     """
     Custom object level permission to allow retrieve, update and destroy actions
     for the object instance owner and staff only users.

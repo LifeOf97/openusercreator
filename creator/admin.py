@@ -1,10 +1,20 @@
+from .forms import CustomAppUserCreationForm, CustomAppUserChangeForm
+from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
 from .models import AppUser
 
 
-class AppUserAdmin(admin.ModelAdmin):
+class AppUserAdmin(UserAdmin):
+    add_form = CustomAppUserCreationForm
+    form = CustomAppUserChangeForm
+
     list_display = ('id', 'uid', 'username', 'email')
     list_display_links = ('id', 'uid', 'username')
+
+    add_fieldsets = (
+        ("Identification", {"fields": ("username", "email")}),
+        ("Security", {"fields": ("password1", "password2")}),
+    )
 
     fieldsets = (
         ("Identification", {"fields": ("id", "uid", "username", "email", "password")}),

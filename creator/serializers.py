@@ -6,6 +6,11 @@ from django.contrib.auth import get_user_model
 AppUser = get_user_model()
 
 
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
 class FullAppUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
@@ -20,6 +25,7 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
             'uid': {'read_only': True}
         }
+
 
     def create(self, validated_data):
         user = AppUser(**validated_data)
