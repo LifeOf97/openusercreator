@@ -50,9 +50,9 @@ class AppUser(AbstractUser):
 
     id = models.BigAutoField(_("ID"), unique=True, primary_key=True, editable=False)
     uid = models.CharField(_("USER ID"), unique=True, editable=False, default=get_random_int, max_length=50, blank=False)
-    
+
     username = models.CharField(
-        _("Username"), max_length=255, unique=True, blank=False,
+        _("Username"), max_length=20, unique=True, blank=False,
         validators=[
             validators.RegexValidator(regex="\W", message=_("Username can only contain letters, numbers and underscore"), inverse_match=True),
             validators.MinLengthValidator(limit_value=4),
