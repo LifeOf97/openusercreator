@@ -1,6 +1,8 @@
 from rest_framework import status, views, viewsets, permissions
 from django.contrib.auth import authenticate, login, logout
 from . import serializers, permissions as custom_perm
+from dj_rest_auth.jwt_auth import unset_jwt_cookies
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 
@@ -26,7 +28,12 @@ class LoginApiView(views.APIView):
 
             if user is not None:
                 login(request, user)
-                return Response(data={"detail": "Logged in successfully"}, status=status.HTTP_200_OK)
+                response =  Response(data={"detail": "Logged in successfully"}, status=status.HTTP_200_OK)
+
+                # clears token authentication if present
+                unset_jwt_cookies(response)
+
+                return response # return response to client
 
             return Response(data={"detail": "wrong username/password"}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -43,9 +50,17 @@ class LogoutApiView(views.APIView):
 
 
 class AppUserList(viewsets.GenericViewSet):
-    lookup_field = 'username'
+    # lookup_field = 'username'
     queryset = AppUser.objects.all()
     serializer_class = serializers.BasicAppUserSerializer()
+
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, username=self.request.user.username)
+
+        self.check_object_permissions(self.request, obj)
+        return obj
 
 
     def get_serializer_class(self):
@@ -60,7 +75,7 @@ class AppUserList(viewsets.GenericViewSet):
         elif self.action == 'list':
             permission_classes = [permissions.IsAdminUser]
         else:
-            permission_classes = [custom_perm.IsOwnerOrStaff]
+            permission_classes = [custom_perm.IsOwner&permissions.IsAuthenticated]
         return [perm() for perm in permission_classes]
 
 
@@ -78,12 +93,12 @@ class AppUserList(viewsets.GenericViewSet):
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def retrieve(self, request, username, format=None):
+    def retrieve(self, request, username=None, format=None):
         serializer = self.get_serializer(self.get_object(), context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     
-    def update(self, request, username, format=None):
+    def update(self, request, username=None, format=None):
         serializer = serializers.BasicAppUserSerializer(instance=self.get_object(), data=request.data, context={'request': request}, partial=True)
 
         if serializer.is_valid():
@@ -92,8 +107,8 @@ class AppUserList(viewsets.GenericViewSet):
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
-    def destroy(self, request, username, format=None):
+    def destroy(self, request, username=None, format=None):
         appuser = self.get_object()
-        username, uid = appuser.username, appuser.uid
+        username, email, uid = appuser.username, appuser.email, appuser.uid
         appuser.delete()
-        return Response(data={'username': username, 'uid': uid, 'detail': 'Deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}, status=status.HTTP_204_NO_CONTENT)

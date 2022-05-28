@@ -2,9 +2,11 @@ asgiref==3.5.2
 astroid==2.11.5
 defusedxml==0.7.1
 dill==0.3.5.1
+dj-rest-auth==2.2.4
 Django==4.0.4
 django-cors-headers==3.12.0
 djangorestframework==3.13.1
+djangorestframework-simplejwt==5.2.0
 djangorestframework-xml==2.0.0
 djangorestframework-yaml==2.0.0
 gunicorn==20.1.0
@@ -17,6 +19,7 @@ Pillow==9.1.1
 platformdirs==2.5.2
 psycopg==3.0.14
 psycopg2-binary==2.9.3
+PyJWT==2.4.0
 pylint==2.13.9
 python-dotenv==0.20.0
 pytz==2022.1

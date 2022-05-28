@@ -1,16 +1,12 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework.validators import UniqueValidator
+from dj_rest_auth import serializers as dj_rest_auth_serializer
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 
 # Globall User model instance
 AppUser = get_user_model()
-
-
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
 
 
 class FullAppUserSerializer(serializers.ModelSerializer):
@@ -21,7 +17,7 @@ class FullAppUserSerializer(serializers.ModelSerializer):
 
 
 class BasicAppUserSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = AppUser
         exclude = ('id', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
@@ -63,3 +59,17 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
+class CustomDjRestAuthLoginSerializer(dj_rest_auth_serializer.LoginSerializer):
+    """"
+    Custom dj_rest_auth Login_serializer class, to get rid of the email field, because the
+    username field can server both purposes.
+    """
+    username = serializers.CharField()
+    password = serializers.CharField()

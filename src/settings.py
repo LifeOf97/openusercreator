@@ -36,7 +36,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'dj_rest_auth',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,19 +139,20 @@ AUTHENTICATION_BACKENDS = (
     'creator.authentications.AppUserBackend',
 )
 
+# CORS Settings
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False  # False since we will grab it via universal-cookies
 SESSION_COOKIE_HTTPONLY = True
 
 
-
 # Rest framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'creator.authentications.BearerAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
@@ -158,3 +162,13 @@ REST_FRAMEWORK = {
         'rest_framework_xml.renderers.XMLRenderer',
     ]
 }
+
+# Django rest auth settings
+REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'creator.serializers.CustomDjRestAuthLoginSerializer',
+}
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'jwt-key'
+JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh'
+REST_SESSION_LOGIN = False
