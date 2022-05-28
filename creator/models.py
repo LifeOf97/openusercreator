@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.core import validators
 from django.db import models
 from typing import List
 import uuid
@@ -49,11 +50,20 @@ class AppUser(AbstractUser):
 
     id = models.BigAutoField(_("ID"), unique=True, primary_key=True, editable=False)
     uid = models.CharField(_("USER ID"), unique=True, editable=False, default=get_random_int, max_length=50, blank=False)
-    username = models.CharField(_("Username"), max_length=255, unique=True, blank=False)
+    
+    username = models.CharField(
+        _("Username"), max_length=255, unique=True, blank=False,
+        validators=[
+            validators.RegexValidator(regex="\W", message=_("Username can only contain letters, numbers and underscore"), inverse_match=True),
+            validators.MinLengthValidator(limit_value=4),
+        ],
+        error_messages={"unique": _("This username is not available")},
+    )
+
     first_name = models.CharField(_("First Name"), max_length=255, blank=True, null=True)
     last_name = models.CharField(_("Last Name"), max_length=255, blank=True, null=True)
     other_name = models.CharField(_("Other Name"), max_length=255, blank=True, null=True)
-    email = models.EmailField(_("Email Address"), unique=True, max_length=255, blank=False)
+    email = models.EmailField(_("Email Address"), unique=True, max_length=255, blank=False, error_messages={"unique": _("This email address belongs to another account")})
     is_verified = models.BooleanField(_("Verified User"), default=False, help_text=_("Designates whether this user has verified their email address."))
 
 

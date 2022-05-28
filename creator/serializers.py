@@ -1,5 +1,7 @@
-from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
+from rest_framework.validators import UniqueValidator
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
 
 
 # Globall User model instance
@@ -12,12 +14,14 @@ class LoginSerializer(serializers.Serializer):
 
 
 class FullAppUserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = AppUser
         exclude = ('password',)
 
 
 class BasicAppUserSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = AppUser
         exclude = ('id', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
@@ -27,6 +31,19 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
         }
 
 
+    def to_internal_value(self, data):
+        """
+        Converts username and email values to lowercase.
+        """
+        if data.get('username'):
+            data['username'] = data['username'].lower()
+        
+        if data.get('email'):
+            data['email'] = data['email'].lower()
+        
+        return super().to_internal_value(data)
+    
+    
     def create(self, validated_data):
         user = AppUser(**validated_data)
 
