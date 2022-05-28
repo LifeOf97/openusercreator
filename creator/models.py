@@ -51,6 +51,12 @@ class AppUser(AbstractUser):
     id = models.BigAutoField(_("ID"), unique=True, primary_key=True, editable=False)
     uid = models.CharField(_("USER ID"), unique=True, editable=False, default=get_random_int, max_length=50, blank=False)
 
+    password = models.CharField(
+        _("Password"),
+        max_length=128,
+        validators=[validators.MinLengthValidator(limit_value=8)]
+    )
+
     username = models.CharField(
         _("Username"), max_length=20, unique=True, blank=False,
         validators=[
