@@ -166,6 +166,7 @@ REST_FRAMEWORK = {
 # Django rest auth settings
 REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'creator.serializers.CustomDjRestAuthLoginSerializer',
+    'JWT_SERIALIZER': 'creator.serializers.CustomDjRestAuthJWTSerializer',
 }
 
 REST_USE_JWT = True

@@ -73,3 +73,13 @@ class CustomDjRestAuthLoginSerializer(dj_rest_auth_serializer.LoginSerializer):
     """
     username = serializers.CharField()
     password = serializers.CharField()
+
+
+class CustomDjRestAuthJWTSerializer(dj_rest_auth_serializer.JWTSerializer):
+    """
+    Custom dj_rest_auth jwt_serializer class, to get rid of the user instance data returned.
+    """
+    access_token = serializers.CharField()
+    refresh_token = serializers.CharField()
+    user = None
+    

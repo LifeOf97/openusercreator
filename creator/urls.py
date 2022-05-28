@@ -3,7 +3,9 @@ from django.urls import path, include
 from dj_rest_auth import views as dj_rest  
 from . import apis
 
+
 app_name = 'creator_app'
+
 
 urlpatterns = [
     # auth urls
