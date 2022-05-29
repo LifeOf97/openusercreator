@@ -13,7 +13,7 @@ AppUser = get_user_model()
 
 class LoginApiView(views.APIView):
     """
-    Login view with username and password usign django's built in authenticate and login functions.
+    Login with username and password using django's (edited) built in authenticate and login functions.
     """
     authentication_classes = []
     permission_classes = [permissions.AllowAny,]
@@ -30,10 +30,10 @@ class LoginApiView(views.APIView):
                 login(request, user)
                 response =  Response(data={"detail": "Logged in successfully"}, status=status.HTTP_200_OK)
 
-                # clears token authentication if present
+                # clears jwt authentication if present
                 unset_jwt_cookies(response)
 
-                return response # return response to client
+                return response # return logged in response to client
 
             return Response(data={"detail": "wrong username/password"}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -56,6 +56,9 @@ class AppUserList(viewsets.GenericViewSet):
 
 
     def get_object(self):
+        """
+        Edited so as to return the object instance of the currently logged in user.
+        """
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, username=self.request.user.username)
 
@@ -79,36 +82,37 @@ class AppUserList(viewsets.GenericViewSet):
         return [perm() for perm in permission_classes]
 
 
-    def list(self, request, format=None):
+    def list(self, request):
         serializer = self.get_serializer(self.get_queryset(), many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
 
 
-    def create(self, request, format=None):
-        serializer = serializers.BasicAppUserSerializer(data=request.data, context={'request': request})
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def retrieve(self, request, username=None, format=None):
+    def retrieve(self, request):
         serializer = self.get_serializer(self.get_object(), context={'request': request})
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
 
     
-    def update(self, request, username=None, format=None):
-        serializer = serializers.BasicAppUserSerializer(instance=self.get_object(), data=request.data, context={'request': request}, partial=True)
+    def update(self, request):
+        serializer = self.get_serializer(instance=self.get_object(), data=request.data, context={'request': request}, partial=True)
 
         if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     
-    def destroy(self, request, username=None, format=None):
+    def destroy(self, request):
         appuser = self.get_object()
         username, email, uid = appuser.username, appuser.email, appuser.uid
+        data = {'data': {'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}}
         appuser.delete()
-        return Response(data={'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data=data, status=status.HTTP_204_NO_CONTENT)

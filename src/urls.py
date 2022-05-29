@@ -7,7 +7,7 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url='api/creators/')),
+    path('', RedirectView.as_view(url='api/creators/')), # redirect to the api urls.
 
     # api urls
     path('api/', include('creator.urls', namespace='creator_app')),

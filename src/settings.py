@@ -135,14 +135,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'creator.AppUser'
 
 
+# Authentication classes settings
 AUTHENTICATION_BACKENDS = (
     'creator.authentications.AppUserBackend',
 )
 
-# CORS Settings
+# Email settings
+# EMAIL_BACKEND
+# EMAIL_PORT
+# EMAIL_SUBJECT_PREFIX
+# EMAIL_USE_TLS
+# EMAIL_USE_SSL
+# EMAIL_HOST_USER
+# EMAIL_HOST_PASSWORD
+# EMAIL_FILE_PATH
+
+# Security Settings
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_HTTPONLY = False  # False since we will grab it via universal-cookies
+CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_HTTPONLY = True
 
 
@@ -163,7 +174,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-# Django rest auth settings
+# Dj_rest_auth settings
 REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'creator.serializers.CustomDjRestAuthLoginSerializer',
     'JWT_SERIALIZER': 'creator.serializers.CustomDjRestAuthJWTSerializer',
@@ -173,3 +184,4 @@ REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'jwt-key'
 JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh'
 REST_SESSION_LOGIN = False
+OLD_PASSWORD_FIELD_ENABLED = True

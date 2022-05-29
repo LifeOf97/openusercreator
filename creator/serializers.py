@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 
-# Globall User model instance
+# Custom User model instance
 AppUser = get_user_model()
 
 
@@ -13,7 +13,7 @@ class FullAppUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        exclude = ('password',)
+        fields = "__all__"
 
 
 class BasicAppUserSerializer(serializers.ModelSerializer):
@@ -41,43 +41,42 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
     
     
     def create(self, validated_data):
-        user = AppUser(**validated_data)
-
-        user.set_password(validated_data['password'])
-        user.save()
-
-        return user
+        return AppUser.objects.create_user(**validated_data)
 
 
     def update(self, instance, validated_data):
-
         instance.username = validated_data.get('username', instance.username)
         instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.other_name = validated_data.get('other_name', instance.other_name)
-
         instance.save()
+
         return instance
 
 
 class LoginSerializer(serializers.Serializer):
+    """
+    Login serializer to facilitate the session authentication
+    """
     username = serializers.CharField()
     password = serializers.CharField()
 
 
 class CustomDjRestAuthLoginSerializer(dj_rest_auth_serializer.LoginSerializer):
     """"
-    Custom dj_rest_auth Login_serializer class, to get rid of the email field, because the
-    username field can server both purposes.
+    Custom dj_rest_auth Login_serializer class, subclassing the default LoginSerializer from dj_rest_auth
+    to get rid of the email field, because the username field can server both purposes.
     """
     username = serializers.CharField()
     password = serializers.CharField()
+    email = None
 
 
 class CustomDjRestAuthJWTSerializer(dj_rest_auth_serializer.JWTSerializer):
     """
-    Custom dj_rest_auth jwt_serializer class, to get rid of the user instance data returned.
+    Custom dj_rest_auth jwt_serializer class subclassing the default JWTSerializer to get rid of the user
+    instance data returned.
     """
     access_token = serializers.CharField()
     refresh_token = serializers.CharField()

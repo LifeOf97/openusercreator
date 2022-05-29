@@ -15,7 +15,7 @@ class AppUserManager(BaseUserManager):
     """
     Custom user manager.
     """
-    def create_user(self, username: str, email: str, password: str=None):
+    def create_user(self, username: str, email: str, password: str=None, is_active: bool=True, is_staff: bool=False, is_superuser: bool=False):
         if not username:
             raise ValueError(_("Users must provide a username"))
 
@@ -24,29 +24,34 @@ class AppUserManager(BaseUserManager):
 
 
         user = self.model(username=username.lower(), email=self.normalize_email(email.lower()))
-        user.is_active = True
-        user.is_staff = False
+        user.is_active = is_active
+        user.is_staff = is_staff
+        user.is_superuser = is_superuser
         user.set_password(password)
         user.save(using=self._db)
 
         return user
 
 
-    def create_superuser(self, username: str, email: str, password: str=None):
+    def create_superuser(self, username: str, email: str, password: str=None, is_active: bool=True, is_staff: bool=True, is_superuser: bool=True):
         user = self.create_user(
             username=username,
             email=email,
-            password=password
+            password=password,
+            is_active=is_active,
+            is_staff=is_staff,
+            is_superuser=is_superuser
         )
-
-        user.is_staff = True
-        user.is_superuser = True
+        
         user.save(using=self._db)
 
         return user
 
 
 class AppUser(AbstractUser):
+    """
+    Custom user model.
+    """
 
     id = models.BigAutoField(_("ID"), unique=True, primary_key=True, editable=False)
     uid = models.CharField(_("USER ID"), unique=True, editable=False, default=get_random_int, max_length=50, blank=False)
