@@ -16,43 +16,6 @@ import jwt
 AppUser = get_user_model()
 
 
-class LoginApiView(views.APIView):
-    """
-    Login with username and password using django's (edited) built in authenticate and login functions.
-    """
-    authentication_classes = []
-    permission_classes = [permissions.AllowAny,]
-    serializer_class = serializers.LoginSerializer
-
-
-    def post(self, request, format=None):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            user = authenticate(request, username=serializer.validated_data['username'], password=serializer.validated_data['password'])
-
-            if user is not None:
-                login(request, user)
-                response =  Response(data={"detail": "Logged in successfully"}, status=status.HTTP_200_OK)
-
-                # clears jwt authentication if present
-                unset_jwt_cookies(response)
-
-                return response # return logged in response to client
-
-            return Response(data={"detail": "wrong username/password"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-
-class LogoutApiView(views.APIView):
-    authentication_classes = []
-    permission_classes = []
-
-    def post(self, request, format=None):
-        logout(request)
-        return Response(data={"detail": "Logged out successfully"})
-
 
 class AppUserList(viewsets.GenericViewSet):
     # lookup_field = 'username'
@@ -161,3 +124,42 @@ class VerifyEmail(views.APIView):
                 return Response(data={"detail": "Email address verified successfully"}, status=status.HTTP_200_OK)
 
             return Response(data={"detail": "Your email address has already been verified"}, status=status.HTTP_200_OK)
+
+
+class LoginApiView(views.APIView):
+    """
+    Login with username and password using django's (edited) built in authenticate and login functions.
+    """
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny,]
+    serializer_class = serializers.LoginSerializer
+
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            user = authenticate(request, username=serializer.validated_data['username'], password=serializer.validated_data['password'])
+
+            if user is not None:
+                login(request, user)
+                response =  Response(data={"detail": "Logged in successfully"}, status=status.HTTP_200_OK)
+
+                # clears jwt authentication if present
+                unset_jwt_cookies(response)
+
+                return response # return logged in response to client
+
+            return Response(data={"detail": "wrong username/password"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class LogoutApiView(views.APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request, format=None):
+        logout(request)
+        return Response(data={"detail": "Logged out successfully"})
+
