@@ -1,10 +1,15 @@
 from rest_framework import status, views, viewsets, permissions
 from django.contrib.auth import authenticate, login, logout
+from django.utils.translation import gettext_lazy as _
 from . import serializers, permissions as custom_perm
 from dj_rest_auth.jwt_auth import unset_jwt_cookies
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
+from django.conf import settings
+from .utils import Util
+import jwt
+
 
 
 # Globall User model instance
@@ -92,7 +97,12 @@ class AppUserList(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             serializer.save()
+
+            # send email verification link
+            Util.send_email_verification(data=serializer.data, request=request)
+
             return Response(data={"data": serializer.data}, status=status.HTTP_201_CREATED)
+        
         return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -115,4 +125,39 @@ class AppUserList(viewsets.GenericViewSet):
         username, email, uid = appuser.username, appuser.email, appuser.uid
         data = {'data': {'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}}
         appuser.delete()
-        return Response(data=data, status=status.HTTP_204_NO_CONTENT)
+        response = Response(data=data, status=status.HTTP_204_NO_CONTENT)
+
+        # clears jwt authentication if present
+        unset_jwt_cookies(response)
+
+        return response
+
+
+class VerifyEmail(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        token = request.GET.get('token')
+        
+        try:
+            check_token = jwt.decode(token, key=settings.SECRET_KEY, algorithms='HS256')
+        except jwt.ExpiredSignatureError:
+            return Response(
+                data={"error": _('Activation link expired, please request a new one.')},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except jwt.DecodeError:
+            return Response(
+                data={"error": _('Invalid token, please request a new one.')},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        else:
+            user = AppUser.objects.get(id=check_token['user_id'])
+
+            if not user.is_verified:
+                user.is_verified = True
+                user.save()
+                return Response(data={"detail": "Email address verified successfully"}, status=status.HTTP_200_OK)
+
+            return Response(data={"detail": "Your email address has already been verified"}, status=status.HTTP_200_OK)

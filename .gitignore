@@ -3,3 +3,5 @@ venv/
 logs/
 *.sh
 *.env
+email/
+.coverage

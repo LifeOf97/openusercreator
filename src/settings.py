@@ -26,6 +26,7 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -37,6 +38,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
 ]
 
 SITE_ID = 1
@@ -141,14 +146,18 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Email settings
-# EMAIL_BACKEND
-# EMAIL_PORT
-# EMAIL_SUBJECT_PREFIX
-# EMAIL_USE_TLS
-# EMAIL_USE_SSL
-# EMAIL_HOST_USER
-# EMAIL_HOST_PASSWORD
-# EMAIL_FILE_PATH
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
+EMAIL_PORT = 465
+DEFAULT_FROM_EMAIL = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_SUBJECT_PREFIX = 'OpenUserCreator',
+EMAIL_FILE_PATH = BASE_DIR / 'email/'
+
 
 # Security Settings
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -170,8 +179,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework_xml.renderers.XMLRenderer',
-    ]
+        # 'rest_framework_xml.renderers.XMLRenderer',
+    ],
+    'NON_FIELD_ERRORS_KEY': 'error'
 }
 
 # Dj_rest_auth settings
@@ -185,3 +195,17 @@ JWT_AUTH_COOKIE = 'jwt-key'
 JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh'
 REST_SESSION_LOGIN = False
 OLD_PASSWORD_FIELD_ENABLED = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Confirm Email Address'
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 1800
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 7
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 86400
+ACCOUNT_PRESERVE_USERNAME_CASING = False
+ACCOUNT_PREVENT_ENUMERATION = False
+ACCOUNT_USERNAME_BLACKLIST = [
+    'openusercreator', 'openusercreators', 'opencreators',
+    'opencreator', 'openusers', 'openuser', 'creator'
+]

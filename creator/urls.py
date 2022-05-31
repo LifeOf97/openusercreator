@@ -1,9 +1,9 @@
+from dj_rest_auth.registration import views as dj_rest_reg, urls
 from rest_framework_simplejwt.views import TokenVerifyView
 from dj_rest_auth.jwt_auth import get_refresh_view
-from dj_rest_auth import views as dj_rest, urls
+from dj_rest_auth import views as dj_rest
 from django.urls import path
 from . import apis
-
 
 app_name = 'creator_app'
 
@@ -18,20 +18,20 @@ urlpatterns = [
     path("auth/logout/session/", apis.LogoutApiView.as_view(), name="logout_with_session"),
 
     # reset password via email urls
-    path("auth/issues/password/reset/", dj_rest.PasswordResetView.as_view(), name="reset_password"),
-    path("auth/issues/password/reset/confirm/", dj_rest.PasswordResetConfirmView.as_view(), name="reset_password_confirm"),
+    path("auth/help/password/reset/", dj_rest.PasswordResetView.as_view(), name="reset_password"),
+    path("auth/help/password/reset/confirm/", dj_rest.PasswordResetConfirmView.as_view(), name="reset_password_confirm"),
 
-    
-    # creators urls
-    path("creators/", apis.AppUserList.as_view({'get': 'list'}), name="creators_list"),
+    # create new account urls
     path("creators/new/", apis.AppUserList.as_view({'post': 'create'}), name="creators_create"),
+    path("creators/new/verify-email/", apis.VerifyEmail.as_view(), name="creators_verify_email"),
+    # path("creators/new/resend-email/", dj_rest_reg.ResendEmailVerificationView.as_view(), name="creators_resend_email"),
+
+    # creators list and object instance
+    path("creators/", apis.AppUserList.as_view({'get': 'list'}), name="creators_list"),
     path("creators/me/", apis.AppUserList.as_view({'get': 'retrieve'}), name="creators_details"),
     path("creators/me/update/", apis.AppUserList.as_view({'put': 'update', 'patch': 'update'}), name="creators_update"),
     path("creators/me/delete/", apis.AppUserList.as_view({'delete': 'destroy'}), name="creators_delete"),
 
     # change authenticated creators password url
     path("creators/me/password/change/", dj_rest.PasswordChangeView.as_view(), name="change_password"),
-
 ]
-
-# format_suffix_patterns(urlpatterns, allowed=['json', 'xml'])
