@@ -55,6 +55,16 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
         return instance
 
 
+class ResendEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def to_internal_value(self, data):
+        if data['email']:
+            data['email'] = data['email'].lower()
+
+        return super().to_internal_value(data)
+
+
 class LoginSerializer(serializers.Serializer):
     """
     Login serializer to facilitate the session authentication

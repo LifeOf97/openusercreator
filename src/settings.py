@@ -1,3 +1,4 @@
+from pickle import FALSE
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -6,7 +7,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Load environment variablles
+# Load environment variables
 load_dotenv()
 
 # Quick-start development settings - unsuitable for production
@@ -38,10 +39,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'dj_rest_auth',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'dj_rest_auth.registration',
 ]
 
 SITE_ID = 1
@@ -143,6 +140,7 @@ AUTH_USER_MODEL = 'creator.AppUser'
 # Authentication classes settings
 AUTHENTICATION_BACKENDS = (
     'creator.authentications.AppUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 # Email settings
@@ -194,18 +192,4 @@ REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'jwt-key'
 JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh'
 REST_SESSION_LOGIN = False
-OLD_PASSWORD_FIELD_ENABLED = True
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Confirm Email Address'
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
-ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 1800
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 7
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 86400
-ACCOUNT_PRESERVE_USERNAME_CASING = False
-ACCOUNT_PREVENT_ENUMERATION = False
-ACCOUNT_USERNAME_BLACKLIST = [
-    'openusercreator', 'openusercreators', 'opencreators',
-    'opencreator', 'openusers', 'openuser', 'creator'
-]
+REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
