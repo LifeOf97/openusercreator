@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.db import utils as db_exception
-from django.forms import ValidationError
 import pytest
 
 
