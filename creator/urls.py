@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenVerifyView
 from dj_rest_auth.jwt_auth import get_refresh_view
-from dj_rest_auth import views as dj_rest, urls
+from dj_rest_auth import views as dj_rest
 from django.urls import path
 from . import apis
 

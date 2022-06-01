@@ -1,9 +1,15 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.db.models.functions import Length
 from django.core import validators
 from django.db import models
 from typing import List
-import uuid
+import uuid, re
+
+
+# Register __length
+models.CharField.register_lookup(Length)
 
 
 # Functiuon to create random ints
@@ -63,10 +69,10 @@ class AppUser(AbstractUser):
     )
 
     username = models.CharField(
-        _("Username"), max_length=20, unique=True, blank=False,
+        _("Username"), max_length=15, unique=True, blank=False,
         validators=[
-            validators.RegexValidator(regex="\W", message=_("Username can only contain letters, numbers and underscore"), inverse_match=True),
             validators.MinLengthValidator(limit_value=4),
+            validators.RegexValidator(regex='\W', message=_("Username can only contain letters, numbers and underscore"), inverse_match=True)
         ],
         error_messages={"unique": _("This username is not available")},
     )
@@ -85,8 +91,23 @@ class AppUser(AbstractUser):
     REQUIRED_FIELDS: List[str] = ['email',]
 
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(check=models.Q(username__length__gte=4), name="min_username_length"),
+        ]
+        ordering = ['-date_joined']
+
+
+    def save(self, *args, **kwargs):
+        # converts usernames to lowercase and replaces spaces with underscores
+        self.username = str(self.username).replace(' ', '_').lower()
+        self.email = self.email.lower()
+        return super().save(*args, **kwargs)
+
+
     def __str__(self) -> str:
         return self.username
     
+
     def get_full_name(self) -> str:
         return F"{self.first_name or ''} {self.last_name or ''} {self.other_name or ''}"
