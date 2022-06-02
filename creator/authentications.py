@@ -17,7 +17,8 @@ class BearerAuthentication(TokenAuthentication):
 
 class AppUserBackend(ModelBackend):
     """
-    Custom app user authentication backend to provide for username or email and password authentication.
+    Custom app user authentication backend to provide for username/email and password authentication.
+    A case insensitive search is used for usernanme/email field.
     """
     def authenticate(self, request, username=None, password=None):
         try:

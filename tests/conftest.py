@@ -6,7 +6,7 @@ fake = Faker()
 
 
 @pytest.fixture
-def app_user_model():
+def AppUser():
     return get_user_model()
 
 
@@ -47,7 +47,6 @@ def test_user_2():
     )
 
 
-
 @pytest.fixture
 def full_user_data():
     """
@@ -65,19 +64,22 @@ def full_user_data():
 
 
 @pytest.fixture
-def created(db, app_user_model, full_user_data):
-    user = app_user_model.objects.create(**full_user_data)
+def created(db, AppUser, full_user_data):
+    user = AppUser.objects.create(**full_user_data)
+    user.set_password(full_user_data['password'])
+    user.save()
+
     return user
 
 
 @pytest.fixture
-def created_user(db, app_user_model, test_user_1):
-    user = app_user_model.objects.create_user(**test_user_1)
+def created_user(db, AppUser, test_user_1):
+    user = AppUser.objects.create_user(**test_user_1)
     return user
 
 
 @pytest.fixture
-def created_superuser(db, app_user_model, test_user_1):
-    user = app_user_model.objects.create_superuser(**test_user_1)
+def created_superuser(db, AppUser, test_user_1):
+    user = AppUser.objects.create_superuser(**test_user_1)
     return user
 

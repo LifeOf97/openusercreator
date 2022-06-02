@@ -1,4 +1,4 @@
-from rest_framework import status, views, viewsets, permissions
+from rest_framework import status, views, viewsets, permissions, authentication
 from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext_lazy as _
 from . import serializers, permissions as custom_perm
@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from django.conf import settings
+from django.urls import reverse
 from .utils import Util
 import jwt
 
@@ -16,7 +17,6 @@ AppUser = get_user_model()
 
 
 class AppUserApiView(viewsets.GenericViewSet):
-    # lookup_field = 'username'
     queryset = AppUser.objects.all()
     serializer_class = serializers.BasicAppUserSerializer()
 
@@ -39,7 +39,7 @@ class AppUserApiView(viewsets.GenericViewSet):
 
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == 'create' or self.request.path == str(reverse('creators_create')):
             permission_classes = [permissions.AllowAny]
         elif self.action == 'list':
             permission_classes = [permissions.IsAdminUser]
@@ -95,7 +95,7 @@ class AppUserApiView(viewsets.GenericViewSet):
 
 
 class VerifyEmail(views.APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = []
 
     def get(self, request):
         token = request.GET.get('token')
@@ -112,7 +112,6 @@ class VerifyEmail(views.APIView):
                 data={"error": _('Invalid token, please request a new one.')},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
         else:
             user = AppUser.objects.get(id=check_token['user_id'])
 
@@ -142,12 +141,12 @@ class ResendVerifyEmail(viewsets.GenericViewSet):
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
 
-class LoginSessionApiView(views.APIView):
+class LoginSessionApiView(viewsets.GenericViewSet):
     """
     Login with username and password using django's (edited) built in authenticate and login functions.
     """
     authentication_classes = []
-    permission_classes = [permissions.AllowAny,]
+    permission_classes = [permissions.AllowAny]
     serializer_class = serializers.LoginSerializer
 
 
@@ -161,7 +160,7 @@ class LoginSessionApiView(views.APIView):
                 login(request, user)
                 response =  Response(data={"detail": _("Logged in successfully")}, status=status.HTTP_200_OK)
 
-                # clears jwt authentication if present
+                # clear jwt (access & refresh) tokens if present
                 unset_jwt_cookies(response)
 
                 return response # return logged in response to client
@@ -171,9 +170,10 @@ class LoginSessionApiView(views.APIView):
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-class LogoutSessionApiView(views.APIView):
-    authentication_classes = []
-    permission_classes = []
+class LogoutSessionApiView(viewsets.GenericViewSet):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication]
+
 
     def post(self, request, format=None):
         logout(request)
