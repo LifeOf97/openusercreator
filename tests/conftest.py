@@ -54,11 +54,27 @@ def full_user_data():
     but they are converted to lowercase on save.
     """
     return dict(
-        username="TestUser1",
-        email="TestUser1@gmail.com",
-        first_name="Test",
+        username="FullUser1",
+        email="FullUser1@gmail.com",
+        first_name="Full",
         last_name="User",
-        other_name="Testing",
+        other_name="Fulling",
+        password="fufu@6060f914"
+    )
+
+
+@pytest.fixture
+def another_user_data():
+    """
+    Notice that username and email fields are a mix of uppercase and lowercase letters,
+    but they are converted to lowercase on save.
+    """
+    return dict(
+        username="AnotherUser1",
+        email="AnotherUser1@gmail.com",
+        first_name="Another",
+        last_name="User",
+        other_name="Anothering",
         password="tutu@6060f914"
     )
 
