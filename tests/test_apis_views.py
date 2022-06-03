@@ -1,17 +1,21 @@
 from django.contrib.auth import get_user_model
+from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
-from django.urls import reverse
 import pytest, pdb
 
 
 AppUser = get_user_model()
-create_url = reverse('creators_create')
-login_session_url = reverse('login_via_session')
-login_token_url = reverse('login_via_token')
-change_password_url = reverse('creator_change_password')
-verify_toke_url = reverse('token_verify')
-refresh_toke_url = reverse('token_refresh')
+create_url = reverse('creators_create', kwargs={'version': 'v1'})
+login_session_url = reverse('login_via_session', kwargs={'version': 'v1'})
+login_token_url = reverse('login_via_token', kwargs={'version': 'v1'})
+my_data_url = reverse('creators_details', kwargs={'version': 'v1'})
+update_data_url = reverse('creators_update', kwargs={'version': 'v1'})
+change_password_url = reverse('creator_change_password', kwargs={'version': 'v1'})
+verify_toke_url = reverse('token_verify', kwargs={'version': 'v1'})
+refresh_toke_url = reverse('token_refresh', kwargs={'version': 'v1'})
+list_creators_url = reverse('creators_list', kwargs={'version': 'v1'})
+delete_data_url = reverse('creators_delete', kwargs={'version': 'v1'})
 
 
 @pytest.mark.django_db
@@ -102,7 +106,6 @@ def test_new_creators_can_login_via_token(full_user_data):
 @pytest.mark.django_db
 def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created, full_user_data):
     client = APIClient(enforce_csrf_checks=True)
-    my_data_url = reverse('creators_details')
 
     # because of the created fixture
     assert AppUser.objects.count() == 1
@@ -131,7 +134,6 @@ def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created
 @pytest.mark.django_db
 def test_unauthenticated_request_on_creators_details_endpoint_should_fail():
     client = APIClient(enforce_csrf_checks=True)
-    my_data_url = reverse('creators_details')
 
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
@@ -141,7 +143,6 @@ def test_unauthenticated_request_on_creators_details_endpoint_should_fail():
 @pytest.mark.django_db
 def test_autenticated_users_can_update_their_data(created, full_user_data, another_user_data):
     client = APIClient(enforce_csrf_checks=True)
-    update_data_url = reverse('creators_update')
 
     # because of the created fixture
     assert AppUser.objects.count() == 1
@@ -169,8 +170,6 @@ def test_autenticated_users_can_update_their_data(created, full_user_data, anoth
 @pytest.mark.django_db
 def test_autenticated_users_can_delete_their_account(created, full_user_data):
     client = APIClient(enforce_csrf_checks=True)
-    my_data_url = reverse('creators_details')
-    delete_data_url = reverse('creators_delete')
 
     # because of the created fixture
     assert AppUser.objects.count() == 1
@@ -198,7 +197,6 @@ def test_autenticated_users_can_delete_their_account(created, full_user_data):
 @pytest.mark.django_db
 def test_only_creators_with_admin_privilege_can_retrieve_all_creators_in_the_system(full_user_data, test_user_1, created, created_superuser):
     client = APIClient(enforce_csrf_checks=True)
-    list_creators_url = reverse('creators_list')
 
     # because of the created and created_superuser fixture
     assert AppUser.objects.count() == 2

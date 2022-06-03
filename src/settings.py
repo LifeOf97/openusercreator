@@ -176,10 +176,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONOpenAPIRenderer',
         'rest_framework.renderers.JSONRenderer',
-        # 'rest_framework_xml.renderers.XMLRenderer',
     ],
-    'NON_FIELD_ERRORS_KEY': 'error'
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1'],
+    'NON_FIELD_ERRORS_KEY': 'error',
 }
 
 # Dj_rest_auth settings

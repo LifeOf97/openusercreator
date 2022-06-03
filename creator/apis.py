@@ -1,27 +1,29 @@
 from rest_framework import status, views, viewsets, permissions, authentication
 from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext_lazy as _
-from . import serializers, permissions as custom_perm
+from . import serializers, permissions as custom_perm, metadatas
 from dj_rest_auth.jwt_auth import unset_jwt_cookies
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework.reverse import reverse
 from django.conf import settings
-from django.urls import reverse
 from .utils import Util
 import jwt
 
 
-# Globall User model instance
+# Custom user model instance
 AppUser = get_user_model()
 
 
 class AppUserApiView(viewsets.GenericViewSet):
     queryset = AppUser.objects.all()
     serializer_class = serializers.BasicAppUserSerializer()
+    metadata_class = metadatas.AppMetadata
 
 
-    def get_object(self):
+    def get_object(self, *args, **kwargs):
         """
         Edited so as to return the object instance of the currently logged in user.
         """
@@ -32,14 +34,14 @@ class AppUserApiView(viewsets.GenericViewSet):
         return obj
 
 
-    def get_serializer_class(self):
+    def get_serializer_class(self, *args, **kwargs):
         if self.request.user.is_staff:
             return serializers.FullAppUserSerializer
         return serializers.BasicAppUserSerializer
 
 
-    def get_permissions(self):
-        if self.action == 'create' or self.request.path == str(reverse('creators_create')):
+    def get_permissions(self, *args, **kwargs):
+        if self.action in ['create', 'api_schema'] or str(reverse('creators_create', request=self.request)).endswith(self.request.path):
             permission_classes = [permissions.AllowAny]
         elif self.action == 'list':
             permission_classes = [permissions.IsAdminUser]
@@ -48,12 +50,18 @@ class AppUserApiView(viewsets.GenericViewSet):
         return [perm() for perm in permission_classes]
 
 
-    def list(self, request):
+    def api_schema(self, request, *args, **kwargs):
+        meta = self.metadata_class()
+        data = meta.determine_metadata(request, self)
+        return Response(data)
+
+
+    def list(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
 
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
@@ -67,12 +75,12 @@ class AppUserApiView(viewsets.GenericViewSet):
         return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def retrieve(self, request):
+    def retrieve(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_object(), context={'request': request})
         return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
 
     
-    def update(self, request):
+    def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(instance=self.get_object(), data=request.data, context={'request': request}, partial=True)
 
         if serializer.is_valid():
@@ -81,7 +89,7 @@ class AppUserApiView(viewsets.GenericViewSet):
         return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     
-    def destroy(self, request):
+    def destroy(self, request, *args, **kwargs):
         appuser = self.get_object()
         username, email, uid = appuser.username, appuser.email, appuser.uid
         data = {'data': {'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}}
@@ -97,7 +105,7 @@ class AppUserApiView(viewsets.GenericViewSet):
 class VerifyEmail(views.APIView):
     permission_classes = []
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         token = request.GET.get('token')
         
         try:
@@ -126,7 +134,7 @@ class VerifyEmail(views.APIView):
 class ResendVerifyEmail(viewsets.GenericViewSet):
     serializer_class = serializers.ResendEmailSerializer
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
@@ -150,7 +158,7 @@ class LoginSessionApiView(viewsets.GenericViewSet):
     serializer_class = serializers.LoginSerializer
 
 
-    def post(self, request, format=None):
+    def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -175,7 +183,7 @@ class LogoutSessionApiView(viewsets.GenericViewSet):
     authentication_classes = [authentication.SessionAuthentication]
 
 
-    def post(self, request, format=None):
+    def post(self, request, *args, **kwargs):
         logout(request)
         return Response(data={"detail": _("Logged out successfully")}, status=status.HTTP_200_OK)
 

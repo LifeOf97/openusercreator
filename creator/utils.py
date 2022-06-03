@@ -22,9 +22,9 @@ class Util:
         user = AppUser.objects.get(email=data['email'])
         
         token = RefreshToken.for_user(user).access_token
-        cur_site = get_current_site(request).domain
-        rel_link = reverse("creators_verify_email")
-        abs_url = F"http://{cur_site}{rel_link}?token={token}"
+        # cur_site = get_current_site(request).domain
+        rel_link = reverse("creators_verify_email", request=request)
+        abs_url = F"{rel_link}?token={token}"
 
         body =  F"Hi \U0001F44B {user.username}.\nThanks for registering to use Openuserdata REST API.\n\n"\
                 F"Please click on the link below to verify your email address.\n"\
@@ -52,9 +52,9 @@ class Util:
         user = AppUser.objects.get(email=data['email'])
 
         token = RefreshToken.for_user(user).access_token
-        cur_site = get_current_site(request).domain
-        rel_link = reverse("creators_verify_email")
-        abs_url = F"http://{cur_site}{rel_link}?token={token}"
+        # cur_site = get_current_site(request).domain
+        link = reverse("creators_verify_email", request=request)
+        abs_url = F"{link}?token={token}"
 
         body =  F"Hi \U0001F44B {user.username}.\n\n"\
                 F"To verify your email address please click on the link below.\n"\
