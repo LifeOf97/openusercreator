@@ -32,9 +32,4 @@ urlpatterns = [
     path("<version>/auth/logout/token/", dj_rest.LogoutView.as_view(), name="logout_via_token"),
     path("<version>/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("<version>/auth/token/refresh/", get_refresh_view().as_view(), name="token_refresh"),
-
-    # reset password via email urls
-    path("<version>/auth/help/password/reset/", dj_rest.PasswordResetView.as_view(), name="password_reset"),
-    path("<version>/auth/help/password/reset/confirm/<str:uidb64>/<str:token>/", dj_rest.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-
 ]
