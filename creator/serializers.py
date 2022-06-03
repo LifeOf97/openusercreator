@@ -1,5 +1,3 @@
-from django.utils.translation import gettext_lazy as _
-from rest_framework.validators import UniqueValidator
 from dj_rest_auth import serializers as dj_rest_auth_serializer
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
@@ -26,20 +24,18 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
             'uid': {'read_only': True}
         }
 
-
     def to_internal_value(self, data):
         """
         Converts username and email values to lowercase.
         """
         if data.get('username'):
             data['username'] = data['username'].lower()
-        
+
         if data.get('email'):
             data['email'] = data['email'].lower()
-        
+
         return super().to_internal_value(data)
-    
-    
+
     def create(self, validated_data):
         password = validated_data.pop('password')
 
@@ -48,7 +44,6 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
-
 
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)
@@ -97,4 +92,3 @@ class CustomDjRestAuthJWTSerializer(dj_rest_auth_serializer.JWTSerializer):
     access_token = serializers.CharField()
     refresh_token = serializers.CharField()
     user = None
-    

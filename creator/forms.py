@@ -7,7 +7,6 @@ class CustomAppUserCreationForm(UserCreationForm):
         model = AppUser
         fields = UserCreationForm.Meta.fields + ('email',)
 
-
     def clean_username(self):
         username = self.cleaned_data.get("username")
         return username.lower()

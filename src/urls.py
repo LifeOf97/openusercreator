@@ -6,15 +6,18 @@ from django.conf import settings
 from django.contrib import admin
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url='api/creators/')), # redirect to the api urls.
-    path('api/', include('creator.urls')), # api urls
+    path('', RedirectView.as_view(url='api/creators/')),  # redirect to the api urls.
+    path('api/', include('creator.urls')),  # api urls
 
     # reset password via email urls
     path("api/auth/help/password/reset/", dj_rest.PasswordResetView.as_view(), name="password_reset"),
-    path("api/auth/help/password/reset/confirm/<str:uidb64>/<str:token>/", dj_rest.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path(
+        "api/auth/help/password/reset/confirm/<str:uidb64>/<str:token>/",
+        dj_rest.PasswordResetConfirmView.as_view(),
+        name="password_reset_confirm"
+    ),
 
 ]
 

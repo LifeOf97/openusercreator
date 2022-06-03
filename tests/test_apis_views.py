@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
-import pytest, pdb
+import pytest
 
 
 AppUser = get_user_model()
@@ -45,7 +45,7 @@ def test_create_new_account_and_check_that_no_sensitive_data_is_returned(full_us
     assert not res.data['data']['is_verified']
     assert 'password' not in res.data['data']
     assert res.data['data']['date_joined']
-    assert res.data['data']['last_login'] == None
+    assert res.data['data']['last_login'] is None
 
 
 @pytest.mark.django_db
@@ -128,7 +128,7 @@ def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created
     assert not res.data['data']['is_verified']
     assert 'password' not in res.data['data']
     assert res.data['data']['date_joined']
-    assert res.data['data']['last_login'] == None
+    assert res.data['data']['last_login'] is None
 
 
 @pytest.mark.django_db
@@ -164,7 +164,7 @@ def test_autenticated_users_can_update_their_data(created, full_user_data, anoth
     assert not res.data['data']['is_verified']
     assert 'password' not in res.data['data']
     assert res.data['data']['date_joined']
-    assert res.data['data']['last_login'] == None
+    assert res.data['data']['last_login'] is None
 
 
 @pytest.mark.django_db
@@ -181,12 +181,12 @@ def test_autenticated_users_can_delete_their_account(created, full_user_data):
     # get the users data to compare with the deleted response data
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
-    
+
     user_data = res.data['data']
 
     # now delete the currently logged in user account
     res = client.delete(delete_data_url)
-    
+
     assert res.status_code == status.HTTP_204_NO_CONTENT
     assert 'Deleted successfully' in res.data['data']['detail']
     assert res.data['data']['uid'] == user_data['uid']
@@ -195,7 +195,12 @@ def test_autenticated_users_can_delete_their_account(created, full_user_data):
 
 
 @pytest.mark.django_db
-def test_only_creators_with_admin_privilege_can_retrieve_all_creators_in_the_system(full_user_data, test_user_1, created, created_superuser):
+def test_only_admin_users_can_retrieve_all_creators(
+    full_user_data,
+    test_user_1,
+    created,
+    created_superuser
+                    ):
     client = APIClient(enforce_csrf_checks=True)
 
     # because of the created and created_superuser fixture
@@ -221,7 +226,7 @@ def test_only_creators_with_admin_privilege_can_retrieve_all_creators_in_the_sys
 
 @pytest.mark.django_db
 def test_authenticated_creators_can_change_their_password(created, full_user_data):
-    client =  APIClient()
+    client = APIClient()
 
     # because of the created fixture
     assert AppUser.objects.count() == 1
@@ -249,7 +254,10 @@ def test_authenticated_creators_can_change_their_password(created, full_user_dat
 
 
 @pytest.mark.django_db
-def test_authentication_via_session_will_clear_the_access_and_refresh_tokens_of_users_who_were_authenticated_via_token(created, full_user_data):
+def test_authentication_via_session_will_clear_the_access_and_refresh_tokens_of_users_who_were_authenticated_via_token(
+    created,
+    full_user_data
+        ):
     client = APIClient()
 
     # because of the created fixture

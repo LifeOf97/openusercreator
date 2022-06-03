@@ -98,4 +98,3 @@ def created_user(db, AppUser, test_user_1):
 def created_superuser(db, AppUser, test_user_1):
     user = AppUser.objects.create_superuser(**test_user_1)
     return user
-
