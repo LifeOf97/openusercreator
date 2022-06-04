@@ -1,8 +1,6 @@
 from django.views.generic import RedirectView
-from django.conf.urls.static import static
 from dj_rest_auth import views as dj_rest
 from django.urls import path, include
-from django.conf import settings
 from django.contrib import admin
 
 
@@ -13,9 +11,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url='api/creators/')),
 
     # api urls
-    path(
-        'api/', include('creator.urls')
-    ),
+    path('api/', include('creator.urls')),
     path(
         "api/auth/help/password/reset/",
         dj_rest.PasswordResetView.as_view(),
@@ -26,11 +22,4 @@ urlpatterns = [
         dj_rest.PasswordResetConfirmView.as_view(),
         name="password_reset_confirm"
     ),
-
 ]
-
-if settings.DEBUG:
-    urlpatterns += [
-        static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
-        static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-    ]
