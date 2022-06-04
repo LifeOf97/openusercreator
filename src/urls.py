@@ -8,11 +8,19 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url='api/creators/')),  # redirect to the api urls.
-    path('api/', include('creator.urls')),  # api urls
 
-    # reset password via email urls
-    path("api/auth/help/password/reset/", dj_rest.PasswordResetView.as_view(), name="password_reset"),
+    # redirect to the api urls.
+    path('', RedirectView.as_view(url='api/creators/')),
+
+    # api urls
+    path(
+        'api/', include('creator.urls')
+    ),
+    path(
+        "api/auth/help/password/reset/",
+        dj_rest.PasswordResetView.as_view(),
+        name="password_reset"
+    ),
     path(
         "api/auth/help/password/reset/confirm/<str:uidb64>/<str:token>/",
         dj_rest.PasswordResetConfirmView.as_view(),
@@ -22,7 +30,7 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns + [
+    urlpatterns += [
         static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
         static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     ]
