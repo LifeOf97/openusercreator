@@ -1,7 +1,7 @@
 # This action assumes that flake8 package is in the requirements.txt file.
 
 
-name: CI Lint flake8
+name: CI Flake8
 
 
 on:
