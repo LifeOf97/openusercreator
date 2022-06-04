@@ -1,3 +1,6 @@
+# This action assumes that flake8 package is in the requirements.txt file.
+
+
 name: CI Lint flake8
 
 
@@ -5,12 +8,12 @@ on:
   push:
     branches:
       - main
-    pull_request:
-      branches:
-        - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build-and-lint:
+  build-and-lint-with-flake8:
 
     runs-on: ubuntu-latest
     strategy:
