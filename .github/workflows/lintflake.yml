@@ -1,4 +1,4 @@
-name: Python CI Lint with flake8
+name: CI Lint flake8
 
 
 on:
