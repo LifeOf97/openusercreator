@@ -6,17 +6,17 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Load environment variables
+# Load dotenv variable
 load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ['DEBUG']
+DEBUG = os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -80,9 +80,9 @@ WSGI_APPLICATION = 'src.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': os.environ['DB_USER'],
-        'NAME': os.environ['DB_NAME'],
-        'PASSWORD': os.environ['DB_PASS'],
+        'USER': os.getenv('DB_USER'),
+        'NAME': os.getenv('DB_NAME'),
+        'PASSWORD': os.getenv('DB_PASS'),
     }
 }
 
@@ -149,9 +149,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_USE_TLS = True
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
-DEFAULT_FROM_EMAIL = os.environ['EMAIL_HOST_USER']
-EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_SUBJECT_PREFIX = 'OpenUserCreator',
 EMAIL_FILE_PATH = BASE_DIR / 'email/'
 
