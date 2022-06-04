@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.db.models.functions import Length
 from django.core import validators
+from django.utils import timezone
+from django.conf import settings
 from django.db import models
 from typing import List
 import uuid
@@ -71,7 +73,14 @@ class AppUser(AbstractUser):
     password = models.CharField(
         _("Password"),
         max_length=128,
-        validators=[validators.MinLengthValidator(limit_value=8)]
+        validators=[
+            validators.MinLengthValidator(limit_value=8),
+            validators.RegexValidator(
+                regex=r'\s',
+                message=_("Password cannot contain spaces"),
+                inverse_match=True
+            )
+        ]
     )
 
     username = models.CharField(
@@ -121,3 +130,58 @@ class AppUser(AbstractUser):
 
     def get_full_name(self) -> str:
         return F"{self.first_name or ''} {self.last_name or ''} {self.other_name or ''}"
+
+
+class Openuser(models.Model):
+    id = models.AutoField(_("ID"), primary_key=True, unique=True, editable=False)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("creator"),
+        on_delete=models.CASCADE,
+        help_text=_("The Appuser who owns this Openuser profiles")
+    )
+    name = models.CharField(
+        _("Name"), max_length=10, blank=False, null=False,
+        help_text=_("The name of this Openuser profile. Spaces are replaces with underscores")
+    )
+    profiles = models.IntegerField(
+        _("Profiles"), blank=False, null=False, default=5,
+        validators=[validators.MaxValueValidator(limit_value=50)],
+        help_text=_("Number of openuser profiles to create, defaul is 5")
+    )
+    profile_password = models.CharField(
+        _("Profile password"), max_length=20, blank=False,
+        null=False, default='p@ssw0rd',
+        help_text=_("The password to use for all profiles"),
+        validators=[
+            validators.RegexValidator(
+                regex=r'\s',
+                message=_("Profile password cannot contain spaces"),
+                inverse_match=True
+            )
+        ]
+    )
+    date_created = models.DateTimeField(
+        _("Date Created"), auto_now=False, auto_now_add=True,
+        help_text=_("The date and time this Openuser profile was created")
+    )
+    last_updated = models.DateTimeField(
+        _("Last Updated"), auto_now=True, auto_now_add=False,
+        help_text=_("The last time this Openuser profile was updated")
+    )
+
+    class Meta:
+        ordering = ['-last_updated']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['creator', 'name'],
+                name='unique_openuser'
+            )
+        ]
+
+    def save(self, *args, **kwargs):
+        self.name = str(self.name).replace(' ', '_').lower()
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return F"{self.creator.username} {self.name}"
