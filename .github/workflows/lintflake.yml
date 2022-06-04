@@ -5,7 +5,7 @@ name: CI Flake8
 
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
