@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.conf import settings
+from .models import Openuser
 from .utils import Util
 import jwt
 
@@ -63,7 +64,6 @@ class AppUserApiView(viewsets.GenericViewSet):
 
             # send email verification link
             Util.send_email_verification(data=serializer.data, request=request)
-
             return Response(data={"data": serializer.data}, status=status.HTTP_201_CREATED)
 
         return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -94,7 +94,6 @@ class AppUserApiView(viewsets.GenericViewSet):
 
         # clears jwt authentication if present
         unset_jwt_cookies(response)
-
         return response
 
 
@@ -190,3 +189,51 @@ class LogoutSessionApiView(viewsets.GenericViewSet):
     def post(self, request, *args, **kwargs):
         logout(request)
         return Response(data={"detail": _("Logged out successfully")}, status=status.HTTP_200_OK)
+
+
+class OpenuserApiView(viewsets.GenericViewSet):
+    queryset = Openuser.objects.all()
+    lookup_field = 'name'
+    serializer_class = serializers.OpenuserSerializer
+
+    def get_queryset(self):
+        creator = self.request.user
+        return creator.openuser_set.all()
+
+    def list(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(data={'data': serializer.data}, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save(creator=request.user)
+            return Response(data={'data': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, name=None, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object(), context={'request': request})
+        return Response(data={'data': serializer.data}, status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            instance=self.get_object(),
+            data=request.data,
+            context={'request': request},
+            partial=True
+        )
+
+        if serializer.is_valid():
+            serializer.save(creator=request.user)
+            return Response(data={'data': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        openuser = self.get_object()
+        name, profiles = openuser.name, openuser.profiles
+        openuser.delete()
+        return Response(
+            data={'data': {'name': name, 'profiles': profiles, 'detail': _('Deleted successfully')}},
+            status=status.HTTP_204_NO_CONTENT
+        )

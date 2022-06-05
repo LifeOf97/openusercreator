@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.db.models.functions import Length
 from django.core import validators
-from django.utils import timezone
 from django.conf import settings
 from django.db import models
 from typing import List
@@ -141,8 +140,15 @@ class Openuser(models.Model):
         help_text=_("The Appuser who owns this Openuser profiles")
     )
     name = models.CharField(
-        _("Name"), max_length=10, blank=False, null=False,
-        help_text=_("The name of this Openuser profile. Spaces are replaces with underscores")
+        _("Name"), max_length=20, blank=False, null=False,
+        help_text=_("The name of this Openuser profile. Spaces are replaces with underscores"),
+        validators=[
+            validators.RegexValidator(
+                regex=r'\W',
+                message=_("Must begin with a letter. Can only contain letters, numbers and underscores"),
+                inverse_match=True
+            )
+        ]
     )
     profiles = models.IntegerField(
         _("Profiles"), blank=False, null=False, default=5,
@@ -171,7 +177,7 @@ class Openuser(models.Model):
     )
 
     class Meta:
-        ordering = ['-last_updated']
+        ordering = ['-date_created']
         constraints = [
             models.UniqueConstraint(
                 fields=['creator', 'name'],
@@ -180,7 +186,7 @@ class Openuser(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        self.name = str(self.name).replace(' ', '_').lower()
+        self.name = str(self.name).replace(' ', '-').lower()
         return super().save(*args, **kwargs)
 
     def __str__(self):

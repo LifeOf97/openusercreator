@@ -141,7 +141,7 @@ AUTH_USER_MODEL = 'creator.AppUser'
 # Authentication classes settings
 AUTHENTICATION_BACKENDS = (
     'creator.authentications.AppUserBackend',
-    # 'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 # Email settings
