@@ -90,11 +90,31 @@ def created(db, AppUser, full_user_data):
 
 @pytest.fixture
 def created_user(db, AppUser, test_user_1):
+    """
+    This fixture creates a new user using the data from test_user_1
+    """
     user = AppUser.objects.create_user(**test_user_1)
     return user
 
 
 @pytest.fixture
 def created_superuser(db, AppUser, test_user_1):
+    """
+    This fixture creates a new superuser using the data from test_user_1
+    """
     user = AppUser.objects.create_superuser(**test_user_1)
     return user
+
+
+@pytest.fixture
+def openuser_data_1(created):
+    """
+    This fixture provids data to create an openuser app, it uses the created fixture
+    as the creator of this instance.
+    """
+    return dict(
+        creator=created,
+        name='newapi1',
+        profiles=12,
+        profile_password="password",
+    )
