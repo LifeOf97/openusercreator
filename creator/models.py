@@ -152,11 +152,14 @@ class Openuser(models.Model):
     )
     profiles = models.IntegerField(
         _("Profiles"), blank=False, null=False, default=5,
-        validators=[validators.MaxValueValidator(limit_value=50)],
-        help_text=_("Number of openuser profiles to create, defaul is 5")
+        help_text=_("Number of openuser profiles to create, defaul is 5"),
+        validators=[
+            validators.MaxValueValidator(limit_value=50),
+            validators.MinValueValidator(limit_value=1),
+        ],
     )
     profile_password = models.CharField(
-        _("Profile password"), max_length=20, blank=False,
+        _("Profile password"), max_length=15, blank=False,
         null=False, default='p@ssw0rd',
         help_text=_("The password to use for all profiles"),
         validators=[
@@ -190,4 +193,4 @@ class Openuser(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return F"{self.creator.username} {self.name}"
+        return F"{self.creator.username}-{self.name}"

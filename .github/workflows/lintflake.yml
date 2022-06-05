@@ -1,6 +1,5 @@
 # This action assumes that flake8 package is in the requirements.txt file.
 
-
 name: CI Flake8
 
 
