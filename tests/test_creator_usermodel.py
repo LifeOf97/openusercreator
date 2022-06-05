@@ -6,7 +6,7 @@ import pytest
 AppUser = get_user_model()
 
 
-class TestClass:
+class TestModelCase:
 
     @pytest.mark.django_db
     def test_appusermodel_create_user_method_only_sets_users_as_active(self, created_user):
