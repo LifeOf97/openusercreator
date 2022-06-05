@@ -77,6 +77,19 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+
+# in development and production
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST': '127.0.0.1',
+        'PORT': 5432
+    }
+}
+
 # if in github actions
 if os.environ.get('GITHUB_WORKFLOW'):
     DATABASES = {
@@ -90,17 +103,6 @@ if os.environ.get('GITHUB_WORKFLOW'):
         }
     }
 
-# in development and production
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASS'),
-        'HOST': '127.0.0.1',
-        'PORT': 5432
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
