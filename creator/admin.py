@@ -1,7 +1,7 @@
 from .forms import CustomAppUserCreationForm, CustomAppUserChangeForm
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
-from .models import AppUser
+from .models import AppUser, Openuser
 
 
 class AppUserAdmin(UserAdmin):
@@ -28,4 +28,20 @@ class AppUserAdmin(UserAdmin):
     ordering = ('-id',)
 
 
+class OpenUserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'creator', 'name', 'date_created', 'last_updated')
+    list_display_links = ('creator', )
+    list_filter = ('creator', )
+
+    fieldsets = (
+        ("Identification", {"fields": ("creator", "id", "name", "profile_password")}),
+        ("Data", {"fields": ("profiles", ), }),
+        ("Important Dates", {"fields": ("date_created", "last_updated"), }),
+    )
+
+    readonly_fields = ('id', 'date_created', 'last_updated')
+    ordering = ('-last_updated',)
+
+
 admin.site.register(AppUser, AppUserAdmin)
+admin.site.register(Openuser, OpenUserAdmin)

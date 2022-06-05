@@ -42,6 +42,33 @@ urlpatterns = [
         name="creator_change_password"
     ),
 
+    # creators openuser apps urls
+    path(
+        "<version>/creators/me/apps/",
+        apis.OpenuserApiView.as_view({'get': 'list'}),
+        name="creators_apps"
+    ),
+    path(
+        "<version>/creators/me/apps/new/",
+        apis.OpenuserApiView.as_view({'post': 'create'}),
+        name="creators_apps_create"
+    ),
+    path(
+        "<version>/creators/me/apps/<str:name>/",
+        apis.OpenuserApiView.as_view({'get': 'retrieve'}),
+        name="creators_apps_detail"
+    ),
+    path(
+        "<version>/creators/me/apps/<str:name>/update/",
+        apis.OpenuserApiView.as_view({'put': 'update', 'patch': 'update'}),
+        name="creators_apps_update"
+    ),
+    path(
+        "<version>/creators/me/apps/<str:name>/delete/",
+        apis.OpenuserApiView.as_view({'delete': 'destroy'}),
+        name="creators_apps_delete"
+    ),
+
     # create/verify new creators account urls
     path(
         "<version>/creators/new/",

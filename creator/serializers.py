@@ -1,6 +1,9 @@
 from dj_rest_auth import serializers as dj_rest_auth_serializer
+from rest_framework.validators import UniqueTogetherValidator
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from .models import Openuser
 
 
 # Custom User model instance
@@ -92,3 +95,26 @@ class CustomDjRestAuthJWTSerializer(dj_rest_auth_serializer.JWTSerializer):
     access_token = serializers.CharField()
     refresh_token = serializers.CharField()
     user = None
+
+
+class OpenuserSerializer(serializers.ModelSerializer):
+    creator = serializers.SlugRelatedField(slug_field='username', queryset=AppUser.objects.all())
+
+    class Meta:
+        model = Openuser
+        fields = "__all__"
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Openuser.objects.all(),
+                fields=['creator', 'name'],
+                message=_('You already have an app with that name.')
+            )
+        ]
+
+    def to_internal_value(self, data):
+        """
+        Edited this method to provide the request user as the creator of this openuser
+        instance
+        """
+        data['creator'] = self.context['request'].user
+        return super().to_internal_value(data)
