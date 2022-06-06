@@ -208,7 +208,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
         serializer = self.get_serializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
-            serializer.save(creator=request.user)
+            serializer.save()
             return Response(data={'data': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -225,7 +225,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
         )
 
         if serializer.is_valid():
-            serializer.save(creator=request.user)
+            serializer.save()
             return Response(data={'data': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
