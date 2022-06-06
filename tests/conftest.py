@@ -118,3 +118,16 @@ def openuser_data_1(created):
         profiles=12,
         profile_password="password",
     )
+
+
+@pytest.fixture
+def openuser_data(created):
+    """
+    This fixture provids data to create an openuser app, it uses the created fixture
+    as the creator of this instance.
+    """
+    return dict(
+        name='newapi1',
+        profiles=12,
+        profile_password="mypassword",
+    )
