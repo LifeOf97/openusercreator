@@ -183,7 +183,7 @@ SESSION_COOKIE_HTTPONLY = True
 # Rest framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'creator.authentications.BearerAuthentication',
         'rest_framework.authentication.SessionAuthentication',

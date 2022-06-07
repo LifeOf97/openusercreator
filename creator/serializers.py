@@ -63,7 +63,7 @@ class ResendEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
     def to_internal_value(self, data):
-        if data['email']:
+        if data.get('email'):
             data['email'] = data['email'].lower()
 
         return super().to_internal_value(data)
@@ -117,4 +117,7 @@ class OpenuserSerializer(serializers.ModelSerializer):
         instance
         """
         data['creator'] = self.context['request'].user
+
+        if data.get('name'):
+            data['name'] = data['name'].lower()
         return super().to_internal_value(data)
