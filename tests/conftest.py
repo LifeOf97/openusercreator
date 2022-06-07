@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
-from faker import Faker
+from creator.models import Openuser
 import pytest
-
-fake = Faker()
 
 
 @pytest.fixture
@@ -107,9 +105,9 @@ def created_superuser(db, AppUser, test_user_1):
 
 
 @pytest.fixture
-def openuser_data_1(created):
+def openuser_data(created):
     """
-    This fixture provids data to create an openuser app, it uses the created fixture
+    This fixture provides data to create an openuser app, it uses the created fixture
     as the creator of this instance.
     """
     return dict(
@@ -121,13 +119,115 @@ def openuser_data_1(created):
 
 
 @pytest.fixture
-def openuser_data(created):
+def openuser_data_1():
     """
-    This fixture provids data to create an openuser app, it uses the created fixture
+    This fixture provides data to create an openuser app, it uses the created fixture
     as the creator of this instance.
     """
     return dict(
-        name='newapi1',
+        name='NewApi1',
         profiles=12,
         profile_password="mypassword",
     )
+
+
+@pytest.fixture
+def created_openuser_1(created):
+    """
+    This fixture provides data to create an openuser app, it uses the created fixture
+    as the creator of this instance.
+    """
+    data = dict(
+        creator=created,
+        name='NewApi1',
+        profiles=12,
+        profile_password="mypassword",
+    )
+    app = Openuser.objects.create(**data)
+    app.save
+    return app
+
+
+@pytest.fixture
+def created_openuser_2(created):
+    """
+    This fixture provides data to create an openuser app, it uses the created fixture
+    as the creator of this instance.
+    """
+    data = dict(
+        creator=created,
+        name='NewApi2',
+        profiles=12,
+        profile_password="mypassword",
+    )
+    app = Openuser.objects.create(**data)
+    app.save
+    return app
+
+
+@pytest.fixture
+def created_openuser_3(created):
+    """
+    This fixture provides data to create an openuser app, it uses the created fixture
+    as the creator of this instance.
+    """
+    data = dict(
+        creator=created,
+        name='NewApi3',
+        profiles=12,
+        profile_password="mypassword",
+    )
+    app = Openuser.objects.create(**data)
+    app.save
+    return app
+
+
+@pytest.fixture
+def created_openuser_4(created_user):
+    """
+    This fixture provides data to create an openuser app, it uses the created_user fixture
+    as the creator of this instance.
+    """
+    data = dict(
+        creator=created_user,
+        name='NewApi1',
+        profiles=12,
+        profile_password="mypassword",
+    )
+    app = Openuser.objects.create(**data)
+    app.save
+    return app
+
+
+@pytest.fixture
+def created_openuser_5(created_user):
+    """
+    This fixture provides data to create an openuser app, it uses the created_user fixture
+    as the creator of this instance.
+    """
+    data = dict(
+        creator=created_user,
+        name='NewApi2',
+        profiles=12,
+        profile_password="mypassword",
+    )
+    app = Openuser.objects.create(**data)
+    app.save
+    return app
+
+
+@pytest.fixture
+def created_openuser_6(created_user):
+    """
+    This fixture provides data to create an openuser app, it uses the created_user fixture
+    as the creator of this instance.
+    """
+    data = dict(
+        creator=created_user,
+        name='NewApi3',
+        profiles=12,
+        profile_password="mypassword",
+    )
+    app = Openuser.objects.create(**data)
+    app.save
+    return app

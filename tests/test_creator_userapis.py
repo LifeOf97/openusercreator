@@ -117,6 +117,7 @@ def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created
     assert res.cookies['jwt-refresh'] not in ['', None]
 
     # get users data
+    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['data']['username'] == full_user_data['username'].lower()
@@ -152,6 +153,7 @@ def test_autenticated_users_can_update_their_data(created, full_user_data, anoth
     assert res.status_code == status.HTTP_200_OK
 
     # now, update the users data
+    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
     res = client.put(update_data_url, another_user_data, format='json')
 
     assert res.status_code == status.HTTP_200_OK
@@ -179,6 +181,7 @@ def test_autenticated_users_can_delete_their_account(created, full_user_data):
     assert res.status_code == status.HTTP_200_OK
 
     # get the users data to compare with the deleted response data
+    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
 
@@ -211,6 +214,7 @@ def test_only_admin_users_can_retrieve_all_creators(
     assert res.status_code == status.HTTP_200_OK
 
     # now calling the creator_list endpoint with the non admin user should be forbidden
+    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
     res = client.get(list_creators_url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
@@ -219,6 +223,7 @@ def test_only_admin_users_can_retrieve_all_creators(
     assert res.status_code == status.HTTP_200_OK
 
     # now calling the creator_list endpoint should pass
+    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
     res = client.get(list_creators_url)
     assert res.status_code == status.HTTP_200_OK
     assert len(res.data['data']) == 2
@@ -241,6 +246,8 @@ def test_authenticated_creators_can_change_their_password(created, full_user_dat
         "new_password1": "mynewpassword",
         "new_password2": "mynewpassword"
     }
+
+    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
     res = client.post(change_password_url, data, format='json')
     assert res.status_code == status.HTTP_200_OK
 
@@ -295,6 +302,7 @@ def test_verify_token_url_verifies_token_authenticity(created, full_user_data):
     jwt_access = res.cookies['jwt-access'].value
 
     # now, verify token
+    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
     res = client.post(verify_toke_url, {"token": jwt_access}, format='json')
     assert res.status_code == status.HTTP_200_OK
     assert res.data == {}
@@ -315,6 +323,7 @@ def test_refresh_token_url_refreshes_token(created, full_user_data):
     assert res.status_code == status.HTTP_200_OK
 
     # now, refresh token
+    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
     res = client.post(refresh_toke_url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['access'] not in ['', None]

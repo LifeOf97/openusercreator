@@ -13,7 +13,7 @@ class TestModelCase:
     def test_openuser_model_name_field_must_be_unique_per_creator(
         self,
         created,
-        openuser_data_1
+        openuser_data
             ):
         """
         NOTE: One creator can have several Openuser profiles, however each Openuser profile
@@ -26,7 +26,7 @@ class TestModelCase:
         assert Openuser.objects.count() == 0
 
         # now create and save a new openuser profile
-        app1 = Openuser.objects.create(**openuser_data_1)
+        app1 = Openuser.objects.create(**openuser_data)
         app1.save()
 
         assert Openuser.objects.count() == 1
@@ -34,7 +34,7 @@ class TestModelCase:
 
         # now create another openuser profile with the same name
         with pytest.raises(db_exception.IntegrityError) as exc_info:
-            app2 = Openuser.objects.create(**openuser_data_1)
+            app2 = Openuser.objects.create(**openuser_data)
             app2.save()
 
         assert F'Key (creator_id, name)=({created.id}, newapi1) already exists.' in str(exc_info.value)
@@ -190,7 +190,7 @@ class TestModelCase:
     def test_openuser_model_str_method_returns_creator_username_hyphen_app_name(
         self,
         created,
-        openuser_data_1,
+        openuser_data,
         full_user_data
             ):
         """
@@ -200,7 +200,7 @@ class TestModelCase:
         assert AppUser.objects.count() == 1
 
         # create and save a new openuser app
-        app = Openuser.objects.create(**openuser_data_1)
+        app = Openuser.objects.create(**openuser_data)
         app.save()
 
-        assert str(app) == F"{full_user_data['username'].lower()}-{openuser_data_1['name']}"
+        assert str(app) == F"{full_user_data['username'].lower()}-{openuser_data['name']}"
