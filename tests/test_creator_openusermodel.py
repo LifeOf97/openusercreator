@@ -37,7 +37,7 @@ class TestModelCase:
             app2 = Openuser.objects.create(**openuser_data)
             app2.save()
 
-        assert F'Key (creator_id, name)=({created.id}, newapi1) already exists.' in str(exc_info.value)
+        assert F'({created.id}, {openuser_data["name"].lower()}) already exists.' in str(exc_info.value)
         # we still have only the app1 record in our database
         assert Openuser.objects.count() == 1
 

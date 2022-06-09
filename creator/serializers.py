@@ -119,5 +119,5 @@ class OpenuserSerializer(serializers.ModelSerializer):
         data['creator'] = self.context['request'].user
 
         if data.get('name'):
-            data['name'] = data['name'].lower()
+            data['name'] = data['name'].replace('_', '-').replace(' ', '-').lower()
         return super().to_internal_value(data)

@@ -175,6 +175,92 @@ class TestCase:
         assert datetime.fromisoformat(res.data['data']['last_updated']) == created_openuser_2.last_updated
 
     @pytest.mark.django_db
+    def test_openuser_name_field_must_obey_the_validators_applied(self, created, full_user_data):
+        """
+        NOTE: The name field must start and end with a letter, and can only contain letters, numbers,
+        and hyphens. Underscores are converted to spaces tooa dn the whole string is converted to
+        lowercase.
+        """
+        client = APIClient()
+
+        # because of the created fixtures
+        assert AppUser.objects.count() == 1
+
+        # login user
+        res = client.post(login_token_url, full_user_data, format='json')
+        assert res.status_code == status.HTTP_200_OK
+
+        # now try to create a new openuser profile with a name field containing
+        # characters not allowed
+        data_1 = dict(
+            name='1cannotwork',  # should not start with a number
+            profiles=4,
+            profile_password="P@ssw0rd"
+        )
+
+        data_2 = dict(
+            name='anotherillegal1',  # should not end with number
+            profiles=44,
+            profile_password="P@ssw0rd"
+        )
+
+        data_3 = dict(
+            name='please@not',  # wont work either
+            profiles=35,
+            profile_password="P@ssw0rd"
+        )
+
+        data_4 = dict(
+            name='space in between',  # will work
+            profiles=45,
+            profile_password="P@ssw0rd"
+        )
+
+        data_5 = dict(
+            name='not',  # should not be less than 4 characters
+            profiles=45,
+            profile_password="P@ssw0rd"
+        )
+
+        data_6 = dict(
+            name='theNameFieldShoulNotBeMoreThan20CharactersLong',
+            profiles=45,
+            profile_password="P@ssw0rd"
+        )
+
+        client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+
+        # create with data_1
+        res = client.post(create_openuser_url, data_1, format='json')
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'Must begin and end with a letter' in str(res.data['name'])
+
+        # create with data_2
+        res = client.post(create_openuser_url, data_2, format='json')
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'Must begin and end with a letter' in str(res.data['name'])
+
+        # create with data_3
+        res = client.post(create_openuser_url, data_3, format='json')
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'can only contain letters, numbers and hyphens' in str(res.data['name'])
+
+        # create with data_4
+        res = client.post(create_openuser_url, data_4, format='json')
+        assert res.status_code == status.HTTP_201_CREATED
+        assert res.data['data']['name'] == data_4['name'].replace(' ', '-').lower()
+
+        # create with data_5
+        res = client.post(create_openuser_url, data_5, format='json')
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'Ensure this field has at least 4 characters' in str(res.data['name'])
+
+        # create with data_6
+        res = client.post(create_openuser_url, data_6, format='json')
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'Ensure this field has no more than 20 characters' in str(res.data['name'])
+
+    @pytest.mark.django_db
     def test_authenticated_users_can_update_their_openuser_profiles(self, created, openuser_data_1, full_user_data):
         client = APIClient()
 
@@ -201,7 +287,7 @@ class TestCase:
         old_data = res.data['data']
 
         new_date = dict(
-            name='UpdateApi1',
+            name='Update-1-Api',
             profiles=22,
             profile_password="Myp@ssw0rd",
         )
