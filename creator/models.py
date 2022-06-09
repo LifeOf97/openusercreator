@@ -144,10 +144,10 @@ class Openuser(models.Model):
         help_text=_("The name of this Openuser profile. Spaces are replaces with underscores"),
         validators=[
             validators.RegexValidator(
-                regex=r'\W',
-                message=_("Must begin with a letter. Can only contain letters, numbers and underscores"),
-                inverse_match=True
-            )
+                regex=r'^[a-zA-Z]([\w -]*[a-zA-Z])?$',
+                message=_("Must begin and end with a letter. And can only contain letters, numbers and hyphens"),
+            ),
+            validators.MinLengthValidator(limit_value=4)
         ]
     )
     profiles = models.IntegerField(
@@ -189,7 +189,7 @@ class Openuser(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        self.name = str(self.name).replace(' ', '-').lower()
+        self.name = str(self.name).replace(' ', '-').replace('_', '-').lower()
         return super().save(*args, **kwargs)
 
     def __str__(self):

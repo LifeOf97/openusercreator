@@ -1,7 +1,7 @@
 from rest_framework import status, views, viewsets, permissions, authentication
 from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext_lazy as _
-from . import serializers, permissions as custom_perm, metadatas
+from . import serializers, permissions as custom_perm
 from dj_rest_auth.jwt_auth import unset_jwt_cookies
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
@@ -18,9 +18,11 @@ AppUser = get_user_model()
 
 
 class AppUserApiView(viewsets.GenericViewSet):
+    """
+    Appuser Generic API Viewset.
+    """
     queryset = AppUser.objects.all()
-    serializer_class = serializers.BasicAppUserSerializer()
-    metadata_class = metadatas.AppMetadata
+    serializer_class = serializers.BasicAppUserSerializer
 
     def get_object(self, *args, **kwargs):
         """
@@ -32,25 +34,15 @@ class AppUserApiView(viewsets.GenericViewSet):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def get_serializer_class(self, *args, **kwargs):
-        if self.request.user.is_staff:
-            return serializers.FullAppUserSerializer
-        return serializers.BasicAppUserSerializer
-
     def get_permissions(self, *args, **kwargs):
         if (self.action in ['create', 'api_schema']) or \
-                str(reverse('creators_create', request=self.request)).endswith(self.request.path):
+                str(reverse('creators_create', kwargs={'version': 'v1'})).endswith(self.request.path):
             permission_classes = [permissions.AllowAny]
         elif self.action == 'list':
             permission_classes = [permissions.IsAdminUser]
         else:
             permission_classes = [custom_perm.IsOwner & permissions.IsAuthenticated]
         return [perm() for perm in permission_classes]
-
-    def api_schema(self, request, *args, **kwargs):
-        meta = self.metadata_class()
-        data = meta.determine_metadata(request, self)
-        return Response(data)
 
     def list(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_queryset(), many=True)
@@ -98,6 +90,12 @@ class AppUserApiView(viewsets.GenericViewSet):
 
 
 class VerifyEmail(views.APIView):
+    """
+    Appuser Verify email API View.
+
+    Get: [Method: GET]
+    Verifies a users account email address, gets the token from the url address.
+    """
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
@@ -130,6 +128,12 @@ class VerifyEmail(views.APIView):
 
 
 class ResendVerifyEmail(viewsets.GenericViewSet):
+    """
+    Appuser Resend Verify email link viewset
+
+    Post: [Method: POST]
+    Resends a new email message with a verification link.
+    """
     serializer_class = serializers.ResendEmailSerializer
 
     def post(self, request, *args, **kwargs):
@@ -152,7 +156,10 @@ class ResendVerifyEmail(viewsets.GenericViewSet):
 
 class LoginSessionApiView(viewsets.GenericViewSet):
     """
-    Login with username and password using django's (edited) built in authenticate and login functions.
+    Appuser Login via Session API Viewset
+
+    Post: [Method: POST]
+    Accepts the following post parameters: username, password.
     """
     authentication_classes = []
     permission_classes = [permissions.AllowAny]
@@ -182,7 +189,13 @@ class LoginSessionApiView(viewsets.GenericViewSet):
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LogoutSessionApiView(viewsets.GenericViewSet):
+class LogoutSessionApiView(views.APIView):
+    """
+    Appuser logout via session viewset
+
+    Post: [Method: POST]
+    Logs out an authenticated user.
+    """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     authentication_classes = [authentication.SessionAuthentication]
 
@@ -192,8 +205,11 @@ class LogoutSessionApiView(viewsets.GenericViewSet):
 
 
 class OpenuserApiView(viewsets.GenericViewSet):
-    queryset = Openuser.objects.all()
+    """
+    Openuser Generic API Viewset.
+    """
     lookup_field = 'name'
+    queryset = Openuser.objects.all()
     serializer_class = serializers.OpenuserSerializer
 
     def get_queryset(self):

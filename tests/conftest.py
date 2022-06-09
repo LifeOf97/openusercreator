@@ -112,7 +112,7 @@ def openuser_data(created):
     """
     return dict(
         creator=created,
-        name='newapi1',
+        name='new-1-api',
         profiles=12,
         profile_password="password",
     )
@@ -125,7 +125,7 @@ def openuser_data_1():
     as the creator of this instance.
     """
     return dict(
-        name='NewApi1',
+        name='New-1-Api',
         profiles=12,
         profile_password="mypassword",
     )
@@ -139,7 +139,7 @@ def created_openuser_1(created):
     """
     data = dict(
         creator=created,
-        name='NewApi1',
+        name='New-1-Api',
         profiles=12,
         profile_password="mypassword",
     )
@@ -156,7 +156,7 @@ def created_openuser_2(created):
     """
     data = dict(
         creator=created,
-        name='NewApi2',
+        name='New-2-Api',
         profiles=12,
         profile_password="mypassword",
     )
@@ -173,7 +173,7 @@ def created_openuser_3(created):
     """
     data = dict(
         creator=created,
-        name='NewApi3',
+        name='New-3-Api',
         profiles=12,
         profile_password="mypassword",
     )
@@ -190,7 +190,7 @@ def created_openuser_4(created_user):
     """
     data = dict(
         creator=created_user,
-        name='NewApi1',
+        name='New-1-Api',
         profiles=12,
         profile_password="mypassword",
     )
@@ -207,7 +207,7 @@ def created_openuser_5(created_user):
     """
     data = dict(
         creator=created_user,
-        name='NewApi2',
+        name='New-2-Api',
         profiles=12,
         profile_password="mypassword",
     )
@@ -224,7 +224,7 @@ def created_openuser_6(created_user):
     """
     data = dict(
         creator=created_user,
-        name='NewApi3',
+        name='New-3-Api',
         profiles=12,
         profile_password="mypassword",
     )

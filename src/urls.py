@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # redirect to the api urls.
-    path('', RedirectView.as_view(url='api/creators/')),
+    path('', RedirectView.as_view(url='api/v1/')),
 
     # api urls
     path('api/', include('creator.urls')),

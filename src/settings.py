@@ -37,10 +37,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'allauth',
+    'allauth.account',
     'dj_rest_auth',
+    'drf_spectacular',
 ]
 
 SITE_ID = 1
+LANGUAGE_CODE = 'en-us'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'src.urls'
@@ -156,7 +161,7 @@ AUTH_USER_MODEL = 'creator.AppUser'
 # Authentication classes settings
 AUTHENTICATION_BACKENDS = (
     'creator.authentications.AppUserBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
 )
 
 # Email settings
@@ -199,6 +204,7 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSION': 'v1',
     'ALLOWED_VERSIONS': ['v1'],
     'NON_FIELD_ERRORS_KEY': 'error',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # Dj_rest_auth settings
@@ -212,3 +218,12 @@ JWT_AUTH_COOKIE = 'jwt-access'
 JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh'
 REST_SESSION_LOGIN = False
 REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
+
+# Spectacular Schema settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Openuserdata Creators API',
+    'DESCRIPTION': 'The API documentation for the creators of the opeuserdata profiles.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
