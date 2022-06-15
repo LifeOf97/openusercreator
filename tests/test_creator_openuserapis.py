@@ -12,9 +12,6 @@ AppUser = get_user_model()
 # urls
 list_my_openusers_url = reverse('creators_apps', kwargs={'version': 'v1'})
 create_openuser_url = reverse('creators_apps_create', kwargs={'version': 'v1'})
-# get_an_openuser_url = reverse('creators_apps_detail', kwargs={'version': 'v1'})
-# update_openuser_url = reverse('creators_apps_update', kwargs={'version': 'v1'})
-# delete_openuser_url = reverse('creators_apps_delete', kwargs={'version': 'v1'})
 create_user_url = reverse('creators_create', kwargs={'version': 'v1'})
 login_token_url = reverse('login_via_token', kwargs={'version': 'v1'})
 
@@ -48,7 +45,7 @@ class TestCase:
         assert 'refresh_token' in res.data
 
         # since we are now logged in, create a new openuser profile
-        client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
         assert Openuser.objects.count() == 1
@@ -80,7 +77,7 @@ class TestCase:
         assert res.status_code == status.HTTP_200_OK
 
         # create a new openuser profile
-        client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
         assert Openuser.objects.count() == 1
@@ -117,7 +114,7 @@ class TestCase:
 
         # return all openuser profile, assert that all returned data belongs to the
         # currently authenticated user
-        client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
         res = client.get(list_my_openusers_url, format='json')
         assert res.status_code == status.HTTP_200_OK
         assert len(res.data['data']) == 3
@@ -157,7 +154,7 @@ class TestCase:
         assert res.status_code == status.HTTP_200_OK
 
         # retrieve an instace of the openuser app for the created user
-        client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
         res = client.get(
             reverse(
                 'creators_apps_detail',
@@ -228,7 +225,7 @@ class TestCase:
             profile_password="P@ssw0rd"
         )
 
-        client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
 
         # create with data_1
         res = client.post(create_openuser_url, data_1, format='json')
@@ -274,7 +271,7 @@ class TestCase:
         assert res.status_code == status.HTTP_200_OK
 
         # create an openuser data
-        client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
 
@@ -302,7 +299,7 @@ class TestCase:
             format='json'
         )
 
-        assert res.status_code == status.HTTP_200_OK
+        assert res.status_code == status.HTTP_202_ACCEPTED
         assert res.data['data']['id'] == old_data['id']
         assert res.data['data']['creator'] == old_data['creator']
         assert res.data['data']['creator'] == created.username
@@ -334,7 +331,7 @@ class TestCase:
         assert res.status_code == status.HTTP_200_OK
 
         # get all openuser objects created by the currently logged in user
-        client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
         res = client.get(list_my_openusers_url)
         assert res.status_code == status.HTTP_200_OK
         assert len(res.data['data']) == 3
@@ -352,3 +349,42 @@ class TestCase:
         assert res.data['data']['name'] == created_openuser_2.name.lower()
         assert res.data['data']['profiles'] == created_openuser_2.profiles
         assert 'Deleted successfully' == res.data['data']['detail']
+
+    @pytest.mark.django_db
+    def test_creators_can_only_have_maximum_of_two_openuserdata_profiles(self, created, full_user_data):
+        client = APIClient()
+
+        # because of the created fixtures
+        assert AppUser.objects.count() == 1
+        assert Openuser.objects.count() == 0
+
+        # authenticate user with the created fixture
+        res = client.post(login_token_url, full_user_data, format='json')
+        assert res.status_code == status.HTTP_200_OK
+
+        # openuserdata's
+        data_1 = dict(name='FirstApp', profiles=4, profile_password="P@ssw0rd")
+        data_2 = dict(name='second-app', profiles=44, profile_password="P@ssw0rd")
+        data_3 = dict(name='ThireaPP', profiles=35, profile_password="P@ssw0rd")
+
+        # add Authorization header
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+
+        # create first openuserdata
+        res = client.post(create_openuser_url, data_1, format='json')
+        assert res.status_code == status.HTTP_201_CREATED
+        assert res.data['data']['name'] == data_1['name'].lower()
+        assert res.data['data']['profiles'] == data_1['profiles']
+        assert res.data['data']['profile_password'] == data_1['profile_password']
+
+        # create second openuserdata
+        res = client.post(create_openuser_url, data_2, format='json')
+        assert res.status_code == status.HTTP_201_CREATED
+        assert res.data['data']['name'] == data_2['name'].lower()
+        assert res.data['data']['profiles'] == data_2['profiles']
+        assert res.data['data']['profile_password'] == data_2['profile_password']
+
+        # try to create a third openuserdata
+        res = client.post(create_openuser_url, data_3, format='json')
+        assert res.status_code == status.HTTP_404_BAD_REQUEST
+        assert 'Limit reached. You can only have 2 openuserdata profile' in res.data['error']
