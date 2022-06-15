@@ -99,8 +99,6 @@ def test_new_creators_can_login_via_token(full_user_data):
     assert res.status_code == status.HTTP_200_OK
     assert 'access_token' in res.data
     assert 'refresh_token' in res.data
-    assert res.cookies['jwt-access']
-    assert res.cookies['jwt-refresh']
 
 
 @pytest.mark.django_db
@@ -113,11 +111,9 @@ def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created
     # now login the user
     res = client.post(login_token_url, full_user_data, format='json')
     assert res.status_code == status.HTTP_200_OK
-    assert res.cookies['jwt-access'] not in ['', None]
-    assert res.cookies['jwt-refresh'] not in ['', None]
 
     # get users data
-    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['data']['username'] == full_user_data['username'].lower()
@@ -153,10 +149,10 @@ def test_autenticated_users_can_update_their_data(created, full_user_data, anoth
     assert res.status_code == status.HTTP_200_OK
 
     # now, update the users data
-    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
     res = client.put(update_data_url, another_user_data, format='json')
 
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == status.HTTP_202_ACCEPTED
     assert res.data['data']['username'] == another_user_data['username'].lower()
     assert res.data['data']['email'] == another_user_data['email'].lower()
     assert res.data['data']['first_name'] == another_user_data['first_name']
@@ -181,7 +177,7 @@ def test_autenticated_users_can_delete_their_account(created, full_user_data):
     assert res.status_code == status.HTTP_200_OK
 
     # get the users data to compare with the deleted response data
-    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
 
@@ -214,7 +210,7 @@ def test_only_admin_users_can_retrieve_all_creators(
     assert res.status_code == status.HTTP_200_OK
 
     # now calling the creator_list endpoint with the non admin user should be forbidden
-    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
     res = client.get(list_creators_url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
@@ -223,7 +219,7 @@ def test_only_admin_users_can_retrieve_all_creators(
     assert res.status_code == status.HTTP_200_OK
 
     # now calling the creator_list endpoint should pass
-    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
     res = client.get(list_creators_url)
     assert res.status_code == status.HTTP_200_OK
     assert len(res.data['data']) == 2
@@ -247,7 +243,7 @@ def test_authenticated_creators_can_change_their_password(created, full_user_dat
         "new_password2": "mynewpassword"
     }
 
-    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
     res = client.post(change_password_url, data, format='json')
     assert res.status_code == status.HTTP_200_OK
 
@@ -273,18 +269,16 @@ def test_authentication_via_session_will_clear_the_access_and_refresh_tokens_of_
     # now authenticate via token first
     res = client.post(login_token_url, full_user_data, format='json')
     assert res.status_code == status.HTTP_200_OK
-    assert res.cookies['jwt-access']
-    assert res.cookies['jwt-access'].value not in ['', None]
-    assert res.cookies['jwt-refresh']
-    assert res.cookies['jwt-refresh'].value not in ['', None]
+    assert res.data['access_token']
+    assert res.data['refresh_token']
 
     # now authenticate via session
     res = client.post(login_session_url, full_user_data, format='json')
     assert res.status_code == status.HTTP_200_OK
     assert res.cookies['csrftoken']
     assert res.cookies['sessionid']
-    assert res.cookies['jwt-access'].value in ['', None]
-    assert res.cookies['jwt-refresh'].value in ['', None]
+    assert 'access_token' not in res.data
+    assert 'refresh_token' not in res.data
 
 
 @pytest.mark.django_db
@@ -298,12 +292,9 @@ def test_verify_token_url_verifies_token_authenticity(created, full_user_data):
     res = client.post(login_token_url, full_user_data, format='json')
     assert res.status_code == status.HTTP_200_OK
 
-    # get token to verify
-    jwt_access = res.cookies['jwt-access'].value
-
     # now, verify token
-    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
-    res = client.post(verify_toke_url, {"token": jwt_access}, format='json')
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+    res = client.post(verify_toke_url, {"token": res.data['access_token']}, format='json')
     assert res.status_code == status.HTTP_200_OK
     assert res.data == {}
 
@@ -322,9 +313,11 @@ def test_refresh_token_url_refreshes_token(created, full_user_data):
     res = client.post(login_token_url, full_user_data, format='json')
     assert res.status_code == status.HTTP_200_OK
 
+    refresh = res.data['refresh_token']
+
     # now, refresh token
-    client.credentials(HTTP_AUTHORIZATION=F'Bearer {res.cookies["jwt-access"].value}')
-    res = client.post(refresh_toke_url)
+    # client.credentials(HTTP_AUTHORIZATION=F'Bearer {jwt}')
+    res = client.post(refresh_toke_url, {'refresh': refresh})
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['access'] not in ['', None]
-    assert res.data['access_token_expiration'] not in ['', None]
+    assert 'access' in res.data
+    assert 'access_token_expiration' in res.data
