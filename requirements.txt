@@ -1,9 +1,16 @@
+amqp==5.1.1
 asgiref==3.5.2
 astroid==2.11.5
 attrs==21.4.0
+billiard==3.6.4.0
+celery==5.2.7
 certifi==2022.5.18.1
 cffi==1.15.0
 charset-normalizer==2.0.12
+click==8.1.3
+click-didyoumean==0.3.0
+click-plugins==1.1.1
+click-repl==0.2.0
 coverage==6.4
 cryptography==37.0.2
 defusedxml==0.7.1
@@ -24,6 +31,7 @@ iniconfig==1.1.1
 inotify==0.2.10
 isort==5.10.1
 jsonschema==4.6.0
+kombu==5.2.4
 lazy-object-proxy==1.7.1
 mccabe==0.6.1
 nose==1.3.7
@@ -32,6 +40,7 @@ packaging==21.3
 Pillow==9.1.1
 platformdirs==2.5.2
 pluggy==1.0.0
+prompt-toolkit==3.0.29
 psycopg==3.0.14
 psycopg2-binary==2.9.3
 py==1.11.0
@@ -58,4 +67,6 @@ tomli==2.0.1
 typing_extensions==4.2.0
 uritemplate==4.1.1
 urllib3==1.26.9
+vine==5.0.0
+wcwidth==0.2.5
 wrapt==1.14.1
