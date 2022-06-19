@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.conf import settings
 from .models import Openuser
-from .utils import Util
+from . import tasks
 import jwt
 
 
@@ -53,9 +53,6 @@ class AppUserApiView(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             serializer.save()
-
-            # send email verification link
-            Util.send_email_verification(data=serializer.data, request=request)
             return Response(data={"data": serializer.data}, status=status.HTTP_201_CREATED)
 
         return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -143,8 +140,8 @@ class ResendVerifyEmail(viewsets.GenericViewSet):
 
             # check if email belongs to the currently logged in user.
             if request.user.email == serializer.data['email']:
-                Util.resend_email_verification(data=serializer.data, request=request)
-                return Response(data={"detaIl": _(F"A verification link has been sent to {serializer.data['email']}")})
+                tasks.resend_email_verification.delay(serializer.data['email'])
+                return Response(data={"detail": _(F"A verification link has been sent to {serializer.data['email']}")})
 
             return Response(
                 data={"error": _(F"Email address {serializer.data['email']} is not associated to your account")},

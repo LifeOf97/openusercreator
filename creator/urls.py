@@ -7,9 +7,6 @@ from django.urls import path
 from . import apis
 
 
-# app_name = 'v1'
-
-
 urlpatterns = [
 
     # # Schema urls
