@@ -20,7 +20,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ')
 
 
 # Application definition
@@ -168,24 +168,36 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Email settings
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
-DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_SUBJECT_PREFIX = 'OpenUserCreator',
 EMAIL_FILE_PATH = BASE_DIR / 'email/'
-
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', 'kelvinmayoayeni@gmail.com')
 
 # Security Settings
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_HTTPONLY = True
+
+
+# Celery settings
+CELERY_BROKER_URL = os.environ.get('CLOUDAMQP_URL')
+CELERY_TIMEZONE = 'Africa/Lagos'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = None
+CELERY_BROKER_POOL_LIMIT = 1
+CELERY_BROKER_HEARTBEAT = None
+CELERY_BROKER_CONNECTION_TIMEOUT = 30
+CELERY_EVENT_QUEUE_EXPIRES = 60
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_WORKER_CONCURRENCY = 50
 
 
 # Rest framework settings
