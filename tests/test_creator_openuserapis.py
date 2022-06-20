@@ -16,7 +16,7 @@ create_user_url = reverse('creators_create', kwargs={'version': 'v1'})
 login_token_url = reverse('login_via_token', kwargs={'version': 'v1'})
 
 
-class TestCase:
+class TestOpenUserApi:
 
     @pytest.mark.django_db
     def test_unauthenticated_users_cannot_create_an_openuser_profile(self, openuser_data_1):
