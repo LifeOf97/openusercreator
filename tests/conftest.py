@@ -1,6 +1,43 @@
 from django.contrib.auth import get_user_model
+from django.db.models.signals import (
+    pre_save, post_save, pre_delete, post_delete,
+    m2m_changed
+)
 from creator.models import Openuser
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def disable_signals(request):
+    """
+    Fixture to disable django signals before tests then restore it after.
+    Credit: https://www.cameronmaske.com/muting-django-signals-with-a-pytest-fixture/
+    """
+    if 'enable_signals' in request.keywords:
+        # do not apply this fixture if marked with 'enable_signals'
+        return
+
+    signals = [
+        pre_save,
+        post_save,
+        pre_delete,
+        post_delete,
+        m2m_changed
+    ]
+    restore = {}
+
+    for signal in signals:
+        # keep signal receivers so as to restore later
+        restore[signal] = signal.receivers
+        # detach signal receivers
+        signal.receivers = []
+
+    def restore_signals():
+        # Restore signal method
+        for signal, receivers in restore.items():
+            signal.receiver = receivers
+
+    request.addfinalizer(restore_signals)
 
 
 @pytest.fixture

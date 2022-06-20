@@ -7,7 +7,7 @@ import pytest
 AppUser = get_user_model()
 
 
-class TestModelCase:
+class TestOpenUserModel:
 
     @pytest.mark.django_db(transaction=True)
     def test_openuser_model_name_field_must_be_unique_per_creator(

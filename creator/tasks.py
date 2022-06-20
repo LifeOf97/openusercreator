@@ -47,7 +47,7 @@ def send_email_verification(email):
         from_email=settings.DEFAULT_FROM_EMAIL
     )
 
-    return {'emailed': user.email}
+    return {'Email sent to': user.email}
 
 
 @app.task
@@ -86,4 +86,4 @@ def resend_email_verification(email):
         from_email=settings.DEFAULT_FROM_EMAIL
     )
 
-    return {'emailed': user.email}
+    return {'Email sent to': user.email}
