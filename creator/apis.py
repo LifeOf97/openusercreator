@@ -45,10 +45,17 @@ class AppUserApiView(viewsets.GenericViewSet):
         return [perm() for perm in permission_classes]
 
     def list(self, request, *args, **kwargs):
+        """
+        Returns a list of all creators in the system.
+        """
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
+        """
+        Creates a new creator account.
+        Returns data of the creator.
+        """
         serializer = self.get_serializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
@@ -58,10 +65,17 @@ class AppUserApiView(viewsets.GenericViewSet):
         return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
+        """
+        Returns data of the currently logged in creator.
+        """
         serializer = self.get_serializer(self.get_object(), context={'request': request})
         return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
+        """
+        Updates the data of the currently logged in creator.
+        Returns the newly updated instance.
+        """
         serializer = self.get_serializer(
             instance=self.get_object(),
             data=request.data,
@@ -75,6 +89,10 @@ class AppUserApiView(viewsets.GenericViewSet):
         return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Deletes the currently logged in creator from the system permanently.
+        Returns deleted creator's data
+        """
         appuser = self.get_object()
         username, email, uid = appuser.username, appuser.email, appuser.uid
         data = {'data': {'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}}
@@ -87,15 +105,13 @@ class AppUserApiView(viewsets.GenericViewSet):
 
 
 class VerifyEmail(views.APIView):
-    """
-    Appuser Verify email API View.
-
-    Get: [Method: GET]
-    Verifies a users account email address, gets the token from the url address.
-    """
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
+        """
+        Verifies a users account email address, gets the token from the url address.
+        Return Success or Failure data.
+        """
         token = request.GET.get('token')
 
         try:
@@ -125,15 +141,12 @@ class VerifyEmail(views.APIView):
 
 
 class ResendVerifyEmail(viewsets.GenericViewSet):
-    """
-    Appuser Resend Verify email link viewset
-
-    Post: [Method: POST]
-    Resends a new email message with a verification link.
-    """
     serializer_class = serializers.ResendEmailSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Resends a new verificaton email.
+        """
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
@@ -152,17 +165,15 @@ class ResendVerifyEmail(viewsets.GenericViewSet):
 
 
 class LoginSessionApiView(viewsets.GenericViewSet):
-    """
-    Appuser Login via Session API Viewset
-
-    Post: [Method: POST]
-    Accepts the following post parameters: username, password.
-    """
     authentication_classes = []
     permission_classes = [permissions.AllowAny]
     serializer_class = serializers.LoginSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Accepts the following post parameters: username/email, password, to
+        login a creator via session.
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -187,24 +198,18 @@ class LoginSessionApiView(viewsets.GenericViewSet):
 
 
 class LogoutSessionApiView(views.APIView):
-    """
-    Appuser logout via session viewset
-
-    Post: [Method: POST]
-    Logs out an authenticated user.
-    """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     authentication_classes = [authentication.SessionAuthentication]
 
     def post(self, request, *args, **kwargs):
+        """
+        Logs out a session authenticated user.
+        """
         logout(request)
         return Response(data={"detail": _("Logged out successfully")}, status=status.HTTP_200_OK)
 
 
 class OpenuserApiView(viewsets.GenericViewSet):
-    """
-    Openuser Generic API Viewset.
-    """
     lookup_field = 'name'
     queryset = Openuser.objects.all()
     serializer_class = serializers.OpenuserSerializer
@@ -214,14 +219,26 @@ class OpenuserApiView(viewsets.GenericViewSet):
         return creator.openuser_set.all()
 
     def list(self, request, *args, **kwargs):
+        """
+        Returns a list of Openuser apps that belongs to the currently
+        authenticated creator.
+        """
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(data={'data': serializer.data}, status=status.HTTP_200_OK)
 
     def retrieve(self, request, name=None, *args, **kwargs):
+        """
+        Returns the data of the requested openuser instance of the currently
+        authenticated creator.
+        """
         serializer = self.get_serializer(self.get_object(), context={'request': request})
         return Response(data={'data': serializer.data}, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
+        """
+        Creates a new openuser instance for the currently authenticated creator.
+        Returns the newly created openuser data.
+        """
         serializer = self.get_serializer(data=request.data, context={'request': request})
 
         if self.get_queryset().count() < 2:
@@ -235,6 +252,10 @@ class OpenuserApiView(viewsets.GenericViewSet):
         )
 
     def update(self, request, *args, **kwargs):
+        """
+        Updates a particular openuser data for the currently authenticated creator.
+        Returns the updated openuser data.
+        """
         serializer = self.get_serializer(
             instance=self.get_object(),
             data=request.data,
@@ -248,6 +269,10 @@ class OpenuserApiView(viewsets.GenericViewSet):
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Deletes an openuser instance of the currently authenticated creator.
+        Returns a limited data of the deleted instance data.
+        """
         openuser = self.get_object()
         name, profiles = openuser.name, openuser.profiles
         openuser.delete()

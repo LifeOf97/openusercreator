@@ -5,13 +5,14 @@ from django.contrib.sites.models import Site
 from rest_framework.reverse import reverse
 from django.core.mail import send_mail
 from django.conf import settings
-from src.celery import app
+from celery import shared_task
+
 
 # Custom user model
 AppUser = get_user_model()
 
 
-@app.task
+@shared_task()
 def send_email_verification(email):
     """
     Celery task to send an email containing a link to verify the new user.
@@ -35,8 +36,8 @@ def send_email_verification(email):
             'url': absolute_url,
             'wave': '\U0001F44B',
             'heart': '\U0001F499',
-            'author': 'Mayowa',
-            'alias': 'realestKMA'
+            'author': settings.DEVELOPER['LAST_NAME'],
+            'alias': settings.DEVELOPER['ALIAS']
         }
     )
 
@@ -50,7 +51,7 @@ def send_email_verification(email):
     return {'Email sent to': user.email}
 
 
-@app.task
+@shared_task()
 def resend_email_verification(email):
     """
     Celery task to resend an email containing a link to verify the new user.
@@ -74,8 +75,8 @@ def resend_email_verification(email):
             'url': absolute_url,
             'wave': '\U0001F44B',
             'heart': '\U0001F499',
-            'author': 'Mayowa',
-            'alias': 'realestKMA'
+            'author': settings.DEVELOPER['LAST_NAME'],
+            'alias': settings.DEVELOPER['ALIAS']
         }
     )
 

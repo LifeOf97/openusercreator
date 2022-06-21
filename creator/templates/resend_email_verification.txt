@@ -4,7 +4,7 @@ To verify your email address please click on the link below.
 
 {{ url }}
 
-This link expires in 3 minutes.
+This link will expire in 3 minutes.
 
 If you did not make this request, please disregard this email.
 
