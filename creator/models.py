@@ -154,7 +154,7 @@ class Openuser(models.Model):
         _("Profiles"), blank=False, null=False, default=5,
         help_text=_("Number of openuser profiles to create, defaul is 5"),
         validators=[
-            validators.MaxValueValidator(limit_value=50),
+            validators.MaxValueValidator(limit_value=25),
             validators.MinValueValidator(limit_value=1),
         ],
     )

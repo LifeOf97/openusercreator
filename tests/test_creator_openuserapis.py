@@ -197,31 +197,31 @@ class TestOpenUserApi:
 
         data_2 = dict(
             name='anotherillegal1',  # should not end with number
-            profiles=44,
+            profiles=20,
             profile_password="P@ssw0rd"
         )
 
         data_3 = dict(
             name='please@not',  # wont work either
-            profiles=35,
+            profiles=23,
             profile_password="P@ssw0rd"
         )
 
         data_4 = dict(
             name='space in between',  # will work
-            profiles=45,
+            profiles=12,
             profile_password="P@ssw0rd"
         )
 
         data_5 = dict(
             name='not',  # should not be less than 4 characters
-            profiles=45,
+            profiles=5,
             profile_password="P@ssw0rd"
         )
 
         data_6 = dict(
             name='theNameFieldShoulNotBeMoreThan20CharactersLong',
-            profiles=45,
+            profiles=5,
             profile_password="P@ssw0rd"
         )
 
@@ -364,8 +364,8 @@ class TestOpenUserApi:
 
         # openuserdata's
         data_1 = dict(name='FirstApp', profiles=4, profile_password="P@ssw0rd")
-        data_2 = dict(name='second-app', profiles=44, profile_password="P@ssw0rd")
-        data_3 = dict(name='ThireaPP', profiles=35, profile_password="P@ssw0rd")
+        data_2 = dict(name='second-app', profiles=24, profile_password="P@ssw0rd")
+        data_3 = dict(name='ThireaPP', profiles=25, profile_password="P@ssw0rd")
 
         # add Authorization header
         client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")

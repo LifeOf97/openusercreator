@@ -118,7 +118,7 @@ class TestOpenUserModel:
         data2 = dict(
             creator=created,
             name='MyTestApp2',
-            profiles=51,  # must be less or equal to 50
+            profiles=26,  # must be less or equal to 25
             profile_password="password",
         )
 
