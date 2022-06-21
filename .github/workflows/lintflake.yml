@@ -4,9 +4,7 @@ name: CI Flake8
 
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build-and-lint-with-flake8:

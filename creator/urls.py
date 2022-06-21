@@ -1,7 +1,6 @@
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenVerifyView
 from dj_rest_auth.jwt_auth import get_refresh_view
-from rest_framework.schemas import get_schema_view
 from dj_rest_auth import views as dj_rest
 from django.urls import path
 from . import apis
@@ -9,18 +8,30 @@ from . import apis
 
 urlpatterns = [
 
-    # # Schema urls
-    path('<version>/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('<version>/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    # Schema urls
+    # path('<version>/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('<version>/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('<version>/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('<version>/schema/', SpectacularAPIView.as_view(), name='schema'),
 
-    # creators retrieve, update and delete instance urls
-    path('<version>/', get_schema_view(
-        title="Openuser Creators APIs",
-        description="API for Creators and Openuser Profiles.",
-        version="1.0.0"),
-        name='openapi-schema'
+    # create/verify new creators urls endpoint
+    path(
+        "<version>/creators/new/",
+        apis.AppUserApiView.as_view({'post': 'create'}),
+        name="creators_create"
     ),
+    path(
+        "<version>/creators/new/verify-email/",
+        apis.VerifyEmail.as_view(),
+        name="creators_verify_email"
+    ),
+    path(
+        "<version>/creators/new/resend-email/",
+        apis.ResendVerifyEmail.as_view({'post': 'post'}),
+        name="creators_resend_email"
+    ),
+
+    # creators urls endpoint
     path(
         "<version>/creators/",
         apis.AppUserApiView.as_view({'get': 'list'}),
@@ -44,19 +55,19 @@ urlpatterns = [
     path(
         "<version>/creators/me/password/change/",
         dj_rest.PasswordChangeView.as_view(),
-        name="creator_change_password"
+        name="creators_change_password"
     ),
 
-    # creators openuser apps urls
-    path(
-        "<version>/creators/me/apps/",
-        apis.OpenuserApiView.as_view({'get': 'list'}),
-        name="creators_apps"
-    ),
+    # openuser apps urls endpoint
     path(
         "<version>/creators/me/apps/new/",
         apis.OpenuserApiView.as_view({'post': 'create'}),
         name="creators_apps_create"
+    ),
+    path(
+        "<version>/creators/me/apps/",
+        apis.OpenuserApiView.as_view({'get': 'list'}),
+        name="creators_apps_list"
     ),
     path(
         "<version>/creators/me/apps/<str:name>/",
@@ -74,43 +85,26 @@ urlpatterns = [
         name="creators_apps_delete"
     ),
 
-    # create/verify new creators account urls
+    # session authentication urls endpoint
     path(
-        "<version>/creators/new/",
-        apis.AppUserApiView.as_view({'post': 'create'}),
-        name="creators_create"
-    ),
-    path(
-        "<version>/creators/new/verify-email/",
-        apis.VerifyEmail.as_view(),
-        name="creators_verify_email"
-    ),
-    path(
-        "<version>/creators/new/resend-email/",
-        apis.ResendVerifyEmail.as_view({'post': 'post'}),
-        name="creators_resend_email"
-    ),
-
-    # session authentication urls
-    path(
-        "<version>/auth/login/session/",
+        "<version>/auth/session/login/",
         apis.LoginSessionApiView.as_view({'post': 'post'}),
         name="login_via_session"
     ),
     path(
-        "<version>/auth/logout/session/",
+        "<version>/auth/session/logout/",
         apis.LogoutSessionApiView.as_view(),
         name="logout_via_session"
     ),
 
     # token authentication urls
     path(
-        "<version>/auth/login/token/",
+        "<version>/auth/token/login/",
         dj_rest.LoginView.as_view(),
         name="login_via_token"
     ),
     path(
-        "<version>/auth/logout/token/",
+        "<version>/auth/token/logout/",
         dj_rest.LogoutView.as_view(),
         name="logout_via_token"
     ),

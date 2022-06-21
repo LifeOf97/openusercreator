@@ -10,7 +10,7 @@ import pytest
 AppUser = get_user_model()
 
 # urls
-list_my_openusers_url = reverse('creators_apps', kwargs={'version': 'v1'})
+list_my_openusers_url = reverse('creators_apps_list', kwargs={'version': 'v1'})
 create_openuser_url = reverse('creators_apps_create', kwargs={'version': 'v1'})
 create_user_url = reverse('creators_create', kwargs={'version': 'v1'})
 login_token_url = reverse('login_via_token', kwargs={'version': 'v1'})
