@@ -10,9 +10,7 @@ class CreatorConfig(AppConfig):
 
     def ready(self) -> None:
         from . import signals
+        from . import models
 
-        post_save.connect(
-            signals.new_creator,
-            sender=settings.AUTH_USER_MODEL,
-            dispatch_uid=uuid.uuid4()
-        )
+        post_save.connect(signals.new_creator, sender=settings.AUTH_USER_MODEL, dispatch_uid=uuid.uuid4())
+        post_save.connect(signals.new_openuserapp, sender=models.Openuser, dispatch_uid=uuid.uuid4())
