@@ -10,7 +10,7 @@ load_dotenv()
 
 class RabbitMQProducer:
 
-    URL = os.environ.get('RABBITMQ_URL')
+    URL = os.environ.get('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672')
     PARAMS = pika.URLParameters(URL)
     PARAMS.socket_timeout = 5
     EXCHANGE = ExchangeType.direct
