@@ -139,6 +139,10 @@ class Openuser(models.Model):
         on_delete=models.CASCADE,
         help_text=_("The Appuser who owns this Openuser profiles")
     )
+    endpoint = models.URLField(
+        _("Endpoint"), max_length=255, blank=True, null=True,
+        help_text=_('Url endpoint for your openuser profiles')
+    )
     name = models.CharField(
         _("Name"), max_length=20, blank=False, null=False,
         help_text=_("The name of this Openuser profile. Spaces are replaces with underscores"),

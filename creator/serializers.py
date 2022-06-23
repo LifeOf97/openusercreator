@@ -98,11 +98,14 @@ class CustomDjRestAuthJWTSerializer(dj_rest_auth_serializer.JWTSerializer):
 
 
 class OpenuserSerializer(serializers.ModelSerializer):
-    creator = serializers.SlugRelatedField(slug_field='username', queryset=AppUser.objects.all())
+    creator = serializers.SlugRelatedField(slug_field='uid', queryset=AppUser.objects.all())
 
     class Meta:
         model = Openuser
-        fields = "__all__"
+        fields = (
+            'id', 'creator', 'name', 'profiles', 'profile_password',
+            'date_created', 'last_updated', 'endpoint'
+        )
         validators = [
             UniqueTogetherValidator(
                 queryset=Openuser.objects.all(),
@@ -116,7 +119,7 @@ class OpenuserSerializer(serializers.ModelSerializer):
         Edited this method to provide the request user as the creator of this openuser
         instance
         """
-        data['creator'] = self.context['request'].user
+        data['creator'] = self.context['request'].user.uid
 
         if data.get('name'):
             data['name'] = data['name'].replace('_', '-').replace(' ', '-').lower()

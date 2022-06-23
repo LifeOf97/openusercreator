@@ -8,3 +8,4 @@ def new_creator(sender, instance=None, created=False, **kwargs):
     """
     if created:
         tasks.send_email_verification.delay(instance.email)
+        tasks.publish_new_creator.delay(data={'username': instance.username, 'uid': instance.uid})

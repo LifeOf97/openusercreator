@@ -1,5 +1,4 @@
 from datetime import timedelta
-from dotenv import load_dotenv
 from pathlib import Path
 import os
 
@@ -15,15 +14,11 @@ DEVELOPER = {
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Load dotenv variable
-load_dotenv()
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False)
@@ -101,7 +96,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASS'),
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': 5432
     }
 }
@@ -196,17 +191,19 @@ SESSION_COOKIE_HTTPONLY = True
 
 
 # Celery settings
-CELERY_BROKER_URL = os.environ.get('CLOUDAMQP_URL')
+CELERY_BROKER_URL = os.environ.get('REDIS_URL')
 CELERY_TIMEZONE = 'Africa/Lagos'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = None
-CELERY_BROKER_POOL_LIMIT = 1
-CELERY_BROKER_HEARTBEAT = None
-CELERY_BROKER_CONNECTION_TIMEOUT = 30
-CELERY_EVENT_QUEUE_EXPIRES = 60
-CELERY_WORKER_PREFETCH_MULTIPLIER = 1
-CELERY_WORKER_CONCURRENCY = 50
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+# CELERY_BROKER_POOL_LIMIT = 1
+# CELERY_BROKER_HEARTBEAT = None
+# CELERY_BROKER_CONNECTION_TIMEOUT = 30
+# CELERY_EVENT_QUEUE_EXPIRES = 60
+# CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+# CELERY_WORKER_CONCURRENCY = 50
 
 
 # DjangoRestFramework settings

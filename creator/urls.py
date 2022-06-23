@@ -25,11 +25,6 @@ urlpatterns = [
         apis.VerifyEmail.as_view(),
         name="creators_verify_email"
     ),
-    path(
-        "<version>/creators/new/resend-email/",
-        apis.ResendVerifyEmail.as_view({'post': 'post'}),
-        name="creators_resend_email"
-    ),
 
     # creators urls endpoint
     path(
@@ -56,6 +51,11 @@ urlpatterns = [
         "<version>/creators/me/password/change/",
         dj_rest.PasswordChangeView.as_view(),
         name="creators_change_password"
+    ),
+    path(
+        "<version>/creators/me/resend-email/",
+        apis.ResendVerifyEmail.as_view({'post': 'post'}),
+        name="creators_resend_email"
     ),
 
     # openuser apps urls endpoint
