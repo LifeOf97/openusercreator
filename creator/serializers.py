@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from django.utils.text import slugify
 from .models import Openuser
 
 
@@ -122,5 +123,5 @@ class OpenuserSerializer(serializers.ModelSerializer):
         data['creator'] = self.context['request'].user.uid
 
         if data.get('name'):
-            data['name'] = data['name'].replace('_', '-').replace(' ', '-').lower()
+            data['name'] = slugify(data['name'].replace('_', ' '))
         return super().to_internal_value(data)

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.db.models.functions import Length
+from django.utils.text import slugify
 from django.core import validators
 from django.conf import settings
 from django.db import models
@@ -119,7 +120,6 @@ class AppUser(AbstractUser):
         ordering = ['-date_joined']
 
     def save(self, *args, **kwargs):
-        # converts usernames to lowercase and replaces spaces with underscores
         self.username = str(self.username).replace(' ', '_').lower()
         self.email = self.email.lower()
         return super().save(*args, **kwargs)
@@ -193,8 +193,8 @@ class Openuser(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        self.name = str(self.name).replace(' ', '-').replace('_', '-').lower()
+        self.name = slugify(self.name.replace('_', ' '))
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return F"{self.creator.username}-{self.name}"
+        return F"{self.creator.username} - ({self.name})"

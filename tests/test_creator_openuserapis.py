@@ -50,7 +50,7 @@ class TestOpenUserApi:
         assert res.status_code == status.HTTP_201_CREATED
         assert Openuser.objects.count() == 1
         assert isinstance(res.data['data']['id'], int)
-        assert res.data['data']['creator'] == created.username
+        assert res.data['data']['creator'] == created.uid
         assert res.data['data']['name'] == openuser_data_1['name'].lower()
         assert res.data['data']['profiles'] == openuser_data_1['profiles']
         assert res.data['data']['profile_password'] == openuser_data_1['profile_password']
@@ -118,9 +118,9 @@ class TestOpenUserApi:
         res = client.get(list_my_openusers_url, format='json')
         assert res.status_code == status.HTTP_200_OK
         assert len(res.data['data']) == 3
-        assert res.data['data'][0]['creator'] == created.username
-        assert res.data['data'][1]['creator'] == created.username
-        assert res.data['data'][2]['creator'] == created.username
+        assert res.data['data'][0]['creator'] == created.uid
+        assert res.data['data'][1]['creator'] == created.uid
+        assert res.data['data'][2]['creator'] == created.uid
 
     @pytest.mark.django_db
     def test_authenticated_users_can_only_retireve_an_instance_of_their_openuser_app(
@@ -165,7 +165,7 @@ class TestOpenUserApi:
         assert len(res.data) == 1
         assert res.data['data']['id'] == created_openuser_2.id
         assert res.data['data']['name'] == created_openuser_2.name.lower()
-        assert res.data['data']['creator'] == created_openuser_2.creator.username
+        assert res.data['data']['creator'] == created_openuser_2.creator.uid
         assert res.data['data']['profiles'] == created_openuser_2.profiles
         assert res.data['data']['profile_password'] == created_openuser_2.profile_password
         assert datetime.fromisoformat(res.data['data']['date_created']) == created_openuser_2.date_created
@@ -202,26 +202,26 @@ class TestOpenUserApi:
         )
 
         data_3 = dict(
-            name='please@not',  # wont work either
+            name='please@not',  # will work either, removes unwanted chars
             profiles=23,
             profile_password="P@ssw0rd"
         )
 
         data_4 = dict(
-            name='space in between',  # will work
-            profiles=12,
-            profile_password="P@ssw0rd"
-        )
-
-        data_5 = dict(
             name='not',  # should not be less than 4 characters
             profiles=5,
             profile_password="P@ssw0rd"
         )
 
-        data_6 = dict(
-            name='theNameFieldShoulNotBeMoreThan20CharactersLong',
+        data_5 = dict(
+            name='theNameFieldShoulNotBeMoreThan20CharactersLong',  # won't work
             profiles=5,
+            profile_password="P@ssw0rd"
+        )
+
+        data_6 = dict(
+            name='space in between',  # will work
+            profiles=12,
             profile_password="P@ssw0rd"
         )
 
@@ -239,23 +239,25 @@ class TestOpenUserApi:
 
         # create with data_3
         res = client.post(create_openuser_url, data_3, format='json')
-        assert res.status_code == status.HTTP_400_BAD_REQUEST
-        assert 'can only contain letters, numbers and hyphens' in str(res.data['name'])
+        assert res.status_code == status.HTTP_201_CREATED
+        assert res.data['data']['name'] == data_3['name'].replace('@', '')
+        assert res.data['data']['profiles'] == data_3['profiles']
+        assert res.data['data']['profile_password'] == data_3['profile_password']
 
         # create with data_4
         res = client.post(create_openuser_url, data_4, format='json')
-        assert res.status_code == status.HTTP_201_CREATED
-        assert res.data['data']['name'] == data_4['name'].replace(' ', '-').lower()
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'Ensure this field has at least 4 characters' in str(res.data['name'])
 
         # create with data_5
         res = client.post(create_openuser_url, data_5, format='json')
         assert res.status_code == status.HTTP_400_BAD_REQUEST
-        assert 'Ensure this field has at least 4 characters' in str(res.data['name'])
+        assert 'Ensure this field has no more than 20 characters' in str(res.data['name'])
 
         # create with data_6
         res = client.post(create_openuser_url, data_6, format='json')
-        assert res.status_code == status.HTTP_400_BAD_REQUEST
-        assert 'Ensure this field has no more than 20 characters' in str(res.data['name'])
+        assert res.status_code == status.HTTP_201_CREATED
+        assert res.data['data']['name'] == data_6['name'].replace(' ', '-').lower()
 
     @pytest.mark.django_db
     def test_authenticated_users_can_update_their_openuser_profiles(self, created, openuser_data_1, full_user_data):
@@ -302,7 +304,7 @@ class TestOpenUserApi:
         assert res.status_code == status.HTTP_202_ACCEPTED
         assert res.data['data']['id'] == old_data['id']
         assert res.data['data']['creator'] == old_data['creator']
-        assert res.data['data']['creator'] == created.username
+        assert res.data['data']['creator'] == created.uid
         assert res.data['data']['name'] != old_data['name']
         assert res.data['data']['profiles'] != old_data['profiles']
         assert res.data['data']['profile_password'] != old_data['profile_password']
