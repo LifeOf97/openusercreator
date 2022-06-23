@@ -1,11 +1,12 @@
 from django.views.generic import RedirectView
 from dj_rest_auth import views as dj_rest
 from django.urls import path, include
-from django.contrib import admin
+from creator.admin import admin_site
+# from django.contrib import admin
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
 
     # redirect to the api urls.
     path('', RedirectView.as_view(url='api/v1/')),

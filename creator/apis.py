@@ -244,6 +244,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
         if self.get_queryset().count() < 2:
             if serializer.is_valid():
                 serializer.save()
+                tasks.publish_create_openuserapp(data=serializer.data)
                 return Response(data={'data': serializer.data}, status=status.HTTP_201_CREATED)
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(

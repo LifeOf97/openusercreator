@@ -3,16 +3,16 @@ from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from rest_framework.reverse import reverse
+from .producers import RabbitMQProducer
 from django.core.mail import send_mail
 from django.conf import settings
-from celery import shared_task
-
+from src.celery import app
 
 # Custom user model
 AppUser = get_user_model()
 
 
-@shared_task()
+@app.task
 def send_email_verification(email):
     """
     Celery task to send an email containing a link to verify the new user.
@@ -48,10 +48,10 @@ def send_email_verification(email):
         from_email=settings.DEFAULT_FROM_EMAIL
     )
 
-    return {'Email sent to': user.email}
+    return {'Verification email sent to': user.email}
 
 
-@shared_task()
+@app.task
 def resend_email_verification(email):
     """
     Celery task to resend an email containing a link to verify the new user.
@@ -69,7 +69,7 @@ def resend_email_verification(email):
     absolute_url = F"http://{domain}{rel_link}?token={token}"
 
     body = render_to_string(
-        'resent_email_verification.txt',
+        'resend_email_verification.txt',
         context={
             'username': user.username,
             'url': absolute_url,
@@ -87,4 +87,22 @@ def resend_email_verification(email):
         from_email=settings.DEFAULT_FROM_EMAIL
     )
 
-    return {'Email sent to': user.email}
+    return {'Verification email sent to': user.email}
+
+
+@app.task
+def publish_new_creator(data):
+    """
+    This task calls a method that pushes messages to our rabbitmq message
+    broker.
+    """
+    RabbitMQProducer().publish_new_creator(data)
+
+
+@app.task
+def publish_create_openuserapp(data):
+    """
+    This task calls a method that pushes messages to our rabbitmq message
+    broker.
+    """
+    RabbitMQProducer().publish_create_openuserapp(data)
