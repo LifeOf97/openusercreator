@@ -55,6 +55,7 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.other_name = validated_data.get('other_name', instance.other_name)
+        instance.is_verified = validated_data.get('is_verified', instance.is_verified)
         instance.save()
 
         return instance
@@ -105,7 +106,7 @@ class OpenuserSerializer(serializers.ModelSerializer):
         model = Openuser
         fields = (
             'id', 'creator', 'name', 'profiles', 'profile_password',
-            'date_created', 'last_updated', 'endpoint'
+            'date_created', 'last_updated', 'endpoint', 'status'
         )
         validators = [
             UniqueTogetherValidator(
