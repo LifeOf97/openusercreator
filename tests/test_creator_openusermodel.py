@@ -203,4 +203,4 @@ class TestOpenUserModel:
         app = Openuser.objects.create(**openuser_data)
         app.save()
 
-        assert str(app) == F"{full_user_data['username'].lower()} - ({openuser_data['name']})"
+        assert str(app) == F"{full_user_data['username'].lower()} - (App name: {openuser_data['name']})"

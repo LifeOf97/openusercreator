@@ -6,6 +6,7 @@ from rest_framework.reverse import reverse
 from .producers import RabbitMQProducer
 from django.core.mail import send_mail
 from django.conf import settings
+from .models import Openuser
 from src.celery import app
 
 # Custom user model
@@ -27,7 +28,7 @@ def send_email_verification(email):
         "creators_verify_email",
         kwargs={'version': settings.REST_FRAMEWORK['DEFAULT_VERSION']}
     )
-    absolute_url = F"http://{domain}{rel_link}?token={token}"
+    absolute_url = F"{domain}{rel_link}?token={token}"
 
     body = render_to_string(
         'email_verification.txt',
@@ -66,7 +67,7 @@ def resend_email_verification(email):
         "creators_verify_email",
         kwargs={'version': settings.REST_FRAMEWORK['DEFAULT_VERSION']}
     )
-    absolute_url = F"http://{domain}{rel_link}?token={token}"
+    absolute_url = F"{domain}{rel_link}?token={token}"
 
     body = render_to_string(
         'resend_email_verification.txt',
@@ -91,18 +92,55 @@ def resend_email_verification(email):
 
 
 @app.task
-def publish_new_creator(data):
+def new_creator(data):
     """
-    This task calls a method that pushes messages to our rabbitmq message
+    Celery task that calls a method that pushes messages to our rabbitmq message
     broker.
     """
     RabbitMQProducer().publish_new_creator(data)
+    return {'Published new creator': data['uid']}
 
 
 @app.task
-def publish_create_openuserapp(data):
+def delete_creator(data):
     """
-    This task calls a method that pushes messages to our rabbitmq message
+    Celery task that calls a method that pushes messages to our rabbitmq message
     broker.
     """
-    RabbitMQProducer().publish_create_openuserapp(data)
+    RabbitMQProducer().publish_delete_creator(data)
+    return {'Published delete creator': data['uid']}
+
+
+@app.task
+def new_openuserapp(data):
+    """
+    Celery task that calls a method that pushes messages to our rabbitmq message
+    broker.
+    """
+    RabbitMQProducer().publish_new_openuserapp(data)
+    return {'Published new openuserapp': data['name']}
+
+
+@app.task
+def update_openuserapp(data):
+    """
+    Celery task to update an instance of a creator's openuser app.
+
+    This sets the status field to Created and populates the the endpoint
+    field
+    """
+    instance = Openuser.objects.get(creator__uid=data['cid'], name=data['name'])
+    instance.status = data['status']
+    instance.endpoint = data['endpoint']
+    instance.save()
+    return {'Openuser': instance.name, "Creator": instance.creator.uid, 'status': data['status']}
+
+
+@app.task
+def delete_openuserapp(data):
+    """
+    Celery task that calls a method that pushes messages to our rabbitmq message
+    broker.
+    """
+    RabbitMQProducer().publish_delete_openuserapp(data)
+    return {'Published delete openuserapp': data['name']}

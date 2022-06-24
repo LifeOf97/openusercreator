@@ -36,17 +36,17 @@ class AppUserAdmin(UserAdmin):
 
 
 class OpenUserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'creator', 'name', 'date_created', 'last_updated')
-    list_display_links = ('creator', )
-    list_filter = ('creator', )
+    list_display = ('id', 'creator', 'name', 'profiles', 'status', 'date_created')
+    list_display_links = ('creator', 'name')
+    list_filter = ('creator', 'status')
 
     fieldsets = (
-        ("Identification", {"fields": ("creator", "id", "name", "profile_password", "endpoint")}),
+        ("Identification", {"fields": ("creator", "id", "name", "profile_password", "endpoint", "status")}),
         ("Data", {"fields": ("profiles", ), }),
         ("Important Dates", {"fields": ("date_created", "last_updated"), }),
     )
 
-    readonly_fields = ('id', 'date_created', 'last_updated')
+    readonly_fields = ('id', 'status', 'date_created', 'last_updated')
     ordering = ('-last_updated',)
 
 

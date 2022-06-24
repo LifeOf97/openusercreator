@@ -18,6 +18,13 @@ def get_random_int():
     return str(uuid.uuid4().int)[:15]
 
 
+# Choices
+STATUS = (
+    ('Creating', 'Creating'),
+    ('Created', 'Created')
+)
+
+
 class AppUserManager(BaseUserManager):
     """
     Custom user manager.
@@ -106,6 +113,7 @@ class AppUser(AbstractUser):
     is_verified = models.BooleanField(
         _("Verified User"), default=False,
         help_text=_("Designates whether this user has verified their email address.")
+
     )
 
     objects = AppUserManager()
@@ -182,6 +190,10 @@ class Openuser(models.Model):
         _("Last Updated"), auto_now=True, auto_now_add=False,
         help_text=_("The last time this Openuser profile was updated")
     )
+    status = models.CharField(
+        _("Status"), max_length=50, choices=STATUS, help_text=_("Openuser status"),
+        default='Creating', blank=False, null=False
+    )
 
     class Meta:
         ordering = ['-date_created']
@@ -197,4 +209,4 @@ class Openuser(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return F"{self.creator.username} - ({self.name})"
+        return F"{self.creator.username} - (App name: {self.name})"

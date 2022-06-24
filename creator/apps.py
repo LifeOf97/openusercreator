@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete, post_delete
 from django.apps import AppConfig
 from django.conf import settings
 import uuid
@@ -13,4 +13,7 @@ class CreatorConfig(AppConfig):
         from . import models
 
         post_save.connect(signals.new_creator, sender=settings.AUTH_USER_MODEL, dispatch_uid=uuid.uuid4())
+        pre_delete.connect(signals.before_delete_creator, sender=settings.AUTH_USER_MODEL, dispatch_uid=uuid.uuid4())
+        post_delete.connect(signals.delete_creator, sender=settings.AUTH_USER_MODEL, dispatch_uid=uuid.uuid4())
         post_save.connect(signals.new_openuserapp, sender=models.Openuser, dispatch_uid=uuid.uuid4())
+        post_delete.connect(signals.delete_openuserapp, sender=models.Openuser, dispatch_uid=uuid.uuid4())
