@@ -1,4 +1,4 @@
-from .forms import CustomAppUserCreationForm, CustomAppUserChangeForm
+from .forms import CustomAppUserCreationForm, CustomAppUserChangeForm, OpenuserModelForm
 from django.contrib.auth.admin import UserAdmin
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.models import Group
@@ -36,6 +36,8 @@ class AppUserAdmin(UserAdmin):
 
 
 class OpenUserAdmin(admin.ModelAdmin):
+    form = OpenuserModelForm
+
     list_display = ('id', 'creator', 'name', 'profiles', 'status', 'date_created')
     list_display_links = ('creator', 'name')
     list_filter = ('creator', 'status')

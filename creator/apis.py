@@ -104,6 +104,30 @@ class AppUserApiView(viewsets.GenericViewSet):
         return response
 
 
+class ResendVerifyEmail(viewsets.GenericViewSet):
+    serializer_class = serializers.ResendEmailSerializer
+
+    def post(self, request, *args, **kwargs):
+        """
+        Resends a new verificaton email.
+        """
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+
+            # check if email belongs to the currently logged in user.
+            if request.user.email == serializer.data['email']:
+                tasks.resend_email_verification.delay(serializer.data['email'])
+                return Response(data={"detail": _(F"A verification link has been sent to {serializer.data['email']}")})
+
+            return Response(
+                data={"error": _(F"Email address {serializer.data['email']} is not associated to your account")},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class VerifyEmail(views.APIView):
     permission_classes = []
 
@@ -138,30 +162,6 @@ class VerifyEmail(views.APIView):
                 data={"detail": _("Your email address has already been verified")},
                 status=status.HTTP_200_OK
             )
-
-
-class ResendVerifyEmail(viewsets.GenericViewSet):
-    serializer_class = serializers.ResendEmailSerializer
-
-    def post(self, request, *args, **kwargs):
-        """
-        Resends a new verificaton email.
-        """
-        serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid():
-
-            # check if email belongs to the currently logged in user.
-            if request.user.email == serializer.data['email']:
-                tasks.resend_email_verification.delay(serializer.data['email'])
-                return Response(data={"detail": _(F"A verification link has been sent to {serializer.data['email']}")})
-
-            return Response(
-                data={"error": _(F"Email address {serializer.data['email']} is not associated to your account")},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginSessionApiView(viewsets.GenericViewSet):
@@ -247,7 +247,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
                 return Response(data={'data': serializer.data}, status=status.HTTP_201_CREATED)
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(
-            data={'error': _('Limit reached. You can only have 2 openuserdata profile.')},
+            data={'error': _('Limit reached. You can only have 2 openuser apps.')},
             status=status.HTTP_400_BAD_REQUEST
         )
 
