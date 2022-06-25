@@ -389,4 +389,4 @@ class TestOpenUserApi:
         # try to create a third openuserdata
         res = client.post(create_openuser_url, data_3, format='json')
         assert res.status_code == status.HTTP_400_BAD_REQUEST
-        assert 'Limit reached. You can only have 2 openuserdata profile' in res.data['error']
+        assert 'Limit reached. You can only have 2 openuser apps.' in res.data['error']
