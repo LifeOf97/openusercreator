@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import utils as db_exception
+from django.utils.text import slugify
 from creator.models import Openuser
 import pytest
 
@@ -170,7 +171,7 @@ class TestOpenUserModel:
 
         data = dict(
             creator=created,
-            name='MyTestApp1',
+            name='My Test App',
         )
 
         app = Openuser.objects.create(**data)
@@ -178,10 +179,9 @@ class TestOpenUserModel:
 
         assert Openuser.objects.count() == 1
         assert app.creator == created
-        assert isinstance(app.id, int)
         assert app.profiles == 5
         assert isinstance(app.profiles, int)
-        assert app.name == data['name'].lower()
+        assert app.name == slugify(data['name'].lower().replace("_", " "))
         assert app.profile_password == 'p@ssw0rd'
         assert app.date_created not in ['', None]
         assert app.last_updated not in ['', None]

@@ -140,7 +140,10 @@ class AppUser(AbstractUser):
 
 
 class Openuser(models.Model):
-    id = models.AutoField(_("ID"), primary_key=True, unique=True, editable=False)
+    id = models.UUIDField(
+        _("App ID"), primary_key=True, unique=True, editable=False,
+        default=uuid.uuid4, help_text=_("App unique ID")
+    )
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_("creator"),

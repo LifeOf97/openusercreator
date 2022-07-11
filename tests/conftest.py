@@ -149,7 +149,7 @@ def openuser_data(created):
     """
     return dict(
         creator=created,
-        name='new-1-api',
+        name='new-1-app',
         profiles=12,
         profile_password="password",
     )
@@ -162,7 +162,7 @@ def openuser_data_1():
     as the creator of this instance.
     """
     return dict(
-        name='New-1-Api',
+        name='New-1-App',
         profiles=12,
         profile_password="mypassword",
     )
@@ -176,12 +176,12 @@ def created_openuser_1(created):
     """
     data = dict(
         creator=created,
-        name='New-1-Api',
+        name='New-1-App',
         profiles=12,
         profile_password="mypassword",
     )
     app = Openuser.objects.create(**data)
-    app.save
+    app.save()
     return app
 
 
@@ -193,12 +193,12 @@ def created_openuser_2(created):
     """
     data = dict(
         creator=created,
-        name='New-2-Api',
+        name='New-2-App',
         profiles=12,
         profile_password="mypassword",
     )
     app = Openuser.objects.create(**data)
-    app.save
+    app.save()
     return app
 
 
@@ -210,12 +210,12 @@ def created_openuser_3(created):
     """
     data = dict(
         creator=created,
-        name='New-3-Api',
+        name='New-3-App',
         profiles=12,
         profile_password="mypassword",
     )
     app = Openuser.objects.create(**data)
-    app.save
+    app.save()
     return app
 
 
@@ -227,12 +227,12 @@ def created_openuser_4(created_user):
     """
     data = dict(
         creator=created_user,
-        name='New-1-Api',
+        name='New-1-App',
         profiles=12,
         profile_password="mypassword",
     )
     app = Openuser.objects.create(**data)
-    app.save
+    app.save()
     return app
 
 
@@ -244,12 +244,12 @@ def created_openuser_5(created_user):
     """
     data = dict(
         creator=created_user,
-        name='New-2-Api',
+        name='New-2-App',
         profiles=12,
         profile_password="mypassword",
     )
     app = Openuser.objects.create(**data)
-    app.save
+    app.save()
     return app
 
 
@@ -261,10 +261,10 @@ def created_openuser_6(created_user):
     """
     data = dict(
         creator=created_user,
-        name='New-3-Api',
+        name='New-3-App',
         profiles=12,
         profile_password="mypassword",
     )
     app = Openuser.objects.create(**data)
-    app.save
+    app.save()
     return app

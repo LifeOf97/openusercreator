@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from rest_framework.reverse import reverse
-from .producers import RabbitMQProducer
+from .pika_producers import RabbitMQProducer
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Openuser
@@ -124,12 +124,21 @@ def new_openuserapp(data):
 @app.task
 def update_openuserapp(data):
     """
-    Celery task to update an instance of a creator's openuser app.
-
-    This sets the status field to Created and populates the the endpoint
-    field
+    Celery task that calls a method that pushes messages to our rabbitmq message
+    broker.
     """
-    instance = Openuser.objects.get(creator__uid=data['cid'], name=data['name'])
+    RabbitMQProducer().publish_update_openuserapp(data)
+    return {'Published update openuserapp': data['name']}
+
+
+@app.task
+def activate_openuserapp(data):
+    """
+    Celery task to activate an instance of a creator's openuser app.
+
+    This sets the status field to Created and provides the url endpoint
+    """
+    instance = Openuser.objects.get(creator__uid=data['cid'], id=data['id'])
     instance.status = data['status']
     instance.endpoint = data['endpoint']
     instance.save()
