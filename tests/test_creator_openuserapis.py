@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
 from django.utils.timezone import datetime
 from rest_framework.test import APIClient
+from django.utils.text import slugify
 from creator.models import Openuser
 from rest_framework import status
 import pytest
@@ -49,7 +50,7 @@ class TestOpenUserApi:
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
         assert Openuser.objects.count() == 1
-        assert isinstance(res.data['data']['id'], int)
+        assert isinstance(res.data['data']['id'], str)
         assert res.data['data']['creator'] == created.uid
         assert res.data['data']['name'] == openuser_data_1['name'].lower()
         assert res.data['data']['profiles'] == openuser_data_1['profiles']
@@ -123,7 +124,7 @@ class TestOpenUserApi:
         assert res.data['data'][2]['creator'] == created.uid
 
     @pytest.mark.django_db
-    def test_authenticated_users_can_only_retireve_an_instance_of_their_openuser_app(
+    def test_authenticated_users_can_only_retrieve_an_instance_of_their_openuser_app(
         self,
         created,
         full_user_data,
@@ -146,14 +147,14 @@ class TestOpenUserApi:
 
         # because of the created and created_user fixtures
         assert AppUser.objects.count() == 2
-        # and also the *_openusers_* fixture
+        # and also the created_openusers_* fixture
         assert Openuser.objects.count() == 6
 
         # now login with the created fixture details
         res = client.post(login_token_url, full_user_data, format='json')
         assert res.status_code == status.HTTP_200_OK
 
-        # retrieve an instace of the openuser app for the created user
+        # retrieve an instace of the openuser app  that belongs to the created fixture user
         client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
         res = client.get(
             reverse(
@@ -162,9 +163,8 @@ class TestOpenUserApi:
             ))
 
         assert res.status_code == status.HTTP_200_OK
-        assert len(res.data) == 1
-        assert res.data['data']['id'] == created_openuser_2.id
-        assert res.data['data']['name'] == created_openuser_2.name.lower()
+        assert res.data['data']['id'] == str(created_openuser_2.id)
+        assert res.data['data']['name'] == slugify(created_openuser_2.name.lower().replace("_", " "))
         assert res.data['data']['creator'] == created_openuser_2.creator.uid
         assert res.data['data']['profiles'] == created_openuser_2.profiles
         assert res.data['data']['profile_password'] == created_openuser_2.profile_password
