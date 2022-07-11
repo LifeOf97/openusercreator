@@ -39,7 +39,7 @@ class OpenUserAdmin(admin.ModelAdmin):
     form = OpenuserModelForm
 
     list_display = ('id', 'creator', 'name', 'profiles', 'status', 'date_created')
-    list_display_links = ('creator', 'name')
+    list_display_links = ('id', 'creator', 'name')
     list_filter = ('creator', 'status')
 
     fieldsets = (

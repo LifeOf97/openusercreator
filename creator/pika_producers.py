@@ -64,6 +64,19 @@ class RabbitMQProducer:
         )
         self._connection.close()
 
+    def publish_update_openuserapp(self, data, routing_key='update_openuserapp'):
+        """
+        This method pushes message to our rabbitmq message broker exchange to be consumed
+        by other microservices listening for messages with the specified routing_key.
+        """
+        self._channel.basic_publish(
+            exchange=self.EXCHANGE_NAME,
+            routing_key=str(routing_key),
+            body=json.dumps(data),
+            properties=pika.BasicProperties(content_type='application/json')
+        )
+        self._connection.close()
+
     def publish_delete_openuserapp(self, data, routing_key='delete_openuserapp'):
         """
         This method pushes message to our rabbitmq message broker exchange to be consumed
