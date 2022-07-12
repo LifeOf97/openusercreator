@@ -15,8 +15,9 @@ class AppUserAdmin(UserAdmin):
     add_form = CustomAppUserCreationForm
     form = CustomAppUserChangeForm
 
-    list_display = ('id', 'username', 'email', 'is_verified')
-    list_display_links = ('id', 'username', 'email')
+    list_display = ('uid', 'username', 'email', 'is_verified', 'is_staff', 'is_superuser')
+    list_display_links = ('uid', 'username', 'email')
+    list_filter = ('is_verified', 'is_staff')
 
     add_fieldsets = (
         ("Identification", {"fields": ("username", "email")}),

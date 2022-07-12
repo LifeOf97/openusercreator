@@ -36,10 +36,8 @@ def new_openuserapp(sender, instance=None, created=False, **kwargs):
     }
 
     if created:  # if newly created
-        print('\nCreated\n')
         tasks.new_openuserapp.delay(data=data)
     else:
-        print('\nUpdated\n')
         tasks.update_openuserapp.delay(data=data)
 
 

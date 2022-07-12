@@ -6,7 +6,7 @@ from rest_framework.reverse import reverse
 from .pika_producers import RabbitMQProducer
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Openuser
+# from .models import Openuser
 from src.celery import app
 
 # Custom user model
@@ -132,20 +132,6 @@ def update_openuserapp(data):
 
 
 @app.task
-def activate_openuserapp(data):
-    """
-    Celery task to activate an instance of a creator's openuser app.
-
-    This sets the status field to Created and provides the url endpoint
-    """
-    instance = Openuser.objects.get(creator__uid=data['cid'], id=data['id'])
-    instance.status = data['status']
-    instance.endpoint = data['endpoint']
-    instance.save()
-    return {'Openuser': instance.name, "Creator": instance.creator.uid, 'status': data['status']}
-
-
-@app.task
 def delete_openuserapp(data):
     """
     Celery task that calls a method that pushes messages to our rabbitmq message
@@ -153,3 +139,17 @@ def delete_openuserapp(data):
     """
     RabbitMQProducer().publish_delete_openuserapp(data)
     return {'Published delete openuserapp': data['name']}
+
+
+# @app.task
+# def activate_openuserapp(data):
+#     """
+#     Celery task to activate an instance of a creator's openuser app.
+
+#     This sets the status field to Created and provides the url endpoint
+#     """
+#     instance = Openuser.objects.get(creator__uid=data['cid'], id=data['id'])
+#     instance.status = data['status']
+#     instance.endpoint = data['endpoint']
+#     instance.save()
+#     return {'Openuser': instance.name, "Creator": instance.creator.uid, 'status': data['status']}

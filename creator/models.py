@@ -45,7 +45,6 @@ class AppUserManager(BaseUserManager):
         user.is_superuser = is_superuser
         user.set_password(password)
         user.save(using=self._db)
-
         return user
 
     def create_superuser(
@@ -62,7 +61,6 @@ class AppUserManager(BaseUserManager):
         )
 
         user.save(using=self._db)
-
         return user
 
 
@@ -167,7 +165,7 @@ class Openuser(models.Model):
     )
     profiles = models.IntegerField(
         _("Profiles"), blank=False, null=False, default=5,
-        help_text=_("Number of openuser profiles to create, defaul is 5"),
+        help_text=_("Number of openuser profiles to create, default is 5"),
         validators=[
             validators.MaxValueValidator(limit_value=25),
             validators.MinValueValidator(limit_value=1),
@@ -210,6 +208,7 @@ class Openuser(models.Model):
 
     def save(self, *args, **kwargs):
         self.name = slugify(self.name.replace('_', ' '))
+        self.endpoint = F"http://localhost:8001/{self.creator.uid}/{self.name}/api/<version>/"
         return super().save(*args, **kwargs)
 
     def __str__(self):
