@@ -1,3 +1,4 @@
+# This rabbitmq consumer is currently not in use
 from pika.exchange_type import ExchangeType
 from pika.channel import Channel
 from celery import Celery
