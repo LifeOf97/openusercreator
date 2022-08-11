@@ -1,6 +1,5 @@
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-from rest_framework_simplejwt.views import TokenVerifyView
-from dj_rest_auth.jwt_auth import get_refresh_view
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
 from dj_rest_auth import views as dj_rest
 from django.urls import path
 from . import apis
@@ -9,10 +8,10 @@ from . import apis
 urlpatterns = [
 
     # Schema urls
-    # path('<version>/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('<version>/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('<version>/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('<version>/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('<version>/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('<version>/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # path('<version>/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
     # create/verify new creators urls endpoint
     path(
@@ -86,21 +85,21 @@ urlpatterns = [
     ),
 
     # session authentication urls endpoint
-    path(
-        "<version>/auth/session/login/",
-        apis.LoginSessionApiView.as_view({'post': 'post'}),
-        name="login_via_session"
-    ),
-    path(
-        "<version>/auth/session/logout/",
-        apis.LogoutSessionApiView.as_view(),
-        name="logout_via_session"
-    ),
+    # path(
+    #     "<version>/auth/session/login/",
+    #     apis.LoginSessionApiView.as_view({'post': 'post'}),
+    #     name="login_via_session"
+    # ),
+    # path(
+    #     "<version>/auth/session/logout/",
+    #     apis.LogoutSessionApiView.as_view(),
+    #     name="logout_via_session"
+    # ),
 
     # token authentication urls
     path(
         "<version>/auth/token/login/",
-        dj_rest.LoginView.as_view(),
+        TokenObtainPairView.as_view(),
         name="login_via_token"
     ),
     path(
@@ -115,7 +114,7 @@ urlpatterns = [
     ),
     path(
         "<version>/auth/token/refresh/",
-        get_refresh_view().as_view(),
+        TokenRefreshView.as_view(),
         name="token_refresh"
     ),
 ]

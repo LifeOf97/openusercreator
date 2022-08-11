@@ -126,3 +126,8 @@ class OpenuserSerializer(serializers.ModelSerializer):
         if data.get('name'):
             data['name'] = slugify(data['name'].replace('_', ' '))
         return super().to_internal_value(data)
+
+
+# This serializers are ment for the swagger documentation
+class VerifyEmailResponseSerializer(serializers.Serializer):
+    detail = serializers.CharField()

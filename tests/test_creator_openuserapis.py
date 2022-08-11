@@ -42,11 +42,11 @@ class TestOpenUserApi:
         # we need to login
         res = client.post(login_token_url, full_user_data, format='json')
         assert res.status_code == status.HTTP_200_OK
-        assert 'access_token' in res.data
-        assert 'refresh_token' in res.data
+        assert 'access' in res.data
+        assert 'refresh' in res.data
 
         # since we are now logged in, create a new openuser profile
-        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
         assert Openuser.objects.count() == 1
@@ -78,7 +78,7 @@ class TestOpenUserApi:
         assert res.status_code == status.HTTP_200_OK
 
         # create a new openuser profile
-        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
         assert Openuser.objects.count() == 1
@@ -115,7 +115,7 @@ class TestOpenUserApi:
 
         # return all openuser profile, assert that all returned data belongs to the
         # currently authenticated user
-        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.get(list_my_openusers_url, format='json')
         assert res.status_code == status.HTTP_200_OK
         assert len(res.data['data']) == 3
@@ -155,7 +155,7 @@ class TestOpenUserApi:
         assert res.status_code == status.HTTP_200_OK
 
         # retrieve an instace of the openuser app  that belongs to the created fixture user
-        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.get(
             reverse(
                 'creators_apps_detail',
@@ -225,7 +225,7 @@ class TestOpenUserApi:
             profile_password="P@ssw0rd"
         )
 
-        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
 
         # create with data_1
         res = client.post(create_openuser_url, data_1, format='json')
@@ -273,7 +273,7 @@ class TestOpenUserApi:
         assert res.status_code == status.HTTP_200_OK
 
         # create an openuser data
-        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
 
@@ -333,7 +333,7 @@ class TestOpenUserApi:
         assert res.status_code == status.HTTP_200_OK
 
         # get all openuser objects created by the currently logged in user
-        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.get(list_my_openusers_url)
         assert res.status_code == status.HTTP_200_OK
         assert len(res.data['data']) == 3
@@ -370,7 +370,7 @@ class TestOpenUserApi:
         data_3 = dict(name='ThireaPP', profiles=25, profile_password="P@ssw0rd")
 
         # add Authorization header
-        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+        client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
 
         # create first openuserdata
         res = client.post(create_openuser_url, data_1, format='json')

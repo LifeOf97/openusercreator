@@ -171,8 +171,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Email settings
-# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
@@ -209,7 +209,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
@@ -226,14 +226,14 @@ REST_FRAMEWORK = {
 }
 
 # Dj_rest_auth settings
-REST_AUTH_SERIALIZERS = {
-    'LOGIN_SERIALIZER': 'creator.serializers.CustomDjRestAuthLoginSerializer',
-    'JWT_SERIALIZER': 'creator.serializers.CustomDjRestAuthJWTSerializer',
-}
-REST_USE_JWT = True
-REST_SESSION_LOGIN = False
-OLD_PASSWORD_FIELD_ENABLED = True
-REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
+# REST_AUTH_SERIALIZERS = {
+#     'LOGIN_SERIALIZER': 'creator.serializers.CustomDjRestAuthLoginSerializer',
+#     'JWT_SERIALIZER': 'creator.serializers.CustomDjRestAuthJWTSerializer',
+# }
+# REST_USE_JWT = True
+# REST_SESSION_LOGIN = False
+# OLD_PASSWORD_FIELD_ENABLED = True
+# REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
 
 # Simplejwt settings
 SIMPLE_JWT = {
@@ -251,7 +251,7 @@ SIMPLE_JWT = {
     'JWK_URL': None,
     'LEEWAY': 0,
 
-    'AUTH_HEADER_TYPES': ('Bearer', 'Token', 'JWT'),
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'uid',
     'USER_ID_CLAIM': 'user_uid',
