@@ -1,8 +1,10 @@
 from rest_framework import status, views, viewsets, permissions, authentication
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext_lazy as _
 from . import serializers, permissions as custom_perm
 from dj_rest_auth.jwt_auth import unset_jwt_cookies
+from drf_spectacular.types import OpenApiTypes
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
@@ -131,10 +133,21 @@ class ResendVerifyEmail(viewsets.GenericViewSet):
 class VerifyEmail(views.APIView):
     permission_classes = []
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='token',
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description='Token'
+            )
+        ],
+        responses={200: serializers.VerifyEmailResponseSerializer}
+    )
     def get(self, request, *args, **kwargs):
         """
-        Verifies a users account email address, gets the token from the url address.
-        Return Success or Failure data.
+        Gets the token from the url address and verifies a users account email address.
+        Returns success or Failure.
         """
         token = request.GET.get('token')
 
@@ -160,7 +173,7 @@ class VerifyEmail(views.APIView):
 
             return Response(
                 data={"detail": _("Your email address has already been verified")},
-                status=status.HTTP_200_OK
+                status=status.HTTP_208_ALREADY_REPORTED
             )
 
 

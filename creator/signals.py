@@ -5,8 +5,8 @@ from . import tasks
 def new_creator(sender, instance=None, created=False, **kwargs):
     """
     Watches for the post_save signal on the custom user model so as
-    to execute a celery task to email new users a verification link and
-    also another task to publish message to our message broker.
+    to execute a celery task to email new users a verification link
+    and another task to publish message to our message broker.
     """
     if created:
         tasks.send_email_verification.delay(instance.email)

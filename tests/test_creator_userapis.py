@@ -7,7 +7,7 @@ import pytest
 
 AppUser = get_user_model()
 create_url = reverse('creators_create', kwargs={'version': 'v1'})
-login_session_url = reverse('login_via_session', kwargs={'version': 'v1'})
+# login_session_url = reverse('login_via_session', kwargs={'version': 'v1'})
 login_token_url = reverse('login_via_token', kwargs={'version': 'v1'})
 my_data_url = reverse('creators_details', kwargs={'version': 'v1'})
 update_data_url = reverse('creators_update', kwargs={'version': 'v1'})
@@ -48,31 +48,31 @@ def test_create_new_account_and_check_that_no_sensitive_data_is_returned(full_us
     assert res.data['data']['last_login'] is None
 
 
-@pytest.mark.django_db
-def test_new_creators_can_login_via_session(full_user_data):
-    client = APIClient(enforce_csrf_checks=True)
+# @pytest.mark.django_db
+# def test_new_creators_can_login_via_session(full_user_data):
+#     client = APIClient(enforce_csrf_checks=True)
 
-    # GET request method not allowed
-    res = client.get(login_session_url)
-    assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert 'Method \"GET\" not allowed' in res.data['detail']
+#     # GET request method not allowed
+#     res = client.get(login_session_url)
+#     assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+#     assert 'Method \"GET\" not allowed' in res.data['detail']
 
-    # make POST request with no data
-    res = client.post(login_session_url, format='json')
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
+#     # make POST request with no data
+#     res = client.post(login_session_url, format='json')
+#     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
-    # register new user first
-    res = client.post(create_url, full_user_data, format='json')
-    assert res.status_code == status.HTTP_201_CREATED
-    assert AppUser.objects.count() == 1
+#     # register new user first
+#     res = client.post(create_url, full_user_data, format='json')
+#     assert res.status_code == status.HTTP_201_CREATED
+#     assert AppUser.objects.count() == 1
 
-    # now login the new user via session login
-    res = client.post(login_session_url, full_user_data, format='json')
+#     # now login the new user via session login
+#     res = client.post(login_session_url, full_user_data, format='json')
 
-    assert res.status_code == status.HTTP_200_OK
-    assert 'Logged in successfully' in res.data['detail']
-    assert res.cookies['csrftoken']
-    assert res.cookies['sessionid']
+#     assert res.status_code == status.HTTP_200_OK
+#     assert 'Logged in successfully' in res.data['detail']
+#     assert res.cookies['csrftoken']
+#     assert res.cookies['sessionid']
 
 
 @pytest.mark.django_db
@@ -97,8 +97,8 @@ def test_new_creators_can_login_via_token(full_user_data):
     res = client.post(login_token_url, full_user_data, format='json')
 
     assert res.status_code == status.HTTP_200_OK
-    assert 'access_token' in res.data
-    assert 'refresh_token' in res.data
+    assert 'access' in res.data
+    assert 'refresh' in res.data
 
 
 @pytest.mark.django_db
@@ -113,7 +113,7 @@ def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created
     assert res.status_code == status.HTTP_200_OK
 
     # get users data
-    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['data']['username'] == full_user_data['username'].lower()
@@ -124,8 +124,8 @@ def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created
     assert res.data['data']['uid'] not in ['', None]
     assert not res.data['data']['is_verified']
     assert 'password' not in res.data['data']
-    assert res.data['data']['date_joined']
-    assert res.data['data']['last_login'] is None
+    assert res.data['data']['date_joined'] is not None
+    assert res.data['data']['last_login'] is not None
 
 
 @pytest.mark.django_db
@@ -149,7 +149,7 @@ def test_autenticated_users_can_update_their_data(created, full_user_data, anoth
     assert res.status_code == status.HTTP_200_OK
 
     # now, update the users data
-    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
     res = client.put(update_data_url, another_user_data, format='json')
 
     assert res.status_code == status.HTTP_202_ACCEPTED
@@ -161,8 +161,8 @@ def test_autenticated_users_can_update_their_data(created, full_user_data, anoth
     assert res.data['data']['uid'] not in ['', None]
     assert not res.data['data']['is_verified']
     assert 'password' not in res.data['data']
-    assert res.data['data']['date_joined']
-    assert res.data['data']['last_login'] is None
+    assert res.data['data']['date_joined'] is not None
+    assert res.data['data']['last_login'] is not None
 
 
 @pytest.mark.django_db
@@ -177,7 +177,7 @@ def test_autenticated_users_can_delete_their_account(created, full_user_data):
     assert res.status_code == status.HTTP_200_OK
 
     # get the users data to compare with the deleted response data
-    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
 
@@ -210,7 +210,7 @@ def test_only_admin_users_can_retrieve_all_creators(
     assert res.status_code == status.HTTP_200_OK
 
     # now calling the creator_list endpoint with the non admin user should be forbidden
-    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
     res = client.get(list_creators_url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
@@ -219,7 +219,7 @@ def test_only_admin_users_can_retrieve_all_creators(
     assert res.status_code == status.HTTP_200_OK
 
     # now calling the creator_list endpoint should pass
-    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
     res = client.get(list_creators_url)
     assert res.status_code == status.HTTP_200_OK
     assert len(res.data['data']) == 2
@@ -243,7 +243,7 @@ def test_authenticated_creators_can_change_their_password(created, full_user_dat
         "new_password2": "mynewpassword"
     }
 
-    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
     res = client.post(change_password_url, data, format='json')
     assert res.status_code == status.HTTP_200_OK
 
@@ -256,29 +256,29 @@ def test_authenticated_creators_can_change_their_password(created, full_user_dat
     assert res.status_code == status.HTTP_200_OK
 
 
-@pytest.mark.django_db
-def test_authentication_via_session_will_clear_the_access_and_refresh_tokens_of_users_who_were_authenticated_via_token(
-    created,
-    full_user_data
-        ):
-    client = APIClient()
+# @pytest.mark.django_db
+# def test_authentication_via_session_will_clear_the_access_and_refreshs_of_users_who_were_authenticated_via_token(
+#     created,
+#     full_user_data
+#         ):
+#     client = APIClient()
 
-    # because of the created fixture
-    assert AppUser.objects.count() == 1
+#     # because of the created fixture
+#     assert AppUser.objects.count() == 1
 
-    # now authenticate via token first
-    res = client.post(login_token_url, full_user_data, format='json')
-    assert res.status_code == status.HTTP_200_OK
-    assert res.data['access_token']
-    assert res.data['refresh_token']
+#     # now authenticate via token first
+#     res = client.post(login_token_url, full_user_data, format='json')
+#     assert res.status_code == status.HTTP_200_OK
+#     assert res.data['access']
+#     assert res.data['refresh']
 
-    # now authenticate via session
-    res = client.post(login_session_url, full_user_data, format='json')
-    assert res.status_code == status.HTTP_200_OK
-    assert res.cookies['csrftoken']
-    assert res.cookies['sessionid']
-    assert 'access_token' not in res.data
-    assert 'refresh_token' not in res.data
+#     # now authenticate via session
+#     res = client.post(login_session_url, full_user_data, format='json')
+#     assert res.status_code == status.HTTP_200_OK
+#     assert res.cookies['csrftoken']
+#     assert res.cookies['sessionid']
+#     assert 'access' not in res.data
+#     assert 'refresh' not in res.data
 
 
 @pytest.mark.django_db
@@ -293,16 +293,16 @@ def test_verify_token_url_verifies_token_authenticity(created, full_user_data):
     assert res.status_code == status.HTTP_200_OK
 
     # now, verify token
-    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access_token']}")
-    res = client.post(verify_toke_url, {"token": res.data['access_token']}, format='json')
+    client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
+    res = client.post(verify_toke_url, {"token": res.data['access']}, format='json')
     assert res.status_code == status.HTTP_200_OK
     assert res.data == {}
 
 
 @pytest.mark.django_db
-def test_refresh_token_url_refreshes_token(created, full_user_data):
+def test_refresh_token_url_refreshes_auth_token(created, full_user_data):
     """
-    Token refresh url takes the jwt-refresh token from the cookies and refreshes the jwt-access
+    Takes the refresh token and refreshes the access token
     """
     client = APIClient()
 
@@ -313,11 +313,10 @@ def test_refresh_token_url_refreshes_token(created, full_user_data):
     res = client.post(login_token_url, full_user_data, format='json')
     assert res.status_code == status.HTTP_200_OK
 
-    refresh = res.data['refresh_token']
+    refresh = res.data['refresh']
 
     # now, refresh token
     # client.credentials(HTTP_AUTHORIZATION=F'Bearer {jwt}')
     res = client.post(refresh_toke_url, {'refresh': refresh})
     assert res.status_code == status.HTTP_200_OK
     assert 'access' in res.data
-    assert 'access_token_expiration' in res.data
