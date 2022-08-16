@@ -15,9 +15,9 @@ class AppUserAdmin(UserAdmin):
     add_form = CustomAppUserCreationForm
     form = CustomAppUserChangeForm
 
-    list_display = ('uid', 'username', 'email', 'is_verified', 'is_staff', 'is_superuser')
+    list_display = ('uid', 'username', 'email', 'auth_provider', 'is_verified', 'is_staff', 'is_superuser')
     list_display_links = ('uid', 'username', 'email')
-    list_filter = ('is_verified', 'is_staff')
+    list_filter = ('is_verified', 'is_staff', 'auth_provider',)
 
     add_fieldsets = (
         ("Identification", {"fields": ("username", "email")}),
@@ -25,14 +25,18 @@ class AppUserAdmin(UserAdmin):
     )
 
     fieldsets = (
-        ("Identification", {"fields": ("id", "uid", "username", "email", "password")}),
+        ("Identification", {
+            "fields": (
+                "id", "uid", "username", "email", "password", "auth_provider", "auth_provider_token"
+            )
+        }),
         ("Data", {"fields": ("first_name", "last_name", "other_name"), }),
         ("Status", {"fields": ("is_verified", "is_active", "is_staff", "is_superuser"), }),
         ("Groups & Permissions", {"fields": ("groups", "user_permissions"), }),
         ("Important Dates", {"fields": ("date_joined", "last_login"), }),
     )
 
-    readonly_fields = ('id', 'uid', 'password', 'date_joined', 'last_login')
+    readonly_fields = ('id', 'uid', 'password', 'date_joined', 'last_login', 'auth_provider')
     ordering = ('-id',)
 
 

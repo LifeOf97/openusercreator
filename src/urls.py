@@ -11,10 +11,11 @@ urlpatterns = [
     path('admin/', admin_site.urls),
 
     # redirect to the api urls.
-    path('', RedirectView.as_view(url='api/v1/')),
+    # path('', RedirectView.as_view(url='api/v1/')),
 
     # api urls
     path('api/', include('creator.urls')),
+    path('api/', include('social_auth.urls')),
     path(
         "api/auth/help/password/reset/",
         dj_rest.PasswordResetView.as_view(),

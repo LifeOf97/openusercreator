@@ -1,4 +1,5 @@
 from rest_framework import status, views, viewsets, permissions, authentication
+from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext_lazy as _
@@ -13,7 +14,6 @@ from django.conf import settings
 from .models import Openuser
 from . import tasks
 import jwt
-
 
 # Custom user model instance
 AppUser = get_user_model()
@@ -177,51 +177,6 @@ class VerifyEmail(views.APIView):
             )
 
 
-class LoginSessionApiView(viewsets.GenericViewSet):
-    authentication_classes = []
-    permission_classes = [permissions.AllowAny]
-    serializer_class = serializers.LoginSerializer
-
-    def post(self, request, *args, **kwargs):
-        """
-        Accepts the following post parameters: username/email, password, to
-        login a creator via session.
-        """
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            user = authenticate(
-                request,
-                username=serializer.validated_data['username'],
-                password=serializer.validated_data['password']
-            )
-
-            if user is not None:
-                login(request, user)
-                response = Response(data={"detail": _("Logged in successfully")}, status=status.HTTP_200_OK)
-
-                # clear jwt (access & refresh) tokens if present
-                unset_jwt_cookies(response)
-
-                return response  # return logged in response to client
-
-            return Response(data={"detail": _("wrong username/password")}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class LogoutSessionApiView(views.APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    authentication_classes = [authentication.SessionAuthentication]
-
-    def post(self, request, *args, **kwargs):
-        """
-        Logs out a session authenticated user.
-        """
-        logout(request)
-        return Response(data={"detail": _("Logged out successfully")}, status=status.HTTP_200_OK)
-
-
 class OpenuserApiView(viewsets.GenericViewSet):
     lookup_field = 'name'
     queryset = Openuser.objects.all()
@@ -293,3 +248,49 @@ class OpenuserApiView(viewsets.GenericViewSet):
             data={'data': {'name': name, 'profiles': profiles, 'detail': _('Deleted successfully')}},
             status=status.HTTP_204_NO_CONTENT
         )
+
+
+class LoginSessionApiView(viewsets.GenericViewSet):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+    serializer_class = serializers.LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        """
+        Accepts the following post parameters: username/email, password, to
+        login a creator via session.
+        """
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            user = authenticate(
+                request,
+                username=serializer.validated_data['username'],
+                password=serializer.validated_data['password']
+            )
+
+            if user is not None:
+                login(request, user)
+                response = Response(data={"detail": _("Logged in successfully")}, status=status.HTTP_200_OK)
+
+                # clear jwt (access & refresh) tokens if present
+                unset_jwt_cookies(response)
+
+                return response  # return logged in response to client
+
+            return Response(data={"detail": _("wrong username/password")}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutSessionApiView(views.APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        """
+        Logs out a session authenticated user.
+        """
+        logout(request)
+        return Response(data={"detail": _("Logged out successfully")}, status=status.HTTP_200_OK)
+

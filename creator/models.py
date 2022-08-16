@@ -24,6 +24,13 @@ STATUS = (
     ('Created', 'Created')
 )
 
+AUTH_PROVIDERS = (
+    ('Email', 'Email'),
+    ('Github', 'Github'),
+    ('Google', 'Google'),
+    ('Twitter', 'Twitter'),
+)
+
 
 class AppUserManager(BaseUserManager):
     """
@@ -113,6 +120,12 @@ class AppUser(AbstractUser):
         help_text=_("Designates whether this user has verified their email address.")
 
     )
+    auth_provider = models.CharField(
+        _("Authentication Provider"),
+        choices=AUTH_PROVIDERS, max_length=50, default='Email',
+        blank=True, null=True
+    )
+    auth_provider_token = models.CharField(_("Provider Authentication Token"), max_length=255, blank=True, null=True, default='')
 
     objects = AppUserManager()
 
