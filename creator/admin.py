@@ -36,7 +36,10 @@ class AppUserAdmin(UserAdmin):
         ("Important Dates", {"fields": ("date_joined", "last_login"), }),
     )
 
-    readonly_fields = ('id', 'uid', 'password', 'date_joined', 'last_login', 'auth_provider')
+    readonly_fields = (
+        'id', 'uid', 'password', 'date_joined', 'last_login',
+        'auth_provider', 'auth_provider_token'
+    )
     ordering = ('-id',)
 
 

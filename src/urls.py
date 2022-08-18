@@ -1,4 +1,3 @@
-from django.views.generic import RedirectView
 from django.conf.urls.static import static
 from dj_rest_auth import views as dj_rest
 from django.urls import path, include
@@ -9,9 +8,6 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin_site.urls),
-
-    # redirect to the api urls.
-    # path('', RedirectView.as_view(url='api/v1/')),
 
     # api urls
     path('api/', include('creator.urls')),

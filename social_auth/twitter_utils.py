@@ -82,8 +82,7 @@ def twitter_verify_credentials(
             username=response.json()['screen_name'],
             email=response.json()['email'],
             auth_email=response.json()['email'],
-            auth_token=oauth_token,
-            auth_provider=AUTH_PROVIDER,
+            auth_provider_token=oauth_token,
         )
     else:
         return dict(detail='Token invalid or expired. Please request a new one')
@@ -94,6 +93,9 @@ def twitter_authenticate_user(oauth_token: str, oauth_token_secret: str):
     Confirm if credentials belongs to a user in database and send refresh and
     access token to sign in user, else send data to create new account via
     twitter provided details.
+
+    oauth_token: users oauth_token provided by twitter [needed]
+    oauth_token_secret: users oauth_token_secret provided by twitter [needed]
     """
     try:
         user = User.objects.get(auth_provider=AUTH_PROVIDER, auth_provider_token=oauth_token)
@@ -103,5 +105,5 @@ def twitter_authenticate_user(oauth_token: str, oauth_token_secret: str):
             oauth_token_secret=oauth_token_secret
         )
     else:
-        token = RefreshToken.for_user(user)
-        return dict(refresh=str(token), access=str(token.access_token))
+        refresh = RefreshToken.for_user(user)
+        return dict(refresh=str(refresh), access=str(refresh.access_token))

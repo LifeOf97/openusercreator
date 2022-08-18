@@ -125,7 +125,10 @@ class AppUser(AbstractUser):
         choices=AUTH_PROVIDERS, max_length=50, default='Email',
         blank=True, null=True
     )
-    auth_provider_token = models.CharField(_("Provider Authentication Token"), max_length=255, blank=True, null=True, default='')
+    auth_provider_token = models.CharField(
+        _("Authentication Provider Token"), max_length=255,
+        blank=True, null=True, default=''
+    )
 
     objects = AppUserManager()
 

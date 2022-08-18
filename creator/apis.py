@@ -1,5 +1,4 @@
 from rest_framework import status, views, viewsets, permissions, authentication
-from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext_lazy as _
@@ -293,4 +292,3 @@ class LogoutSessionApiView(views.APIView):
         """
         logout(request)
         return Response(data={"detail": _("Logged out successfully")}, status=status.HTTP_200_OK)
-

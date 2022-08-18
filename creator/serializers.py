@@ -24,7 +24,7 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
         model = AppUser
         exclude = (
             'id', 'is_active', 'is_staff', 'is_superuser',
-            'groups', 'user_permissions'
+            'groups', 'user_permissions', 'auth_provider_token'
          )
         extra_kwargs = {
             'password': {'write_only': True},
