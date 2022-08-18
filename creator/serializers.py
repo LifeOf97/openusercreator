@@ -22,7 +22,10 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        exclude = ('id', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
+        exclude = (
+            'id', 'is_active', 'is_staff', 'is_superuser',
+            'groups', 'user_permissions', 'auth_provider_token'
+         )
         extra_kwargs = {
             'password': {'write_only': True},
             'uid': {'read_only': True}

@@ -96,24 +96,24 @@ urlpatterns = [
     #     name="logout_via_session"
     # ),
 
-    # token authentication urls
+    # username/email authentication urls
     path(
-        "<version>/auth/token/login/",
+        "<version>/auth/login/token/",
         TokenObtainPairView.as_view(),
         name="login_via_token"
     ),
     path(
-        "<version>/auth/token/logout/",
+        "<version>/auth/logout/token/",
         dj_rest.LogoutView.as_view(),
         name="logout_via_token"
     ),
     path(
-        "<version>/auth/token/verify/",
+        "<version>/auth/verify/token/",
         TokenVerifyView.as_view(),
         name="token_verify"
     ),
     path(
-        "<version>/auth/token/refresh/",
+        "<version>/auth/refresh/token/",
         TokenRefreshView.as_view(),
         name="token_refresh"
     ),

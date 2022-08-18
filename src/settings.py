@@ -1,6 +1,8 @@
 from datetime import timedelta
+from dotenv import load_dotenv
 from pathlib import Path
 import os
+
 
 # Developer detail
 DEVELOPER = {
@@ -13,6 +15,9 @@ DEVELOPER = {
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# load env file
+load_dotenv(dotenv_path=F"{BASE_DIR}/.env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -38,15 +43,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # my apps
     'creator.apps.CreatorConfig',
+    'social_auth.apps.SocialAuthConfig',
     # third party apps
     'rest_framework',
     'rest_framework.authtoken',
+    'dj_rest_auth',
     'corsheaders',
     'rest_framework_simplejwt',
+    'drf_spectacular',
     'allauth',
     'allauth.account',
-    'dj_rest_auth',
-    'drf_spectacular',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.twitter',
 ]
 
 SITE_ID = 1
@@ -167,6 +177,7 @@ AUTH_USER_MODEL = 'creator.AppUser'
 # Authentication classes settings
 AUTHENTICATION_BACKENDS = (
     'creator.authentications.AppUserBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
     # 'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -225,15 +236,6 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Dj_rest_auth settings
-# REST_AUTH_SERIALIZERS = {
-#     'LOGIN_SERIALIZER': 'creator.serializers.CustomDjRestAuthLoginSerializer',
-#     'JWT_SERIALIZER': 'creator.serializers.CustomDjRestAuthJWTSerializer',
-# }
-# REST_USE_JWT = True
-# REST_SESSION_LOGIN = False
-# OLD_PASSWORD_FIELD_ENABLED = True
-# REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
 
 # Simplejwt settings
 SIMPLE_JWT = {
@@ -268,6 +270,30 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+
+# Dj_rest_auth settings
+# REST_AUTH_SERIALIZERS = {
+#     'LOGIN_SERIALIZER': 'creator.serializers.CustomDjRestAuthLoginSerializer',
+#     'JWT_SERIALIZER': 'creator.serializers.CustomDjRestAuthJWTSerializer',
+# }
+# REST_USE_JWT = True
+# REST_SESSION_LOGIN = False
+# OLD_PASSWORD_FIELD_ENABLED = True
+# REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
+
+# Django-allauth social auth settings
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_STORE_TOKENS = True
+# SOCIALACCOUNT_EMAIL_VERIFICATION =
+# SOCIALACCOUNT_EMAIL_REQUIRED =
+# SOCIALACCOUNT_PROVIDERS = {
+#     'twitter': {
+
+#     }
+# }
+
 # DjSpectacular Schema settings
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Openuserdata Creators API',
@@ -276,3 +302,6 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+TWITTER_API_KEY = os.environ.get('TWITTER_API_KEY')
+TWITTER_API_SECRET = os.environ.get('TWITTER_API_SECRET')

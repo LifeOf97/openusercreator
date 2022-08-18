@@ -9,8 +9,10 @@ def new_creator(sender, instance=None, created=False, **kwargs):
     and another task to publish message to our message broker.
     """
     if created:
-        tasks.send_email_verification.delay(instance.email)
         tasks.new_creator.delay(data={'username': instance.username, 'uid': instance.uid})
+
+        if not instance.is_verified:
+            tasks.send_email_verification.delay(instance.email)
 
 
 def delete_creator(sender, instance=None, **kwargs):

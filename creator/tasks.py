@@ -97,7 +97,7 @@ def new_creator(data):
     Celery task that calls a method that pushes messages to our rabbitmq message
     broker.
     """
-    RabbitMQProducer().publish_new_creator(data)
+    RabbitMQProducer().publish_message(data=data, routing_key='new_creator')
     return {'Published new creator': data['uid']}
 
 
@@ -107,7 +107,7 @@ def delete_creator(data):
     Celery task that calls a method that pushes messages to our rabbitmq message
     broker.
     """
-    RabbitMQProducer().publish_delete_creator(data)
+    RabbitMQProducer().publish_message(data=data, routing_key='delete_creator')
     return {'Published delete creator': data['uid']}
 
 
@@ -117,7 +117,7 @@ def new_openuserapp(data):
     Celery task that calls a method that pushes messages to our rabbitmq message
     broker.
     """
-    RabbitMQProducer().publish_new_openuserapp(data)
+    RabbitMQProducer().publish_message(data=data, routing_key='new_openuserapp')
     return {'Published new openuserapp': data['name']}
 
 
@@ -127,7 +127,7 @@ def update_openuserapp(data):
     Celery task that calls a method that pushes messages to our rabbitmq message
     broker.
     """
-    RabbitMQProducer().publish_update_openuserapp(data)
+    RabbitMQProducer().publish_message(data=data, routing_key='update_openuserapp')
     return {'Published update openuserapp': data['name']}
 
 
@@ -137,7 +137,7 @@ def delete_openuserapp(data):
     Celery task that calls a method that pushes messages to our rabbitmq message
     broker.
     """
-    RabbitMQProducer().publish_delete_openuserapp(data)
+    RabbitMQProducer().publish_message(data=data, routing_key='delete_openuserapp')
     return {'Published delete openuserapp': data['name']}
 
 
