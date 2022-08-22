@@ -3,6 +3,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from google_auth_oauthlib import flow as google_flow
 from .twitter_utils import twitter_authenticate_user
 from .google_utils import google_authenticate_user
+from .github_utils import github_authenticate_user
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from urllib.parse import urlencode
@@ -10,6 +11,8 @@ from . import serializers
 from pathlib import Path
 import requests_oauthlib
 import requests
+import secrets
+import base64
 import os
 
 
@@ -52,17 +55,56 @@ class SocialUserApiView(viewsets.GenericViewSet):
             return Response(
                 data={
                     "user": serializer.data,
-                    "tokens": {
-                        "refresh": str(refresh),
-                        "access": str(refresh.access_token)
-                    }
+                    "tokens": {"refresh": str(refresh), "access": str(refresh.access_token)}
                 },
                 status=status.HTTP_201_CREATED
             )
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GoogleLoginObtainAccessToken(views.APIView):
+class GithubLoginGenerateUrl(views.APIView):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny, ]
+
+    def get(self, request, *args, **kwargs):
+        authorize_url = 'https://github.com/login/oauth/authorize'
+
+        params = urlencode(
+            {
+                'client_id': os.environ.get('GITHUB_CLIENT_ID'),
+                'redirect_uri': 'http://127.0.0.1:8000/api/v1/auth/github/get/user/',
+                'state': base64.b32hexencode(secrets.token_hex().encode()).decode()
+            }
+        )
+        return Response(data={"url": F"{authorize_url}?{params}"}, status=status.HTTP_200_OK)
+
+
+class GithubLoginGetUser(views.APIView):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny, ]
+
+    def get(self, request, *args, **kwargs):
+        access_url = 'https://github.com/login/oauth/access_token'
+
+        params = urlencode(
+            {
+                'client_id': os.environ.get('GITHUB_CLIENT_ID'),
+                'client_secret': os.environ.get('GITHUB_CLIENT_SECRET'),
+                'code': dict(request.GET)['code'][0],
+                'redirect_uri': 'http://127.0.0.1:8000/api/v1/auth/github/get/user/',
+            }
+        )
+        headers = dict(Accept='application/json')
+        response = requests.post(access_url, params=params, headers=headers)
+
+        if response.status_code == 200:
+            data = github_authenticate_user(access_token=response.json()['access_token'])
+            return Response(data=data, status=status.HTTP_200_OK)
+        else:
+            return Response(data={"error": "Service temporarily unavailable"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GoogleLoginGenerateUrl(views.APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
 
@@ -91,7 +133,6 @@ class GoogleLoginGetUser(views.APIView):
     def get(self, request, *args, **kwargs):
         state = dict(request.GET)['state'][0]
         code = dict(request.GET)['code'][0]
-
         data = google_authenticate_user(state=state, code=code)
         return Response(data=data, status=status.HTTP_200_OK)
 

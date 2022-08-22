@@ -1,6 +1,7 @@
 from rest_framework import status, views, viewsets, permissions, authentication
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from django.contrib.auth import authenticate, login, logout
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.translation import gettext_lazy as _
 from . import serializers, permissions as custom_perm
 from dj_rest_auth.jwt_auth import unset_jwt_cookies
@@ -15,15 +16,15 @@ from . import tasks
 import jwt
 
 # Custom user model instance
-AppUser = get_user_model()
+User = get_user_model()
 
 
-class AppUserApiView(viewsets.GenericViewSet):
+class UserApiView(viewsets.GenericViewSet):
     """
-    Appuser Generic API Viewset.
+    User Generic API Viewset.
     """
-    queryset = AppUser.objects.all()
-    serializer_class = serializers.BasicAppUserSerializer
+    queryset = User.objects.all()
+    serializer_class = serializers.BasicUserSerializer
 
     def get_object(self, *args, **kwargs):
         """
@@ -50,7 +51,7 @@ class AppUserApiView(viewsets.GenericViewSet):
         Returns a list of all creators in the system.
         """
         serializer = self.get_serializer(self.get_queryset(), many=True)
-        return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         """
@@ -61,16 +62,29 @@ class AppUserApiView(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(data={"data": serializer.data}, status=status.HTTP_201_CREATED)
 
-        return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            # create an authentication token to sign in the user on our system
+            user = User.objects.get(
+                auth_provider='Email',
+                uid=serializer.data['uid']
+            )
+            # create new authentication refresh/access tokens
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                data={
+                    "user": serializer.data,
+                    "tokens": {"refresh": str(refresh), "access": str(refresh.access_token)}
+                },
+                status=status.HTTP_201_CREATED
+            )
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         """
         Returns data of the currently logged in creator.
         """
         serializer = self.get_serializer(self.get_object(), context={'request': request})
-        return Response(data={"data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         """
@@ -86,18 +100,18 @@ class AppUserApiView(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(data={"data": serializer.data}, status=status.HTTP_202_ACCEPTED)
-        return Response(data={"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         """
         Deletes the currently logged in creator from the system permanently.
         Returns deleted creator's data
         """
-        appuser = self.get_object()
-        username, email, uid = appuser.username, appuser.email, appuser.uid
-        data = {'data': {'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}}
-        appuser.delete()
+        user = self.get_object()
+        username, email, uid = user.username, user.email, user.uid
+        data = {'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}
+        user.delete()
         response = Response(data=data, status=status.HTTP_204_NO_CONTENT)
 
         # clears jwt authentication if present
@@ -163,7 +177,7 @@ class VerifyEmail(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
-            user = AppUser.objects.get(uid=check_token['user_uid'])
+            user = User.objects.get(uid=check_token['user_uid'])
 
             if not user.is_verified:
                 user.is_verified = True
@@ -191,7 +205,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
         authenticated creator.
         """
         serializer = self.get_serializer(self.get_queryset(), many=True)
-        return Response(data={'data': serializer.data}, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, name=None, *args, **kwargs):
         """
@@ -199,7 +213,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
         authenticated creator.
         """
         serializer = self.get_serializer(self.get_object(), context={'request': request})
-        return Response(data={'data': serializer.data}, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         """
@@ -211,7 +225,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
         if self.get_queryset().count() < 2:
             if serializer.is_valid():
                 serializer.save()
-                return Response(data={'data': serializer.data}, status=status.HTTP_201_CREATED)
+                return Response(data=serializer.data, status=status.HTTP_201_CREATED)
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(
             data={'error': _('Limit reached. You can only have 2 openuser apps.')},
@@ -232,7 +246,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(data={'data': serializer.data}, status=status.HTTP_202_ACCEPTED)
+            return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
@@ -244,7 +258,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
         name, profiles = openuser.name, openuser.profiles
         openuser.delete()
         return Response(
-            data={'data': {'name': name, 'profiles': profiles, 'detail': _('Deleted successfully')}},
+            data={'name': name, 'profiles': profiles, 'detail': _('Deleted successfully')},
             status=status.HTTP_204_NO_CONTENT
         )
 

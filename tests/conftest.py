@@ -41,7 +41,7 @@ def disable_signals(request):
 
 
 @pytest.fixture
-def AppUser():
+def User():
     return get_user_model()
 
 
@@ -115,8 +115,8 @@ def another_user_data():
 
 
 @pytest.fixture
-def created(db, AppUser, full_user_data):
-    user = AppUser.objects.create(**full_user_data)
+def created(db, User, full_user_data):
+    user = User.objects.create(**full_user_data)
     user.set_password(full_user_data['password'])
     user.save()
 
@@ -124,20 +124,20 @@ def created(db, AppUser, full_user_data):
 
 
 @pytest.fixture
-def created_user(db, AppUser, test_user_1):
+def created_user(db, User, test_user_1):
     """
     This fixture creates a new user using the data from test_user_1
     """
-    user = AppUser.objects.create_user(**test_user_1)
+    user = User.objects.create_user(**test_user_1)
     return user
 
 
 @pytest.fixture
-def created_superuser(db, AppUser, test_user_1):
+def created_superuser(db, User, test_user_1):
     """
     This fixture creates a new superuser using the data from test_user_1
     """
-    user = AppUser.objects.create_superuser(**test_user_1)
+    user = User.objects.create_superuser(**test_user_1)
     return user
 
 

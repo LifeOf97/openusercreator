@@ -18,7 +18,7 @@ class FullAppUserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class BasicAppUserSerializer(serializers.ModelSerializer):
+class BasicUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
