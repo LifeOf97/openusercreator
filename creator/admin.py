@@ -27,7 +27,7 @@ class AppUserAdmin(UserAdmin):
     fieldsets = (
         ("Identification", {
             "fields": (
-                "id", "uid", "username", "email", "password", "auth_provider", "auth_provider_token"
+                "id", "uid", "username", "email", "password", "auth_provider", "auth_provider_id"
             )
         }),
         ("Data", {"fields": ("first_name", "last_name", "other_name"), }),
@@ -38,7 +38,7 @@ class AppUserAdmin(UserAdmin):
 
     readonly_fields = (
         'id', 'uid', 'password', 'date_joined', 'last_login',
-        'auth_provider', 'auth_provider_token'
+        'auth_provider', 'auth_provider_id'
     )
     ordering = ('-id',)
 

@@ -1,16 +1,99 @@
 from rest_framework import views, permissions, status, viewsets
 from rest_framework_simplejwt.tokens import RefreshToken
+from google_auth_oauthlib import flow as google_flow
 from .twitter_utils import twitter_authenticate_user
+from .google_utils import google_authenticate_user
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from urllib.parse import urlencode
 from . import serializers
+from pathlib import Path
 import requests_oauthlib
 import requests
 import os
 
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 User = get_user_model()
-AUTH_PROVIDER = 'Twitter'
+
+
+class SocialUserApiView(viewsets.GenericViewSet):
+    queryset = User.objects.all()
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = serializers.SocialUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        """
+        Create a new social user, returns the newly created users data.
+        """
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        auth_email = serializer.initial_data['auth_email']
+        auth_provider = serializer.initial_data['auth_provider']
+
+        if serializer.is_valid():
+            serializer.save(
+                auth_provider=str(auth_provider).capitalize(),
+                is_verified=bool(
+                    serializer.validated_data['email'] == auth_email
+                )
+            )
+
+            # create an authentication token to sign in the user on our system
+            user = User.objects.get(
+                auth_provider=str(auth_provider).capitalize(),
+                auth_provider_id=serializer.validated_data['auth_provider_id']
+            )
+            # create new authentication refresh/access tokens
+            refresh = RefreshToken.for_user(user)
+            # pass the created auth tokens to the response data
+            return Response(
+                data={
+                    "user": serializer.data,
+                    "tokens": {
+                        "refresh": str(refresh),
+                        "access": str(refresh.access_token)
+                    }
+                },
+                status=status.HTTP_201_CREATED
+            )
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GoogleLoginObtainAccessToken(views.APIView):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny, ]
+
+    def get(self, request, *args, **kwargs):
+        flow = google_flow.Flow.from_client_secrets_file(
+            F'{BASE_DIR}/client_secret.json',
+            scopes=[
+                'https://www.googleapis.com/auth/userinfo.email',
+                'https://www.googleapis.com/auth/userinfo.profile',
+                'openid'
+            ]
+        )
+        flow.redirect_uri = "http://127.0.0.1:8000/api/v1/auth/google/get/user/"
+        auth_url, state = flow.authorization_url(
+            access_type='offline',
+            prompt='consent',
+            include_granted_scopes='true'
+        )
+        return Response(data={'url': auth_url}, status=status.HTTP_200_OK)
+
+
+class GoogleLoginGetUser(views.APIView):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny, ]
+
+    def get(self, request, *args, **kwargs):
+        state = dict(request.GET)['state'][0]
+        code = dict(request.GET)['code'][0]
+
+        data = google_authenticate_user(state=state, code=code)
+        return Response(data=data, status=status.HTTP_200_OK)
 
 
 class TwitterLoginGenerateUrl(views.APIView):
@@ -41,10 +124,17 @@ class TwitterLoginGenerateUrl(views.APIView):
 
 
 class TwitterLoginGetUser(views.APIView):
+    """
+    Twitter callkback API View
+    """
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
 
     def get(self, request, *args, **kwargs):
+        """
+        Returns a twitter users data if the user is just registering for the first time
+        or returns just an refresh/access token if the user is already registered in our system.
+        """
         access_token_url = "https://api.twitter.com/oauth/access_token"
         oauth = requests_oauthlib.OAuth1(
             client_key=os.environ.get('TWITTER_API_KEY'),
@@ -63,43 +153,9 @@ class TwitterLoginGetUser(views.APIView):
             data = {d.split('=')[0]: d.split('=')[1] for d in response.text.split('&')}
             user = twitter_authenticate_user(
                 oauth_token=data['oauth_token'],
-                oauth_token_secret=data['oauth_token_secret']
+                oauth_token_secret=data['oauth_token_secret'],
+                auth_provider_id=data['user_id']
             )
             return Response(data=user, status=status.HTTP_200_OK)
         else:
             return Response(data={"error": "Service temporarily unavailable"}, status=status.HTTP_200_OK)
-
-
-class TwitterCreateUser(viewsets.GenericViewSet):
-    queryset = User.objects.all()
-    authentication_classes = []
-    permission_classes = [permissions.AllowAny, ]
-    serializer_class = serializers.TwitterRegisterUserSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, context={'request': request})
-        auth_email = serializer.initial_data['auth_email']
-
-        if serializer.is_valid():
-            serializer.save(
-                is_verified=bool(
-                    serializer.validated_data['email'] == auth_email
-                )
-            )
-
-            # create an authentication token to sign in the user on our system
-            user = User.objects.get(
-                auth_provider=AUTH_PROVIDER,
-                auth_provider_token=serializer.data['auth_provider_token']
-            )
-            # create new authentication refresh/access tokens
-            refresh = RefreshToken.for_user(user)
-            # pass the created auth tokens to the response data
-            return Response(
-                data={
-                    "user": serializer.data,
-                    "tokens": {"refresh": str(refresh), "access": str(refresh.access_token)}
-                },
-                status=status.HTTP_201_CREATED
-            )
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
