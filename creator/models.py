@@ -15,7 +15,7 @@ models.CharField.register_lookup(Length)
 
 # Functiuon to create random ints
 def get_random_int():
-    return str(uuid.uuid4().int)[:15]
+    return str(uuid.uuid4().int)[:20]
 
 
 # Choices
@@ -125,8 +125,8 @@ class AppUser(AbstractUser):
         choices=AUTH_PROVIDERS, max_length=50, default='Email',
         blank=True, null=True
     )
-    auth_provider_token = models.CharField(
-        _("Authentication Provider Token"), max_length=255,
+    auth_provider_id = models.CharField(
+        _("Authentication Provider ID"), max_length=255,
         blank=True, null=True, default=''
     )
 

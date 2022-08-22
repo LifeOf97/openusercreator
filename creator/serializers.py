@@ -24,11 +24,12 @@ class BasicAppUserSerializer(serializers.ModelSerializer):
         model = AppUser
         exclude = (
             'id', 'is_active', 'is_staff', 'is_superuser',
-            'groups', 'user_permissions', 'auth_provider_token'
+            'groups', 'user_permissions', 'auth_provider',
+            'auth_provider_id'
          )
         extra_kwargs = {
             'password': {'write_only': True},
-            'uid': {'read_only': True}
+            'uid': {'read_only': True},
         }
 
     def to_internal_value(self, data):

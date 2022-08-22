@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 
 User = get_user_model()
-AUTH_PROVIDER = 'Twitter'
 AUTH_PROVIDERS = (
     ('Email', 'Email'),
     ('Github', 'Github'),
@@ -12,12 +11,13 @@ AUTH_PROVIDERS = (
 )
 
 
-class TwitterRegisterUserSerializer(serializers.ModelSerializer):
+class SocialUserSerializer(serializers.ModelSerializer):
     auth_email = serializers.EmailField(read_only=True)
+    auth_provider = serializers.ChoiceField(choices=AUTH_PROVIDERS, read_only=True)
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'auth_email', 'auth_provider_token')
+        fields = ('email', 'username', 'password', 'auth_email', 'auth_provider', 'auth_provider_id')
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -40,6 +40,5 @@ class TwitterRegisterUserSerializer(serializers.ModelSerializer):
 
         user = User.objects.create(**validated_data)
         user.set_password(password)
-        user.auth_provider = AUTH_PROVIDER
         user.save()
         return user
