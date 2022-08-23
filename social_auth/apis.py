@@ -1,15 +1,14 @@
-# from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework import views, permissions, status, viewsets
+from rest_framework import views, permissions, status, viewsets, serializers
+from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from google_auth_oauthlib import flow as google_flow
 from .twitter_utils import twitter_authenticate_user
 from .google_utils import google_authenticate_user
 from .github_utils import github_authenticate_user
 from django.contrib.auth import get_user_model
-# from drf_spectacular.types import OpenApiTypes
 from rest_framework.response import Response
+from . import serializers as app_serializer
 from urllib.parse import urlencode
-from . import serializers
 from pathlib import Path
 import requests_oauthlib
 import requests
@@ -28,8 +27,14 @@ class SocialUserApiView(viewsets.GenericViewSet):
     queryset = User.objects.all()
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
-    serializer_class = serializers.SocialUserSerializer
+    serializer_class = app_serializer.SocialUserSerializer
 
+    @extend_schema(
+        responses={200: inline_serializer(
+            name='Create',
+            fields={'user': serializers.JSONField(), 'tokens': serializers.JSONField()}
+        )}
+    )
     def create(self, request, *args, **kwargs):
         """
         Create a new social user, returns the newly created users data.
@@ -68,6 +73,10 @@ class GithubLoginGenerateUrl(views.APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
 
+    @extend_schema(
+        request=None,
+        responses={200: inline_serializer(name='Github', fields={'url': serializers.URLField()})}
+    )
     def get(self, request, *args, **kwargs):
         authorize_url = 'https://github.com/login/oauth/authorize'
 
@@ -85,6 +94,20 @@ class GithubLoginGetUser(views.APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
 
+    @extend_schema(
+        request=None,
+        responses={200: inline_serializer(
+            name='Github_User',
+            fields={
+                'creator': serializers.BooleanField(default=False, read_only=True),
+                'username': serializers.CharField(),
+                'email': serializers.EmailField(),
+                'auth_email': serializers.EmailField(read_only=True),
+                'auth_provider': serializers.CharField(default='Github', read_only=True),
+                'auth_provider_id': serializers.CharField(),
+            }
+        )}
+    )
     def get(self, request, *args, **kwargs):
         access_url = 'https://github.com/login/oauth/access_token'
 
@@ -110,6 +133,13 @@ class GoogleLoginGenerateUrl(views.APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
 
+    @extend_schema(
+        request=None,
+        responses={200: inline_serializer(
+            name='Google',
+            fields={'url': serializers.URLField()}
+        )}
+    )
     def get(self, request, *args, **kwargs):
         flow = google_flow.Flow.from_client_secrets_file(
             F'{BASE_DIR}/client_secret.json',
@@ -132,6 +162,20 @@ class GoogleLoginGetUser(views.APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
 
+    @extend_schema(
+        request=None,
+        responses={200: inline_serializer(
+            name='Google_User',
+            fields={
+                'creator': serializers.BooleanField(default=False, read_only=True),
+                'username': serializers.CharField(),
+                'email': serializers.EmailField(),
+                'auth_email': serializers.EmailField(read_only=True),
+                'auth_provider': serializers.CharField(default='Google', read_only=True),
+                'auth_provider_id': serializers.CharField(),
+            }
+        )}
+    )
     def get(self, request, *args, **kwargs):
         state = dict(request.GET)['state'][0]
         code = dict(request.GET)['code'][0]
@@ -143,6 +187,10 @@ class TwitterLoginGenerateUrl(views.APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
 
+    @extend_schema(
+        request=None,
+        responses={200: inline_serializer(name='Twitter', fields={'url': serializers.URLField()})}
+    )
     def get(self, request, *args, **kwargs):
         """
         Returns a twitter authorize url.
@@ -173,6 +221,20 @@ class TwitterLoginGetUser(views.APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny, ]
 
+    @extend_schema(
+        request=None,
+        responses={200: inline_serializer(
+            name='Twitter_User',
+            fields={
+                'creator': serializers.BooleanField(default=False, read_only=True),
+                'username': serializers.CharField(),
+                'email': serializers.EmailField(),
+                'auth_email': serializers.EmailField(read_only=True),
+                'auth_provider': serializers.CharField(default='Twitter', read_only=True),
+                'auth_provider_id': serializers.CharField(),
+            }
+        )}
+    )
     def get(self, request, *args, **kwargs):
         """
         Returns a twitter users data if the user is just registering for the first time
