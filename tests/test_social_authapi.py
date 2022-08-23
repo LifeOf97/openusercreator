@@ -12,11 +12,6 @@ import os
             F"https://github.com/login/oauth/authorize?client_id={os.environ.get('GITHUB_CLIENT_ID')}&redirect_uri="
         ),
         (
-            reverse('login_via_google', kwargs={'version': 'v1'}),
-            F"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=\
-{os.environ.get('GOOGLE_CLIENT_ID')}&redirect_uri="
-        ),
-        (
             reverse('login_via_twitter', kwargs={'version': 'v1'}),
             "https://api.twitter.com/oauth/authenticate?oauth_token="
         )
