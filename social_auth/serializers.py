@@ -1,6 +1,7 @@
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+# from drf_spectacular.types import OpenApiTypes
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-
 
 User = get_user_model()
 AUTH_PROVIDERS = (
@@ -11,6 +12,25 @@ AUTH_PROVIDERS = (
 )
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            'Example one',
+            summary='Sign in with (Github, Google or Twitter)',
+            description="Create a new user, using the user info returned by the social platform.",
+            value={
+                'username': 'string',
+                'email': 'example@email.com',
+                'auth_email': 'example@email.com',
+                'auth_provider': 'string',
+                'auth_provider_id': 'string',
+                'password': 'string',
+            },
+            request_only=True,
+            response_only=False
+        )
+    ]
+)
 class SocialUserSerializer(serializers.ModelSerializer):
     auth_email = serializers.EmailField(read_only=True)
     auth_provider = serializers.ChoiceField(choices=AUTH_PROVIDERS, read_only=True)
