@@ -5,7 +5,7 @@ from rest_framework import status
 import pytest
 
 
-AppUser = get_user_model()
+User = get_user_model()
 create_url = reverse('creators_create', kwargs={'version': 'v1'})
 # login_session_url = reverse('login_via_session', kwargs={'version': 'v1'})
 login_token_url = reverse('login_via_token', kwargs={'version': 'v1'})
@@ -35,17 +35,18 @@ def test_create_new_account_and_check_that_no_sensitive_data_is_returned(full_us
     res = client.post(create_url, full_user_data, format='json')
 
     assert res.status_code == status.HTTP_201_CREATED
-    assert AppUser.objects.count() == 1
-    assert res.data['data']['username'] == full_user_data['username'].lower()
-    assert res.data['data']['email'] == full_user_data['email'].lower()
-    assert res.data['data']['first_name'] == full_user_data['first_name']
-    assert res.data['data']['last_name'] == full_user_data['last_name']
-    assert res.data['data']['other_name'] == full_user_data['other_name']
-    assert res.data['data']['uid'] not in ['', None]
-    assert not res.data['data']['is_verified']
-    assert 'password' not in res.data['data']
-    assert res.data['data']['date_joined']
-    assert res.data['data']['last_login'] is None
+    assert User.objects.count() == 1
+    assert res.data['user']['username'] == full_user_data['username'].lower()
+    assert res.data['user']['email'] == full_user_data['email'].lower()
+    assert res.data['user']['first_name'] == full_user_data['first_name']
+    assert res.data['user']['last_name'] == full_user_data['last_name']
+    assert res.data['user']['other_name'] == full_user_data['other_name']
+    assert len(res.data['user']['uid']) == 20
+    assert str(res.data['user']['uid']).isnumeric()
+    assert not res.data['user']['is_verified']
+    assert 'password' not in res.data['user']
+    assert res.data['user']['date_joined']
+    assert res.data['user']['last_login'] is None
 
 
 # @pytest.mark.django_db
@@ -64,7 +65,7 @@ def test_create_new_account_and_check_that_no_sensitive_data_is_returned(full_us
 #     # register new user first
 #     res = client.post(create_url, full_user_data, format='json')
 #     assert res.status_code == status.HTTP_201_CREATED
-#     assert AppUser.objects.count() == 1
+#     assert User.objects.count() == 1
 
 #     # now login the new user via session login
 #     res = client.post(login_session_url, full_user_data, format='json')
@@ -76,7 +77,7 @@ def test_create_new_account_and_check_that_no_sensitive_data_is_returned(full_us
 
 
 @pytest.mark.django_db
-def test_new_creators_can_login_via_token(full_user_data):
+def test_creators_can_login_via_token(full_user_data):
     client = APIClient(enforce_csrf_checks=True)
 
     # GET request method not allowed
@@ -91,7 +92,7 @@ def test_new_creators_can_login_via_token(full_user_data):
     # register new user first
     res = client.post(create_url, full_user_data, format='json')
     assert res.status_code == status.HTTP_201_CREATED
-    assert AppUser.objects.count() == 1
+    assert User.objects.count() == 1
 
     # now login the new user via token login
     res = client.post(login_token_url, full_user_data, format='json')
@@ -106,7 +107,7 @@ def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created
     client = APIClient(enforce_csrf_checks=True)
 
     # because of the created fixture
-    assert AppUser.objects.count() == 1
+    assert User.objects.count() == 1
 
     # now login the user
     res = client.post(login_token_url, full_user_data, format='json')
@@ -116,16 +117,17 @@ def test_creators_detail_endpoint_returns_currently_logged_in_users_data(created
     client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['data']['username'] == full_user_data['username'].lower()
-    assert res.data['data']['email'] == full_user_data['email'].lower()
-    assert res.data['data']['first_name'] == full_user_data['first_name']
-    assert res.data['data']['last_name'] == full_user_data['last_name']
-    assert res.data['data']['other_name'] == full_user_data['other_name']
-    assert res.data['data']['uid'] not in ['', None]
-    assert not res.data['data']['is_verified']
-    assert 'password' not in res.data['data']
-    assert res.data['data']['date_joined'] is not None
-    assert res.data['data']['last_login'] is not None
+    assert res.data['username'] == full_user_data['username'].lower()
+    assert res.data['email'] == full_user_data['email'].lower()
+    assert res.data['first_name'] == full_user_data['first_name']
+    assert res.data['last_name'] == full_user_data['last_name']
+    assert res.data['other_name'] == full_user_data['other_name']
+    assert len(res.data['uid']) == 20
+    assert str(res.data['uid']).isnumeric()
+    assert not res.data['is_verified']
+    assert 'password' not in res.data
+    assert res.data['date_joined'] is not None
+    assert res.data['last_login'] is not None
 
 
 @pytest.mark.django_db
@@ -142,7 +144,7 @@ def test_autenticated_users_can_update_their_data(created, full_user_data, anoth
     client = APIClient(enforce_csrf_checks=True)
 
     # because of the created fixture
-    assert AppUser.objects.count() == 1
+    assert User.objects.count() == 1
 
     # now login the user, using full_user_data fixture used in the created fixture
     res = client.post(login_token_url, full_user_data, format='json')
@@ -153,16 +155,16 @@ def test_autenticated_users_can_update_their_data(created, full_user_data, anoth
     res = client.put(update_data_url, another_user_data, format='json')
 
     assert res.status_code == status.HTTP_202_ACCEPTED
-    assert res.data['data']['username'] == another_user_data['username'].lower()
-    assert res.data['data']['email'] == another_user_data['email'].lower()
-    assert res.data['data']['first_name'] == another_user_data['first_name']
-    assert res.data['data']['last_name'] == another_user_data['last_name']
-    assert res.data['data']['other_name'] == another_user_data['other_name']
-    assert res.data['data']['uid'] not in ['', None]
-    assert not res.data['data']['is_verified']
-    assert 'password' not in res.data['data']
-    assert res.data['data']['date_joined'] is not None
-    assert res.data['data']['last_login'] is not None
+    assert res.data['username'] == another_user_data['username'].lower()
+    assert res.data['email'] == another_user_data['email'].lower()
+    assert res.data['first_name'] == another_user_data['first_name']
+    assert res.data['last_name'] == another_user_data['last_name']
+    assert res.data['other_name'] == another_user_data['other_name']
+    assert res.data['uid'] not in ['', None]
+    assert not res.data['is_verified']
+    assert 'password' not in res.data
+    assert res.data['date_joined'] is not None
+    assert res.data['last_login'] is not None
 
 
 @pytest.mark.django_db
@@ -170,7 +172,7 @@ def test_autenticated_users_can_delete_their_account(created, full_user_data):
     client = APIClient(enforce_csrf_checks=True)
 
     # because of the created fixture
-    assert AppUser.objects.count() == 1
+    assert User.objects.count() == 1
 
     # now login the user, using full_user_data fixture used in the created fixture
     res = client.post(login_token_url, full_user_data, format='json')
@@ -181,16 +183,16 @@ def test_autenticated_users_can_delete_their_account(created, full_user_data):
     res = client.get(my_data_url)
     assert res.status_code == status.HTTP_200_OK
 
-    user_data = res.data['data']
+    user_data = res.data
 
     # now delete the currently logged in user account
     res = client.delete(delete_data_url)
 
     assert res.status_code == status.HTTP_204_NO_CONTENT
-    assert 'Deleted successfully' in res.data['data']['detail']
-    assert res.data['data']['uid'] == user_data['uid']
-    assert res.data['data']['username'] == user_data['username']
-    assert res.data['data']['email'] == user_data['email']
+    assert 'Deleted successfully' in res.data['detail']
+    assert res.data['uid'] == user_data['uid']
+    assert res.data['username'] == user_data['username']
+    assert res.data['email'] == user_data['email']
 
 
 @pytest.mark.django_db
@@ -203,7 +205,7 @@ def test_only_admin_users_can_retrieve_all_creators(
     client = APIClient(enforce_csrf_checks=True)
 
     # because of the created and created_superuser fixture
-    assert AppUser.objects.count() == 2
+    assert User.objects.count() == 2
 
     # now, authenticate the non admin user
     res = client.post(login_token_url, full_user_data, format='json')
@@ -222,7 +224,7 @@ def test_only_admin_users_can_retrieve_all_creators(
     client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
     res = client.get(list_creators_url)
     assert res.status_code == status.HTTP_200_OK
-    assert len(res.data['data']) == 2
+    assert len(res.data) == 2
 
 
 @pytest.mark.django_db
@@ -230,7 +232,7 @@ def test_authenticated_creators_can_change_their_password(created, full_user_dat
     client = APIClient()
 
     # because of the created fixture
-    assert AppUser.objects.count() == 1
+    assert User.objects.count() == 1
 
     # now, authenticate the user
     res = client.post(login_token_url, full_user_data, format='json')
@@ -264,7 +266,7 @@ def test_authenticated_creators_can_change_their_password(created, full_user_dat
 #     client = APIClient()
 
 #     # because of the created fixture
-#     assert AppUser.objects.count() == 1
+#     assert User.objects.count() == 1
 
 #     # now authenticate via token first
 #     res = client.post(login_token_url, full_user_data, format='json')
@@ -286,7 +288,7 @@ def test_verify_token_url_verifies_token_authenticity(created, full_user_data):
     client = APIClient()
 
     # because of the created fixture
-    assert AppUser.objects.count() == 1
+    assert User.objects.count() == 1
 
     # now authenticate user via token
     res = client.post(login_token_url, full_user_data, format='json')
@@ -307,7 +309,7 @@ def test_refresh_token_url_refreshes_auth_token(created, full_user_data):
     client = APIClient()
 
     # because of the created fixture
-    assert AppUser.objects.count() == 1
+    assert User.objects.count() == 1
 
     # now authenticate user via token
     res = client.post(login_token_url, full_user_data, format='json')

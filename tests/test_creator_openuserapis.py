@@ -50,13 +50,13 @@ class TestOpenUserApi:
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
         assert Openuser.objects.count() == 1
-        assert isinstance(res.data['data']['id'], str)
-        assert res.data['data']['creator'] == created.uid
-        assert res.data['data']['name'] == openuser_data_1['name'].lower()
-        assert res.data['data']['profiles'] == openuser_data_1['profiles']
-        assert res.data['data']['profile_password'] == openuser_data_1['profile_password']
-        assert res.data['data']['date_created'] not in ['', None]
-        assert res.data['data']['last_updated'] not in ['', None]
+        assert isinstance(res.data['id'], str)
+        assert res.data['creator'] == created.uid
+        assert res.data['name'] == openuser_data_1['name'].lower()
+        assert res.data['profiles'] == openuser_data_1['profiles']
+        assert res.data['profile_password'] == openuser_data_1['profile_password']
+        assert res.data['date_created'] not in ['', None]
+        assert res.data['last_updated'] not in ['', None]
 
     @pytest.mark.django_db()
     def test_authenticated_users_cannot_create_openuser_profiles_with_same_name(
@@ -118,10 +118,10 @@ class TestOpenUserApi:
         client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.get(list_my_openusers_url, format='json')
         assert res.status_code == status.HTTP_200_OK
-        assert len(res.data['data']) == 3
-        assert res.data['data'][0]['creator'] == created.uid
-        assert res.data['data'][1]['creator'] == created.uid
-        assert res.data['data'][2]['creator'] == created.uid
+        assert len(res.data) == 3
+        assert res.data[0]['creator'] == created.uid
+        assert res.data[1]['creator'] == created.uid
+        assert res.data[2]['creator'] == created.uid
 
     @pytest.mark.django_db
     def test_authenticated_users_can_only_retrieve_an_instance_of_their_openuser_app(
@@ -163,13 +163,13 @@ class TestOpenUserApi:
             ))
 
         assert res.status_code == status.HTTP_200_OK
-        assert res.data['data']['id'] == str(created_openuser_2.id)
-        assert res.data['data']['name'] == slugify(created_openuser_2.name.lower().replace("_", " "))
-        assert res.data['data']['creator'] == created_openuser_2.creator.uid
-        assert res.data['data']['profiles'] == created_openuser_2.profiles
-        assert res.data['data']['profile_password'] == created_openuser_2.profile_password
-        assert datetime.fromisoformat(res.data['data']['date_created']) == created_openuser_2.date_created
-        assert datetime.fromisoformat(res.data['data']['last_updated']) == created_openuser_2.last_updated
+        assert res.data['id'] == str(created_openuser_2.id)
+        assert res.data['name'] == slugify(created_openuser_2.name.lower().replace("_", " "))
+        assert res.data['creator'] == created_openuser_2.creator.uid
+        assert res.data['profiles'] == created_openuser_2.profiles
+        assert res.data['profile_password'] == created_openuser_2.profile_password
+        assert datetime.fromisoformat(res.data['date_created']) == created_openuser_2.date_created
+        assert datetime.fromisoformat(res.data['last_updated']) == created_openuser_2.last_updated
 
     @pytest.mark.django_db
     def test_openuser_name_field_must_obey_the_validators_applied(self, created, full_user_data):
@@ -240,9 +240,9 @@ class TestOpenUserApi:
         # create with data_3
         res = client.post(create_openuser_url, data_3, format='json')
         assert res.status_code == status.HTTP_201_CREATED
-        assert res.data['data']['name'] == data_3['name'].replace('@', '')
-        assert res.data['data']['profiles'] == data_3['profiles']
-        assert res.data['data']['profile_password'] == data_3['profile_password']
+        assert res.data['name'] == data_3['name'].replace('@', '')
+        assert res.data['profiles'] == data_3['profiles']
+        assert res.data['profile_password'] == data_3['profile_password']
 
         # create with data_4
         res = client.post(create_openuser_url, data_4, format='json')
@@ -257,7 +257,7 @@ class TestOpenUserApi:
         # create with data_6
         res = client.post(create_openuser_url, data_6, format='json')
         assert res.status_code == status.HTTP_201_CREATED
-        assert res.data['data']['name'] == data_6['name'].replace(' ', '-').lower()
+        assert res.data['name'] == data_6['name'].replace(' ', '-').lower()
 
     @pytest.mark.django_db
     def test_authenticated_users_can_update_their_openuser_profiles(self, created, openuser_data_1, full_user_data):
@@ -283,7 +283,7 @@ class TestOpenUserApi:
                 'creators_apps_detail',
                 kwargs={'version': 'v1', 'name': F'{openuser_data_1["name"].lower()}'},
             ))
-        old_data = res.data['data']
+        old_data = res.data
 
         new_date = dict(
             name='Update-1-Api',
@@ -302,15 +302,15 @@ class TestOpenUserApi:
         )
 
         assert res.status_code == status.HTTP_202_ACCEPTED
-        assert res.data['data']['id'] == old_data['id']
-        assert res.data['data']['creator'] == old_data['creator']
-        assert res.data['data']['creator'] == created.uid
-        assert res.data['data']['name'] != old_data['name']
-        assert res.data['data']['profiles'] != old_data['profiles']
-        assert res.data['data']['profile_password'] != old_data['profile_password']
-        assert res.data['data']['name'] == new_date['name'].lower()
-        assert res.data['data']['profiles'] == new_date['profiles']
-        assert res.data['data']['profile_password'] == new_date['profile_password']
+        assert res.data['id'] == old_data['id']
+        assert res.data['creator'] == old_data['creator']
+        assert res.data['creator'] == created.uid
+        assert res.data['name'] != old_data['name']
+        assert res.data['profiles'] != old_data['profiles']
+        assert res.data['profile_password'] != old_data['profile_password']
+        assert res.data['name'] == new_date['name'].lower()
+        assert res.data['profiles'] == new_date['profiles']
+        assert res.data['profile_password'] == new_date['profile_password']
 
     @pytest.mark.django_db
     def test_authenticated_users_can_delete_an_openuser_instance(
@@ -336,7 +336,7 @@ class TestOpenUserApi:
         client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.get(list_my_openusers_url)
         assert res.status_code == status.HTTP_200_OK
-        assert len(res.data['data']) == 3
+        assert len(res.data) == 3
 
         # now delete one openuser instance
         res = client.delete(
@@ -348,9 +348,9 @@ class TestOpenUserApi:
         )
         assert res.status_code == status.HTTP_204_NO_CONTENT
         assert Openuser.objects.count() == 2
-        assert res.data['data']['name'] == created_openuser_2.name.lower()
-        assert res.data['data']['profiles'] == created_openuser_2.profiles
-        assert 'Deleted successfully' == res.data['data']['detail']
+        assert res.data['name'] == created_openuser_2.name.lower()
+        assert res.data['profiles'] == created_openuser_2.profiles
+        assert 'Deleted successfully' == res.data['detail']
 
     @pytest.mark.django_db
     def test_creators_can_only_have_maximum_of_two_openuserdata_profiles(self, created, full_user_data):
@@ -375,16 +375,16 @@ class TestOpenUserApi:
         # create first openuserdata
         res = client.post(create_openuser_url, data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
-        assert res.data['data']['name'] == data_1['name'].lower()
-        assert res.data['data']['profiles'] == data_1['profiles']
-        assert res.data['data']['profile_password'] == data_1['profile_password']
+        assert res.data['name'] == data_1['name'].lower()
+        assert res.data['profiles'] == data_1['profiles']
+        assert res.data['profile_password'] == data_1['profile_password']
 
         # create second openuserdata
         res = client.post(create_openuser_url, data_2, format='json')
         assert res.status_code == status.HTTP_201_CREATED
-        assert res.data['data']['name'] == data_2['name'].lower()
-        assert res.data['data']['profiles'] == data_2['profiles']
-        assert res.data['data']['profile_password'] == data_2['profile_password']
+        assert res.data['name'] == data_2['name'].lower()
+        assert res.data['profiles'] == data_2['profiles']
+        assert res.data['profile_password'] == data_2['profile_password']
 
         # try to create a third openuserdata
         res = client.post(create_openuser_url, data_3, format='json')

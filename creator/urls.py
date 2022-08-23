@@ -16,7 +16,7 @@ urlpatterns = [
     # create/verify new creators urls endpoint
     path(
         "<version>/creators/new/",
-        apis.AppUserApiView.as_view({'post': 'create'}),
+        apis.UserApiView.as_view({'post': 'create'}),
         name="creators_create"
     ),
     path(
@@ -28,22 +28,22 @@ urlpatterns = [
     # creators urls endpoint
     path(
         "<version>/creators/",
-        apis.AppUserApiView.as_view({'get': 'list'}),
+        apis.UserApiView.as_view({'get': 'list'}),
         name="creators_list"
     ),
     path(
         "<version>/creators/me/",
-        apis.AppUserApiView.as_view({'get': 'retrieve'}),
+        apis.UserApiView.as_view({'get': 'retrieve'}),
         name="creators_details"
     ),
     path(
         "<version>/creators/me/update/",
-        apis.AppUserApiView.as_view({'put': 'update', 'patch': 'update'}),
+        apis.UserApiView.as_view({'put': 'update', 'patch': 'update'}),
         name="creators_update"
     ),
     path(
         "<version>/creators/me/delete/",
-        apis.AppUserApiView.as_view({'delete': 'destroy'}),
+        apis.UserApiView.as_view({'delete': 'destroy'}),
         name="creators_delete"
     ),
     path(
