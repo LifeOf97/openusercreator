@@ -1,3 +1,4 @@
+# from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import views, permissions, status, viewsets
 from rest_framework_simplejwt.tokens import RefreshToken
 from google_auth_oauthlib import flow as google_flow
@@ -5,6 +6,7 @@ from .twitter_utils import twitter_authenticate_user
 from .google_utils import google_authenticate_user
 from .github_utils import github_authenticate_user
 from django.contrib.auth import get_user_model
+# from drf_spectacular.types import OpenApiTypes
 from rest_framework.response import Response
 from urllib.parse import urlencode
 from . import serializers
