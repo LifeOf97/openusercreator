@@ -48,7 +48,7 @@ class OpenUserAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'creator', 'name', 'profiles', 'status', 'date_created')
     list_display_links = ('id', 'creator', 'name')
-    list_filter = ('creator', 'status')
+    list_filter = ('status', )
 
     fieldsets = (
         ("Identification", {"fields": ("creator", "id", "name", "profile_password", "endpoint", "status")}),

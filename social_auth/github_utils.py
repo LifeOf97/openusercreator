@@ -25,7 +25,6 @@ def github_authenticate_user(access_token: str):
         user = User.objects.get(auth_provider=AUTH_PROVIDER, auth_provider_id=str(userinfo['id']))
     except User.DoesNotExist:
         return dict(
-            creator=False,
             username=userinfo['login'],
             email=userinfo['email'],
             auth_email=userinfo['email'],

@@ -18,20 +18,6 @@ def get_random_int():
     return str(uuid.uuid4().int)[:20]
 
 
-# Choices
-STATUS = (
-    ('Creating', 'Creating'),
-    ('Created', 'Created')
-)
-
-AUTH_PROVIDERS = (
-    ('Email', 'Email'),
-    ('Github', 'Github'),
-    ('Google', 'Google'),
-    ('Twitter', 'Twitter'),
-)
-
-
 class AppUserManager(BaseUserManager):
     """
     Custom user manager.
@@ -75,6 +61,11 @@ class AppUser(AbstractUser):
     """
     Custom user model.
     """
+    class Auth_Providers(models.TextChoices):
+        EMAIL = 'Email'
+        GITHUB = 'Github'
+        GOOGLE = 'Google'
+        TWITTER = 'Twitter'
 
     id = models.BigAutoField(_("ID"), unique=True, primary_key=True, editable=False)
     uid = models.CharField(
@@ -122,8 +113,8 @@ class AppUser(AbstractUser):
     )
     auth_provider = models.CharField(
         _("Authentication Provider"),
-        choices=AUTH_PROVIDERS, max_length=50, default='Email',
-        blank=True, null=True
+        max_length=50, blank=True, null=True,
+        choices=Auth_Providers.choices, default=Auth_Providers.EMAIL
     )
     auth_provider_id = models.CharField(
         _("Authentication Provider ID"), max_length=255,
@@ -154,6 +145,11 @@ class AppUser(AbstractUser):
 
 
 class Openuser(models.Model):
+
+    class OpenUserStatus(models.TextChoices):
+        CREATING = 'Creating'
+        CREATED = 'Created'
+
     id = models.UUIDField(
         _("App ID"), primary_key=True, unique=True, editable=False,
         default=uuid.uuid4, help_text=_("App unique ID")
@@ -170,7 +166,7 @@ class Openuser(models.Model):
     )
     name = models.CharField(
         _("Name"), max_length=20, blank=False, null=False,
-        help_text=_("The name of this Openuser profile. Spaces are replaces with underscores"),
+        help_text=_("The name of this Openuser profile. Spaces are replaced with underscores"),
         validators=[
             validators.RegexValidator(
                 regex=r'^[a-zA-Z]([\w -]*[a-zA-Z])?$',
@@ -208,8 +204,8 @@ class Openuser(models.Model):
         help_text=_("The last time this Openuser profile was updated")
     )
     status = models.CharField(
-        _("Status"), max_length=50, choices=STATUS, help_text=_("Openuser status"),
-        default='Creating', blank=False, null=False
+        _("Status"), max_length=50, help_text=_("Openuser status"), blank=False, null=False,
+        default=OpenUserStatus.CREATED, choices=OpenUserStatus.choices
     )
 
     class Meta:
