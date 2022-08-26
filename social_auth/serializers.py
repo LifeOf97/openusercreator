@@ -1,5 +1,4 @@
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
-# from drf_spectacular.types import OpenApiTypes
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -55,7 +54,6 @@ class SocialUserSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
     def create(self, validated_data):
-        # we do not need the auth_email field in database
         password = validated_data.pop('password')
 
         user = User.objects.create(**validated_data)

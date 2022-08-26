@@ -79,7 +79,6 @@ def twitter_verify_credentials(
 
     if response.status_code == 200:
         return dict(
-            creator=False,
             username=response.json()['screen_name'],
             email=response.json()['email'],
             auth_email=response.json()['email'],

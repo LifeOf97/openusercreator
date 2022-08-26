@@ -50,7 +50,6 @@ def google_authenticate_user(state: str, code: str):
         user = User.objects.get(auth_provider=AUTH_PROVIDER, auth_provider_id=userinfo['id'])
     except User.DoesNotExist:
         return dict(
-            creator=False,
             username=userinfo['given_name'],
             email=userinfo['email'],
             auth_email=userinfo['email'],
