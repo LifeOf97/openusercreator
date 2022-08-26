@@ -30,7 +30,7 @@ class AppUserAdmin(UserAdmin):
                 "id", "uid", "username", "email", "password", "auth_provider", "auth_provider_id"
             )
         }),
-        ("Data", {"fields": ("first_name", "last_name", "other_name"), }),
+        ("Data", {"fields": ("first_name", "last_name", "other_name", "gender"), }),
         ("Status", {"fields": ("is_verified", "is_active", "is_staff", "is_superuser"), }),
         ("Groups & Permissions", {"fields": ("groups", "user_permissions"), }),
         ("Important Dates", {"fields": ("date_joined", "last_login"), }),

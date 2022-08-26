@@ -67,6 +67,11 @@ class AppUser(AbstractUser):
         GOOGLE = 'Google'
         TWITTER = 'Twitter'
 
+    class Genders(models.TextChoices):
+        MALE = 'Male'
+        FEMALE = 'Female'
+        UNDEFINED = '----'
+
     id = models.BigAutoField(_("ID"), unique=True, primary_key=True, editable=False)
     uid = models.CharField(
         _("USER ID"), unique=True, editable=False,
@@ -105,6 +110,9 @@ class AppUser(AbstractUser):
     email = models.EmailField(
         _("Email Address"), unique=True, max_length=255, blank=False,
         error_messages={"unique": _("This email address belongs to another account")}
+    )
+    gender = models.CharField(
+        _("Gender"), max_length=7, choices=Genders.choices, default=Genders.UNDEFINED
     )
     is_verified = models.BooleanField(
         _("Verified User"), default=False,
