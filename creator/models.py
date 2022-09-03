@@ -222,7 +222,7 @@ class Openuserapp(models.Model):
             models.UniqueConstraint(
                 fields=['creator', 'name'],
                 name='unique_openuser',
-                deferrable=models.Deferrable.DEFERRED
+                # deferrable=models.Deferrable.DEFERRED
             )
         ]
 
