@@ -3,7 +3,7 @@ from rest_framework.reverse import reverse
 from django.utils.timezone import datetime
 from rest_framework.test import APIClient
 from django.utils.text import slugify
-from creator.models import Openuser
+from creator.models import Openuserapp
 from rest_framework import status
 import pytest
 
@@ -23,7 +23,7 @@ class TestOpenUserApi:
     def test_unauthenticated_users_cannot_create_an_openuser_profile(self, openuser_data_1):
         client = APIClient()
 
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_401_UNAUTHORIZED
@@ -37,7 +37,7 @@ class TestOpenUserApi:
         assert AppUser.objects.count() == 1
 
         # no record yet
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         # we need to login
         res = client.post(login_token_url, full_user_data, format='json')
@@ -49,7 +49,7 @@ class TestOpenUserApi:
         client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
-        assert Openuser.objects.count() == 1
+        assert Openuserapp.objects.count() == 1
         assert isinstance(res.data['id'], str)
         assert res.data['creator'] == created.uid
         assert res.data['name'] == openuser_data_1['name'].lower()
@@ -71,7 +71,7 @@ class TestOpenUserApi:
         assert AppUser.objects.count() == 1
 
         # no record yet
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         # we need to login
         res = client.post(login_token_url, full_user_data, format='json')
@@ -81,7 +81,7 @@ class TestOpenUserApi:
         client.credentials(HTTP_AUTHORIZATION=F"Bearer {res.data['access']}")
         res = client.post(create_openuser_url, openuser_data_1, format='json')
         assert res.status_code == status.HTTP_201_CREATED
-        assert Openuser.objects.count() == 1
+        assert Openuserapp.objects.count() == 1
 
         # now try to create another openuser profile with the same name.
         res = client.post(create_openuser_url, openuser_data_1, format='json')
@@ -107,7 +107,7 @@ class TestOpenUserApi:
         # because of the created and created_user fixtures
         assert AppUser.objects.count() == 2
         # and also the *_openusers fixture
-        assert Openuser.objects.count() == 6
+        assert Openuserapp.objects.count() == 6
 
         # now login with the created fixture details
         res = client.post(login_token_url, full_user_data, format='json')
@@ -148,7 +148,7 @@ class TestOpenUserApi:
         # because of the created and created_user fixtures
         assert AppUser.objects.count() == 2
         # and also the created_openusers_* fixture
-        assert Openuser.objects.count() == 6
+        assert Openuserapp.objects.count() == 6
 
         # now login with the created fixture details
         res = client.post(login_token_url, full_user_data, format='json')
@@ -266,7 +266,7 @@ class TestOpenUserApi:
         # because of the created fixtures
         assert AppUser.objects.count() == 1
         # and also the *_openusers_* fixture
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         # login user
         res = client.post(login_token_url, full_user_data, format='json')
@@ -326,7 +326,7 @@ class TestOpenUserApi:
         # because of the created fixtures
         assert AppUser.objects.count() == 1
         # and also the *_openusers_* fixture
-        assert Openuser.objects.count() == 3
+        assert Openuserapp.objects.count() == 3
 
         # login user
         res = client.post(login_token_url, full_user_data, format='json')
@@ -347,7 +347,7 @@ class TestOpenUserApi:
             format='json'
         )
         assert res.status_code == status.HTTP_204_NO_CONTENT
-        assert Openuser.objects.count() == 2
+        assert Openuserapp.objects.count() == 2
         assert res.data['name'] == created_openuser_2.name.lower()
         assert res.data['profiles'] == created_openuser_2.profiles
         assert 'Deleted successfully' == res.data['detail']
@@ -358,7 +358,7 @@ class TestOpenUserApi:
 
         # because of the created fixtures
         assert AppUser.objects.count() == 1
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         # authenticate user with the created fixture
         res = client.post(login_token_url, full_user_data, format='json')
@@ -389,4 +389,4 @@ class TestOpenUserApi:
         # try to create a third openuserdata
         res = client.post(create_openuser_url, data_3, format='json')
         assert res.status_code == status.HTTP_400_BAD_REQUEST
-        assert 'Limit reached. You can only have 2 openuser apps.' in res.data['error']
+        assert 'Limit reached. You can only have a maximum of 2 openuserapps.' in res.data['error']

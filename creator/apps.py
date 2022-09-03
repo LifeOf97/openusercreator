@@ -14,5 +14,5 @@ class CreatorConfig(AppConfig):
 
         post_save.connect(signals.new_creator, sender=settings.AUTH_USER_MODEL, dispatch_uid=uuid.uuid4())
         post_delete.connect(signals.delete_creator, sender=settings.AUTH_USER_MODEL, dispatch_uid=uuid.uuid4())
-        post_save.connect(signals.new_openuserapp, sender=models.Openuser, dispatch_uid=uuid.uuid4())
-        post_delete.connect(signals.delete_openuserapp, sender=models.Openuser, dispatch_uid=uuid.uuid4())
+        post_save.connect(signals.new_openuserapp, sender=models.Openuserapp, dispatch_uid=uuid.uuid4())
+        post_delete.connect(signals.delete_openuserapp, sender=models.Openuserapp, dispatch_uid=uuid.uuid4())

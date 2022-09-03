@@ -60,27 +60,27 @@ urlpatterns = [
     # openuser apps urls endpoint
     path(
         "<version>/creators/me/apps/new/",
-        apis.OpenuserApiView.as_view({'post': 'create'}),
+        apis.OpenuserappApiView.as_view({'post': 'create'}),
         name="creators_apps_create"
     ),
     path(
         "<version>/creators/me/apps/",
-        apis.OpenuserApiView.as_view({'get': 'list'}),
+        apis.OpenuserappApiView.as_view({'get': 'list'}),
         name="creators_apps_list"
     ),
     path(
         "<version>/creators/me/apps/<str:name>/",
-        apis.OpenuserApiView.as_view({'get': 'retrieve'}),
+        apis.OpenuserappApiView.as_view({'get': 'retrieve'}),
         name="creators_apps_detail"
     ),
     path(
         "<version>/creators/me/apps/<str:name>/update/",
-        apis.OpenuserApiView.as_view({'put': 'update', 'patch': 'update'}),
+        apis.OpenuserappApiView.as_view({'put': 'update', 'patch': 'update'}),
         name="creators_apps_update"
     ),
     path(
         "<version>/creators/me/apps/<str:name>/delete/",
-        apis.OpenuserApiView.as_view({'delete': 'destroy'}),
+        apis.OpenuserappApiView.as_view({'delete': 'destroy'}),
         name="creators_apps_delete"
     ),
 
@@ -96,7 +96,7 @@ urlpatterns = [
     #     name="logout_via_session"
     # ),
 
-    # username/email authentication urls
+    # authentication urls endpoint
     path(
         "<version>/auth/login/token/",
         TokenObtainPairView.as_view(),

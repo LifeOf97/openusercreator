@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from django.utils.text import slugify
-from .models import Openuser
+from .models import Openuserapp
 
 
 # Custom User model instance
@@ -59,6 +59,7 @@ class BasicUserSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.other_name = validated_data.get('other_name', instance.other_name)
+        instance.gender = validated_data.get('gender', instance.gender)
         instance.is_verified = validated_data.get('is_verified', instance.is_verified)
         instance.save()
 
@@ -103,18 +104,18 @@ class CustomDjRestAuthJWTSerializer(dj_rest_auth_serializer.JWTSerializer):
     user = None
 
 
-class OpenuserSerializer(serializers.ModelSerializer):
+class OpenuserappSerializer(serializers.ModelSerializer):
     creator = serializers.SlugRelatedField(slug_field='uid', queryset=AppUser.objects.all())
 
     class Meta:
-        model = Openuser
+        model = Openuserapp
         fields = (
             'id', 'creator', 'name', 'profiles', 'profile_password',
             'date_created', 'last_updated', 'endpoint', 'status'
         )
         validators = [
             UniqueTogetherValidator(
-                queryset=Openuser.objects.all(),
+                queryset=Openuserapp.objects.all(),
                 fields=['creator', 'name'],
                 message=_('You already have an app with that name.')
             )
@@ -122,7 +123,7 @@ class OpenuserSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         """
-        Edited this method to provide the request user as the creator of this openuser
+        Edited this method to provide the request user as the creator of this openuseraOpenuserapp
         instance
         """
         data['creator'] = self.context['request'].user.uid

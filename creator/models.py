@@ -152,7 +152,7 @@ class AppUser(AbstractUser):
         return F"{self.first_name or ''} {self.last_name or ''} {self.other_name or ''}"
 
 
-class Openuser(models.Model):
+class Openuserapp(models.Model):
 
     class OpenUserStatus(models.TextChoices):
         CREATING = 'Creating'
@@ -184,11 +184,11 @@ class Openuser(models.Model):
         ]
     )
     profiles = models.IntegerField(
-        _("Profiles"), blank=False, null=False, default=5,
-        help_text=_("Number of openuser profiles to create, default is 5"),
+        _("Profiles"), blank=False, null=False, default=2,
+        help_text=_("Number of openuser profiles to create, default is 2"),
         validators=[
             validators.MaxValueValidator(limit_value=25),
-            validators.MinValueValidator(limit_value=1),
+            validators.MinValueValidator(limit_value=2),
         ],
     )
     profile_password = models.CharField(
@@ -228,7 +228,7 @@ class Openuser(models.Model):
 
     def save(self, *args, **kwargs):
         self.name = slugify(self.name.replace('_', ' '))
-        self.endpoint = F"http://localhost:8001/{self.creator.uid}/{self.name}/api/<version>/"
+        self.endpoint = F"http://localhost:8001/{self.creator.uid}/{self.name}/api/<version>/users/"
         return super().save(*args, **kwargs)
 
     def __str__(self):

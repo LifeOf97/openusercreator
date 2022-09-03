@@ -1,6 +1,5 @@
-from rest_framework import status, views, viewsets, permissions, authentication
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from django.contrib.auth import authenticate, login, logout
+from rest_framework import status, views, viewsets, permissions
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.translation import gettext_lazy as _
 from . import serializers, permissions as custom_perm
@@ -11,7 +10,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.conf import settings
-from .models import Openuser
+from .models import Openuserapp
 from . import tasks
 import jwt
 
@@ -37,7 +36,7 @@ class UserApiView(viewsets.GenericViewSet):
         return obj
 
     def get_permissions(self, *args, **kwargs):
-        if (self.action in ['create', 'api_schema']) or \
+        if (self.action == 'create') or \
                 str(reverse('creators_create', kwargs={'version': 'v1'})).endswith(self.request.path):
             permission_classes = [permissions.AllowAny]
         elif self.action == 'list':
@@ -190,18 +189,18 @@ class VerifyEmail(views.APIView):
             )
 
 
-class OpenuserApiView(viewsets.GenericViewSet):
+class OpenuserappApiView(viewsets.GenericViewSet):
     lookup_field = 'name'
-    queryset = Openuser.objects.all()
-    serializer_class = serializers.OpenuserSerializer
+    queryset = Openuserapp.objects.all()
+    serializer_class = serializers.OpenuserappSerializer
 
     def get_queryset(self):
         creator = self.request.user
-        return creator.openuser_set.all()
+        return creator.openuserapp_set.all()
 
     def list(self, request, *args, **kwargs):
         """
-        Returns a list of Openuser apps that belongs to the currently
+        Returns a list of Openuserapp apps that belongs to the currently
         authenticated creator.
         """
         serializer = self.get_serializer(self.get_queryset(), many=True)
@@ -209,7 +208,7 @@ class OpenuserApiView(viewsets.GenericViewSet):
 
     def retrieve(self, request, name=None, *args, **kwargs):
         """
-        Returns the data of the requested openuser instance of the currently
+        Returns the data of the requested openuseraOpenuserapp instance of the currently
         authenticated creator.
         """
         serializer = self.get_serializer(self.get_object(), context={'request': request})
@@ -217,8 +216,8 @@ class OpenuserApiView(viewsets.GenericViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Creates a new openuser instance for the currently authenticated creator.
-        Returns the newly created openuser data.
+        Creates a new openuseraOpenuserapp instance for the currently authenticated creator.
+        Returns the newly created openuseraOpenuserapp data.
         """
         serializer = self.get_serializer(data=request.data, context={'request': request})
 
@@ -228,14 +227,14 @@ class OpenuserApiView(viewsets.GenericViewSet):
                 return Response(data=serializer.data, status=status.HTTP_201_CREATED)
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(
-            data={'error': _('Limit reached. You can only have 2 openuser apps.')},
+            data={'error': _('Limit reached. You can only have a maximum of 2 openuser apps.')},
             status=status.HTTP_400_BAD_REQUEST
         )
 
     def update(self, request, *args, **kwargs):
         """
-        Updates a particular openuser data for the currently authenticated creator.
-        Returns the updated openuser data.
+        Updates a particular openuseraOpenuserapp data for the currently authenticated creator.
+        Returns the updated openuseraOpenuserapp data.
         """
         serializer = self.get_serializer(
             instance=self.get_object(),
@@ -251,58 +250,58 @@ class OpenuserApiView(viewsets.GenericViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """
-        Deletes an openuser instance of the currently authenticated creator.
+        Deletes an openuseraOpenuserapp instance of the currently authenticated creator.
         Returns a limited data of the deleted instance data.
         """
-        openuser = self.get_object()
-        name, profiles = openuser.name, openuser.profiles
-        openuser.delete()
+        openuseraOpenuserapp = self.get_object()
+        name, profiles = openuseraOpenuserapp.name, openuseraOpenuserapp.profiles
+        openuseraOpenuserapp.delete()
         return Response(
             data={'name': name, 'profiles': profiles, 'detail': _('Deleted successfully')},
             status=status.HTTP_204_NO_CONTENT
         )
 
 
-class LoginSessionApiView(viewsets.GenericViewSet):
-    authentication_classes = []
-    permission_classes = [permissions.AllowAny]
-    serializer_class = serializers.LoginSerializer
+# class LoginSessionApiView(viewsets.GenericViewSet):
+#     authentication_classes = []
+#     permission_classes = [permissions.AllowAny]
+#     serializer_class = serializers.LoginSerializer
 
-    def post(self, request, *args, **kwargs):
-        """
-        Accepts the following post parameters: username/email, password, to
-        login a creator via session.
-        """
-        serializer = self.serializer_class(data=request.data)
+#     def post(self, request, *args, **kwargs):
+#         """
+#         Accepts the following post parameters: username/email, password, to
+#         login a creator via session.
+#         """
+#         serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid():
-            user = authenticate(
-                request,
-                username=serializer.validated_data['username'],
-                password=serializer.validated_data['password']
-            )
+#         if serializer.is_valid():
+#             user = authenticate(
+#                 request,
+#                 username=serializer.validated_data['username'],
+#                 password=serializer.validated_data['password']
+#             )
 
-            if user is not None:
-                login(request, user)
-                response = Response(data={"detail": _("Logged in successfully")}, status=status.HTTP_200_OK)
+#             if user is not None:
+#                 login(request, user)
+#                 response = Response(data={"detail": _("Logged in successfully")}, status=status.HTTP_200_OK)
 
-                # clear jwt (access & refresh) tokens if present
-                unset_jwt_cookies(response)
+#                 # clear jwt (access & refresh) tokens if present
+#                 unset_jwt_cookies(response)
 
-                return response  # return logged in response to client
+#                 return response  # return logged in response to client
 
-            return Response(data={"detail": _("wrong username/password")}, status=status.HTTP_400_BAD_REQUEST)
+#             return Response(data={"detail": _("wrong username/password")}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LogoutSessionApiView(views.APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    authentication_classes = [authentication.SessionAuthentication]
+# class LogoutSessionApiView(views.APIView):
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+#     authentication_classes = [authentication.SessionAuthentication]
 
-    def post(self, request, *args, **kwargs):
-        """
-        Logs out a session authenticated user.
-        """
-        logout(request)
-        return Response(data={"detail": _("Logged out successfully")}, status=status.HTTP_200_OK)
+#     def post(self, request, *args, **kwargs):
+#         """
+#         Logs out a session authenticated user.
+#         """
+#         logout(request)
+#         return Response(data={"detail": _("Logged out successfully")}, status=status.HTTP_200_OK)

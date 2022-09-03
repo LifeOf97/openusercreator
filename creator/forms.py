@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import gettext_lazy as _
-from .models import AppUser, Openuser
+from .models import AppUser, Openuserapp
 from django.utils.text import slugify
 from django import forms
 
@@ -25,14 +25,14 @@ class CustomAppUserChangeForm(UserChangeForm):
         fields = "__all__"
 
 
-class OpenuserModelForm(forms.ModelForm):
+class OpenUserAppModelForm(forms.ModelForm):
     class Meta:
-        model = Openuser
+        model = Openuserapp
         fields = "__all__"
 
     def clean_name(self):
         """
-        Check to make sure the creator does not have an openuser instance
+        Check to make sure the creator does not have an Openuserapp instance
         with the same name fields.
         """
         cleaned_data = self.cleaned_data
@@ -40,27 +40,27 @@ class OpenuserModelForm(forms.ModelForm):
         creator = cleaned_data.get('creator')
 
         try:
-            Openuser.objects.get(creator=creator, name=name)
-        except Openuser.DoesNotExist:
+            Openuserapp.objects.get(creator=creator, name=name)
+        except Openuserapp.DoesNotExist:
             pass
         else:
             raise forms.ValidationError(
-                _(F"This creator already has an openuser app named {name}"),
-                code="unique_openuser"
+                _(F"This creator already has an Openuserapp app named {name}"),
+                code="unique_Openuserapp"
             )
         return name
 
     def clean(self):
         """
-        Make sure creators cannot create more than 2 openuser instances.
+        Make sure creators cannot create more than 2 Openuserapp instances.
         """
         cleaned_data = self.cleaned_data
 
-        if Openuser.objects.filter(creator=cleaned_data.get('creator')).count() < 2:
+        if Openuserapp.objects.filter(creator=cleaned_data.get('creator')).count() < 2:
             pass
         else:
             raise forms.ValidationError(
-                _("Limit reached. Creators can only have maximum of 2 openuser apps."),
-                code="limit_openuser"
+                _("Limit reached. Creators can only have a maximum of 2 Openuserapp."),
+                code="limit_Openuserapp"
             )
         return cleaned_data

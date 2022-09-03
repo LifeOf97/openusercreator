@@ -3,7 +3,7 @@ from django.db.models.signals import (
     pre_save, post_save, pre_delete, post_delete,
     m2m_changed
 )
-from creator.models import Openuser
+from creator.models import Openuserapp
 import pytest
 
 
@@ -180,7 +180,7 @@ def created_openuser_1(created):
         profiles=12,
         profile_password="mypassword",
     )
-    app = Openuser.objects.create(**data)
+    app = Openuserapp.objects.create(**data)
     app.save()
     return app
 
@@ -197,7 +197,7 @@ def created_openuser_2(created):
         profiles=12,
         profile_password="mypassword",
     )
-    app = Openuser.objects.create(**data)
+    app = Openuserapp.objects.create(**data)
     app.save()
     return app
 
@@ -214,7 +214,7 @@ def created_openuser_3(created):
         profiles=12,
         profile_password="mypassword",
     )
-    app = Openuser.objects.create(**data)
+    app = Openuserapp.objects.create(**data)
     app.save()
     return app
 
@@ -231,7 +231,7 @@ def created_openuser_4(created_user):
         profiles=12,
         profile_password="mypassword",
     )
-    app = Openuser.objects.create(**data)
+    app = Openuserapp.objects.create(**data)
     app.save()
     return app
 
@@ -248,7 +248,7 @@ def created_openuser_5(created_user):
         profiles=12,
         profile_password="mypassword",
     )
-    app = Openuser.objects.create(**data)
+    app = Openuserapp.objects.create(**data)
     app.save()
     return app
 
@@ -265,6 +265,6 @@ def created_openuser_6(created_user):
         profiles=12,
         profile_password="mypassword",
     )
-    app = Openuser.objects.create(**data)
+    app = Openuserapp.objects.create(**data)
     app.save()
     return app

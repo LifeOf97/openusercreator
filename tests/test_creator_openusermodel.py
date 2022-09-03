@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import utils as db_exception
 from django.utils.text import slugify
-from creator.models import Openuser
+from creator.models import Openuserapp
 import pytest
 
 # Custom user model
@@ -24,23 +24,23 @@ class TestOpenUserModel:
         assert AppUser.objects.count() == 1
 
         # make sure that no openuser app has been create yet
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         # now create and save a new openuser profile
-        app1 = Openuser.objects.create(**openuser_data)
+        app1 = Openuserapp.objects.create(**openuser_data)
         app1.save()
 
-        assert Openuser.objects.count() == 1
+        assert Openuserapp.objects.count() == 1
         assert app1.creator == created
 
         # now create another openuser profile with the same name
         with pytest.raises(db_exception.IntegrityError) as exc_info:
-            app2 = Openuser.objects.create(**openuser_data)
+            app2 = Openuserapp.objects.create(**openuser_data)
             app2.save()
 
         assert F'({created.id}, {openuser_data["name"].lower()}) already exists.' in str(exc_info.value)
         # we still have only the app1 record in our database
-        assert Openuser.objects.count() == 1
+        assert Openuserapp.objects.count() == 1
 
     @pytest.mark.django_db(transaction=True)
     def test_openuser_model_name_field_cannot_be_more_than_20_characters(self, created):
@@ -48,7 +48,7 @@ class TestOpenUserModel:
         assert AppUser.objects.count() == 1
 
         # make sure we do not have any openuser record
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         data = dict(
             creator=created,
@@ -59,11 +59,11 @@ class TestOpenUserModel:
 
         # now try to create and save a new openuser profile
         with pytest.raises(db_exception.DataError) as exc_info:
-            app = Openuser.objects.create(**data)
+            app = Openuserapp.objects.create(**data)
             app.save()
 
         assert 'value too long for type character varying(20)' in str(exc_info.value)
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
     @pytest.mark.django_db(transaction=True)
     @pytest.mark.xfail
@@ -78,7 +78,7 @@ class TestOpenUserModel:
         assert AppUser.objects.count() == 1
 
         # make sure we do not have any openuser record
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         data = dict(
             creator=created,
@@ -89,10 +89,10 @@ class TestOpenUserModel:
 
         # now try to create and save a new openuser profile
         with pytest.raises(db_exception.DataError):
-            app = Openuser.objects.create(**data)
+            app = Openuserapp.objects.create(**data)
             app.save()
 
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
     @pytest.mark.django_db
     @pytest.mark.xfail
@@ -107,7 +107,7 @@ class TestOpenUserModel:
         assert AppUser.objects.count() == 1
 
         # make sure we do not have any openuser record
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         data1 = dict(
             creator=created,
@@ -125,18 +125,18 @@ class TestOpenUserModel:
 
         # now try to create and save a new openuser profile
         with pytest.raises(db_exception.DataError) as exc_info:
-            app1 = Openuser.objects.create(**data1)
+            app1 = Openuserapp.objects.create(**data1)
             app1.save()
 
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
         assert 'Ensure this value is greater than or equal to 1' in str(exc_info.value)
 
         # now try to create and save another openuser profile
         with pytest.raises(db_exception.DataError) as exc_info:
-            app2 = Openuser.objects.create(**data2)
+            app2 = Openuserapp.objects.create(**data2)
             app2.save()
 
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
         assert 'Ensure this value is less than or equal to 50.' in str(exc_info.value)
 
     @pytest.mark.django_db(transaction=True)
@@ -145,7 +145,7 @@ class TestOpenUserModel:
         assert AppUser.objects.count() == 1
 
         # make sure we do not have any openuser record
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         data = dict(
             creator=created,
@@ -155,10 +155,10 @@ class TestOpenUserModel:
         )
 
         with pytest.raises(db_exception.DataError) as exc_info:
-            app = Openuser.objects.create(**data)
+            app = Openuserapp.objects.create(**data)
             app.save()
 
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
         assert 'value too long for type character varying(15)' in str(exc_info.value)
 
     @pytest.mark.django_db
@@ -167,17 +167,17 @@ class TestOpenUserModel:
         assert AppUser.objects.count() == 1
 
         # make sure we do not have any openuser record
-        assert Openuser.objects.count() == 0
+        assert Openuserapp.objects.count() == 0
 
         data = dict(
             creator=created,
             name='My Test App',
         )
 
-        app = Openuser.objects.create(**data)
+        app = Openuserapp.objects.create(**data)
         app.save()
 
-        assert Openuser.objects.count() == 1
+        assert Openuserapp.objects.count() == 1
         assert app.creator == created
         assert app.profiles == 5
         assert isinstance(app.profiles, int)
@@ -200,7 +200,7 @@ class TestOpenUserModel:
         assert AppUser.objects.count() == 1
 
         # create and save a new openuser app
-        app = Openuser.objects.create(**openuser_data)
+        app = Openuserapp.objects.create(**openuser_data)
         app.save()
 
         assert str(app) == F"{full_user_data['username'].lower()} - (App name: {openuser_data['name']})"

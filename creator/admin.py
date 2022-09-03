@@ -1,14 +1,14 @@
-from .forms import CustomAppUserCreationForm, CustomAppUserChangeForm, OpenuserModelForm
+from .forms import CustomAppUserCreationForm, CustomAppUserChangeForm, OpenUserAppModelForm
 from django.contrib.auth.admin import UserAdmin
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
-from .models import AppUser, Openuser
+from .models import AppUser, Openuserapp
 from django.contrib import admin
 
 
 class MyAdminSite(admin.AdminSite):
-    site_header: str = "Openuser Creator administration"
+    site_header: str = "Openuserapp Creator administration"
 
 
 class AppUserAdmin(UserAdmin):
@@ -43,8 +43,8 @@ class AppUserAdmin(UserAdmin):
     ordering = ('-id',)
 
 
-class OpenUserAdmin(admin.ModelAdmin):
-    form = OpenuserModelForm
+class OpenUserAppAdmin(admin.ModelAdmin):
+    form = OpenUserAppModelForm
 
     list_display = ('id', 'creator', 'name', 'profiles', 'status', 'date_created')
     list_display_links = ('id', 'creator', 'name')
@@ -65,4 +65,4 @@ admin_site.register(Group)
 admin_site.register(Site)
 admin_site.register(EmailAddress)
 admin_site.register(AppUser, AppUserAdmin)
-admin_site.register(Openuser, OpenUserAdmin)
+admin_site.register(Openuserapp, OpenUserAppAdmin)
