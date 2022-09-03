@@ -56,7 +56,7 @@ class OpenUserAppAdmin(admin.ModelAdmin):
         ("Important Dates", {"fields": ("date_created", "last_updated"), }),
     )
 
-    readonly_fields = ('id', 'status', 'name', 'date_created', 'last_updated')
+    readonly_fields = ('id', 'status', 'date_created', 'last_updated')
     ordering = ('-last_updated',)
 
 
