@@ -100,16 +100,6 @@ WSGI_APPLICATION = 'src.wsgi.application'
 
 
 # in development and production
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASS'),
-        'HOST': 'localhost',
-        'PORT': 5432
-    }
-}
 
 # if in github actions
 if os.environ.get('GITHUB_WORKFLOW'):
@@ -120,6 +110,17 @@ if os.environ.get('GITHUB_WORKFLOW'):
             'USER': 'postgres',
             'PASSWORD': 'postgres',
             'HOST': '127.0.0.1',
+            'PORT': 5432
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASS'),
+            'HOST': 'localhost',
             'PORT': 5432
         }
     }

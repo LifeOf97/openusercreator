@@ -37,17 +37,6 @@ class OpenUserAppModelForm(forms.ModelForm):
         """
         cleaned_data = self.cleaned_data
         name = slugify(cleaned_data.get("name").replace("_", " "))
-        # creator = cleaned_data.get('creator')
-
-        # try:
-        #     app = Openuserapp.objects.get(creator=creator, id=self.initial.get('name'))
-        # except Openuserapp.DoesNotExist:
-        #     pass
-        # else:
-        #     raise forms.ValidationError(
-        #         _(F"This creator already has an Openuserapp app named {name}"),
-        #         code="unique_Openuser_app"
-        #     )
         return name
 
     def clean(self):
@@ -84,10 +73,4 @@ class OpenUserAppModelForm(forms.ModelForm):
                 )
             else:
                 ...
-                # raise forms.ValidationError(
-                #     _(
-                #         F"This creator already has an Openuserapp app named {cleaned_data.get('name')}"
-                #     ),
-                #     code="unique_Openuser_app",
-                # )
         return cleaned_data
