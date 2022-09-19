@@ -51,7 +51,11 @@ class OpenUserAppAdmin(admin.ModelAdmin):
     list_filter = ('status', )
 
     fieldsets = (
-        ("Identification", {"fields": ("creator", "id", "name", "profile_password", "endpoint", "status")}),
+        ("Identification", {"fields": (
+            "creator", "id", "name", "description",
+            "profile_password", "endpoint", "status"
+            )
+        }),
         ("Data", {"fields": ("profiles", ), }),
         ("Important Dates", {"fields": ("date_created", "last_updated"), }),
     )

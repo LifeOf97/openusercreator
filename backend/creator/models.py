@@ -183,6 +183,7 @@ class Openuserapp(models.Model):
             validators.MinLengthValidator(limit_value=4)
         ]
     )
+    description = models.CharField(_("Description"), max_length=255, blank=True, null=True)
     profiles = models.IntegerField(
         _("Profiles"), blank=False, null=False, default=2,
         help_text=_("Number of openuser profiles to create, default is 2"),
@@ -228,7 +229,7 @@ class Openuserapp(models.Model):
 
     def save(self, *args, **kwargs):
         self.name = slugify(self.name.replace('_', ' '))
-        self.endpoint = F"http://localhost:8001/{self.creator.uid}/{self.name}/api/<version>/users/"
+        self.endpoint = F"http://localhost:8001/api/v1/{self.creator.uid}/{self.name}/users/"
         return super().save(*args, **kwargs)
 
     def __str__(self):
