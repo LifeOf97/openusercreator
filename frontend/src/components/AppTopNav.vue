@@ -8,7 +8,7 @@ import IconGithub from './icons/IconGithub.vue';
 
 // refs
 const root = ref(null)
-const isAuth = ref(true)
+const isAuth = ref(false)
 const toggleUserMenu = ref(false)
 
 // methods
@@ -30,10 +30,12 @@ onUnmounted(() => {
 
 <template>
     <main ref="root" class="w-full pt-7 z-20">
-        <div class="w-11/12 mx-auto flex justify-between items-center px-4 py-2 rounded-2xl shadow-md shadow-gray-300 bg-gray-50 md:px-6 md:w-9/12">
+        <div class="w-11/12 mx-auto flex justify-between items-center px-4 py-2 rounded-lg shadow-md shadow-gray-300 bg-gray-50 md:px-6 md:w-9/12">
 
             <!-- logo -->
-            <IconUserCircleSolid class="w-7 h-7 fill-red-500 md:w-10 md:h-10" />
+            <RouterLink :to="{name: 'home'}">
+                <IconUserCircleSolid class="w-7 h-7 fill-red-500 md:w-10 md:h-10" />
+            </RouterLink>
             <!-- logo -->
             
             <div class="flex items-center gap-2 font-normal">

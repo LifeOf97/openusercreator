@@ -17,18 +17,18 @@ const data = {
 </script>
 
 <template>
-    <main class="h-full w-full" :style="data.inlineStyles">
+    <main class="h-full w-full bg-fixed bg-center bg-no-repeat bg-cover" :style="data.inlineStyles">
 
         <div class="h-full w-full bg-white/90">
 
             <AppTopNav class="absolute top-0 right-0" />
 
-            <div class="h-full w-11/12 mx-auto flex items-center justify-center py-60">
+            <div class="h-full w-11/12 mx-auto py-40 flex items-center justify-center lg:py-60">
 
                 <div class="flex flex-col gap-2">
 
                     <div class="flex items-center justify-center">
-                        <IconUserCircleSolid class="w-24 h-24 fill-red-500" />
+                        <IconUserCircleSolid class="w-24 h-24 fill-red-500 md:w-40 md:h-40" />
                         <p class="self-center text-3xl font-black text-gray-800 sm:text-3xl md:text-6xl">pen User Data</p>
                     </div>
 

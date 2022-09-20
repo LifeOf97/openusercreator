@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
@@ -18,6 +19,10 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) return {el: to.hash,  behavior: "smooth"}
+    else return { top: 0, behavior: "smooth" }
+  }
 });
 
 export default router;
