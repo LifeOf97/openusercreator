@@ -7,7 +7,6 @@ import AppHomeAuthentication from '../components/AppHomeAuthentication.vue';
 import AppHomeResourcesAndEndpoints from '../components/AppHomeResourcesAndEndpoints.vue';
 import AppHomeQueryParameters from '../components/AppHomeQueryParameters.vue';
 import AppHomeFooter from '../components/AppHomeFooter.vue';
-import IconArrowSmallUp from '../components/icons/IconArrowSmallUp.vue';
 </script>
 
 <template>

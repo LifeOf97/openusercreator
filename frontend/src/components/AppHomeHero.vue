@@ -33,11 +33,11 @@ const data = {
                     </div>
 
                     <div class="w-11/12 mx-auto text-center text-xl text-gray-700 font-normal md:text-2xl md:w-8/12 lg:w-9/12 lg:text-4xl">
-                        <p class="leading-7 md:leading-9 lg:leading-[3rem]">Fully Functional Free Fake User Data API for Testing and Prototying</p>
+                        <p class="leading-7 md:leading-9 lg:leading-[3rem]">Fully Functional Free Fake User Data API for Testing and Prototying with Authentication</p>
                     </div>
 
                     <div class="flex flex-col items-center justify-center gap-4 mt-10 sm:flex-row">
-                        <RouterLink to="#" class="px-6 py-4 bg-gray-900 rounded-md text-sm text-white transition-all duration-300 hover:-translate-y-1 md:text-base">Become a Creator</RouterLink>
+                        <RouterLink :to="{name: 'signup'}" class="px-6 py-4 bg-gray-900 rounded-md text-sm text-white transition-all duration-300 hover:-translate-y-1 md:text-base">Become a Creator</RouterLink>
                         <RouterLink to="#" class="px-6 py-4 bg-transparent rounded-md text-sm text-gray-900 transition-all duration-200 hover:border hover:bg-gray-50 hover:-translate-y-1 md:text-base">Hit an Endpoint</RouterLink>
                     </div>
 

@@ -63,7 +63,7 @@ const data = {
             <div class="flex flex-col gap-7">
                 
                 <div class="w-full flex flex-col gap-3">
-                    <h3 class="text-xl font-semibold text-gray-900 md:text-3xl">Create Read Update & Delete</h3>
+                    <h3 class="text-xl font-semibold text-gray-900 md:text-3xl">Create, Read, Update & Delete</h3>
                     <p class="text-xs text-gray-600 font-light md:text-sm">
                         Open user data provides full CRUD operations over REST API.
                         You can create new users, retrieve one or more user data,

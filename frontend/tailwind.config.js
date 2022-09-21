@@ -14,7 +14,7 @@ module.exports = {
     },
     extend: {
       animation: {
-        'bounce-hor': 'bounce-h 1s infinite',
+        'bounce-hor': 'bounce-hor 1s infinite',
         'bounce-ver': 'bounce 1s infinite',
       },
       keyframes: {
