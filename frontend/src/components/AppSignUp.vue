@@ -28,7 +28,7 @@ const loading = ref(false)
         <div class="w-10/12 h-full mx-auto flex flex-col sm:w-9/12 md:w-8/12 lg:w-6/12">
 
             <!-- back link -->
-            <div class="flex items-center justify-between pt-5 md:pt-10 lg:justify-end">
+            <div class="flex items-center justify-between pt-10 lg:justify-end">
                 <IconUserCircleSolid class="w-10 h-10 fill-red-500 lg:hidden" />
                 <RouterLink :to="{name: 'home'}" class="group flex items-center gap-2">
                     <IconArrowLongLeft class="w-7 h-7 fill-gray-500 transition-all duration-300 group-hover:animate-bounce-hor group-hover:fill-gray-900" />
@@ -51,7 +51,7 @@ const loading = ref(false)
                 </div>
 
                 <!-- form errors -->
-                <div class="hidden my-10 w-full list-inside list-disc">
+                <div class="mt-7 w-full list-inside list-disc">
                     <span class="flex items-center gap-2">
                         <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
                         <p class="text-xs text-red-500 font-normal md:text-sm">Hello world</p>
