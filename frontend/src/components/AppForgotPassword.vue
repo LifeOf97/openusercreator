@@ -24,7 +24,7 @@ const signInStore = useSignInStore()
 
             <!-- header -->
             <div class="w-full flex flex-col">
-                <h3 class="text-3xl text-gray-900 font-semibold capitalize sm:text-4xl">Sign into your account</h3>
+                <h3 class="text-3xl text-gray-900 font-semibold capitalize sm:text-4xl">Forgot Password</h3>
                 <span class="mt-2 flex items-center gap-2">
                     <p class="text-xs text-gray-400 font-normal sm:text-sm">Back to</p>
                     <RouterLink :to="{name: 'signin'}"

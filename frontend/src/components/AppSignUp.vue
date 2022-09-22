@@ -12,6 +12,7 @@ import IconExclamationTraingleOutline from './icons/IconExclamationTraingleOutli
 import IconGithub from './icons/IconGithub.vue';
 import IconGoogle from './icons/IconGoogle.vue';
 import IconTwitter from './icons/IconTwitter.vue';
+import IconKeyOutline from './icons/IconKeyOutline.vue';
 
 // refs
 const username = ref("")
@@ -64,8 +65,16 @@ const signInStore = useSignInStore()
                     </template>
                 </AppInputField>
                 <div class="grid grid-cols-1 gap-4 pb-2 sm:grid-cols-2">
-                    <AppPasswordField v-model="password1" label="Password" :disable="loading" />
-                    <AppPasswordField v-model="password2" label="Confirm password" :disable="loading" />
+                    <AppPasswordField v-model="password1" label="Password" :disable="loading">
+                        <template #icon>
+                            <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
+                        </template>
+                    </AppPasswordField>
+                    <AppPasswordField v-model="password2" label="Confirm password" :disable="loading">
+                        <template #icon>
+                            <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
+                        </template>
+                    </AppPasswordField>
                 </div>
                 <AppButton label="Create Account" type="submit" :loading="loading"
                     class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />

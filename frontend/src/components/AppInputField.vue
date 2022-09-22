@@ -11,6 +11,7 @@ const props = defineProps({
     maxLen: {type: Number, default: 200},
     iconPos: {type: String, default: "right"},
     disable: {type: Boolean, default: false },
+    autocomplete: {type: Boolean, default: false},
     modelValue: {type: String},
 })
 
@@ -32,6 +33,7 @@ const emits = defineEmits(["update:modelValue"])
             :minlength="props.minLen"
             :maxlength="props.maxLen"
             :placeholder="props.label"
+            :autocomplete="autocomplete"
             :disabled="props.disable"
             :value="modelValue"
             @input="$emit('update:modelValue', $event.target.value)"

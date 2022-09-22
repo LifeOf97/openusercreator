@@ -12,6 +12,7 @@ import IconGithub from './icons/IconGithub.vue';
 import IconGoogle from './icons/IconGoogle.vue';
 import IconTwitter from './icons/IconTwitter.vue';
 import AppCheckbox from './AppCheckbox.vue';
+import IconKeyOutline from './icons/IconKeyOutline.vue';
 
 // refs
 const username = ref("")
@@ -55,7 +56,11 @@ const signInStore = useSignInStore()
                         <IconUserCircleOutline class="w-5 h-5 stroke-gray-400" />
                     </template>
                 </AppInputField>
-                <AppPasswordField v-model="password" label="password" :disable="loading" />
+                <AppPasswordField v-model="password" label="password" :disable="loading">
+                    <template #icon>
+                        <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
+                    </template>
+                </AppPasswordField>
 
                 <div class="mt-2 flex items-center justify-between">
                     <AppCheckbox v-model="rememberMe" label="Remember me" />

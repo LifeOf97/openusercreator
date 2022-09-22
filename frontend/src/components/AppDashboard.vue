@@ -102,7 +102,7 @@ const greet = computed(() => {
 
                     <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
 
-                        <div class="relative flex flex-col gap-5 bg-white p-6 rounded-lg shadow-lg shadow-gray-200 overflow-hidden group transition-all duration-300 hover:bg-blue-500">
+                        <div class="relative flex flex-col gap-5 bg-white p-10 rounded-lg shadow-lg shadow-gray-200 overflow-hidden group transition-all duration-300 hover:bg-blue-500 md:p-7">
                             <span class="flex items-center justify-between">
                                 <span class="flex items-center gap-3">
                                     <IconUserCircleSolid class="w-5 h-5 fill-gray-600 transition-all duration-300 group-hover:fill-white md:w-10 md:h-10" />
@@ -120,10 +120,10 @@ const greet = computed(() => {
 
                         <AppEmptyState  class="border-gray-200">
                             <template #head>
-                                <p class="text-xs text-gray-400 font-medium md:text-sm">No Apps</p>
+                                <p class="text-xs text-gray-400 font-medium md:text-sm">1/2 Apps</p>
                             </template>
                             <template #body>
-                                <p class="text-xs text-gray-400 font-light md:text-sm">Get started by creating a new app</p>
+                                <p class="text-xs text-gray-400 font-light md:text-sm">Get started by creating an app</p>
                             </template>
                             <template #tail>
                                 <AppButton label="New app" class="bg-blue-500 text-white hover:bg-blue-600">
