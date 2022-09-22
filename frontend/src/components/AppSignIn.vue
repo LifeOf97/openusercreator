@@ -5,40 +5,37 @@ import { RouterLink } from 'vue-router';
 import { useSignInStore } from '../stores/signIn';
 import AppInputField from './AppInputField.vue';
 import IconUserCircleOutline from './icons/IconUserCircleOutline.vue';
-import IconEnvelopeOutline from './icons/IconEnvelopeOutline.vue';
 import AppPasswordField from './AppPasswordField.vue';
 import AppButton from './AppButton.vue';
 import IconExclamationTraingleOutline from './icons/IconExclamationTraingleOutline.vue';
 import IconGithub from './icons/IconGithub.vue';
 import IconGoogle from './icons/IconGoogle.vue';
 import IconTwitter from './icons/IconTwitter.vue';
+import AppCheckbox from './AppCheckbox.vue';
 
 // refs
 const username = ref("")
-const email = ref("")
-const password1 = ref("")
-const password2 = ref("")
+const password = ref("")
+const rememberMe = ref(false)
 const loading = ref(false)
 
 // stores
 const signInStore = useSignInStore()
 </script>
-
+        
 <template>
     <main class="w-full h-full bg-transparent">
 
         <!-- form inputs -->
-        <div class="w-full h-full flex flex-col items-center mt-20">
+        <div class="h-full flex flex-col items-center justify-center mt-24">
 
             <!-- header -->
             <div class="w-full flex flex-col">
-                <p class="my-6 self-start px-4 py-2 text-xs text-white font-semibold bg-gray-700 rounded-full">It's free
-                </p>
-                <h3 class="text-3xl text-gray-900 font-semibold sm:text-4xl">Become a Creator</h3>
+                <h3 class="text-3xl text-gray-900 font-semibold capitalize sm:text-4xl">Sign into your account</h3>
                 <span class="mt-2 flex items-center gap-2">
-                    <p class="text-xs text-gray-400 font-normal sm:text-sm">Already a creator?</p>
-                    <RouterLink :to="{name: 'signin'}"
-                        class="text-xs text-blue-400 font-medium hover:text-blue-500 sm:text-sm">Sign in</RouterLink>
+                    <p class="text-xs text-gray-400 font-normal sm:text-sm">Don't have an account?</p>
+                    <RouterLink :to="{name: 'signup'}"
+                        class="text-xs text-blue-400 font-medium hover:text-blue-500 sm:text-sm">Create one</RouterLink>
                 </span>
             </div>
 
@@ -52,24 +49,25 @@ const signInStore = useSignInStore()
             <!-- form errors -->
 
             <form @submit.prevent="loading = !loading" class="w-full flex flex-col gap-4 mt-12 mb-5">
-                <AppInputField v-model.trim="username" type="text" label="Username" minLen="4" maxLen="15"
+                <AppInputField v-model.trim="username" type="text" label="Username or Email address" minLen="4"
                     iconPos="left" :disable="loading">
                     <template #icon>
                         <IconUserCircleOutline class="w-5 h-5 stroke-gray-400" />
                     </template>
                 </AppInputField>
-                <AppInputField v-model="email" type="email" label="email" iconPos="left" :disable="loading">
-                    <template #icon>
-                        <IconEnvelopeOutline class="w-5 h-5 stroke-gray-400" />
-                    </template>
-                </AppInputField>
-                <div class="grid grid-cols-1 gap-4 pb-2 sm:grid-cols-2">
-                    <AppPasswordField v-model="password1" label="Password" :disable="loading" />
-                    <AppPasswordField v-model="password2" label="Confirm password" :disable="loading" />
+                <AppPasswordField v-model="password" label="password" :disable="loading" />
+
+                <div class="mt-2 flex items-center justify-between">
+                    <AppCheckbox v-model="rememberMe" label="Remember me" />
+                    <RouterLink :to="{name: 'forgotpassword'}"
+                        class="text-xs text-blue-400 font-medium hover:text-blue-500 sm:text-sm">Forgot password?
+                    </RouterLink>
                 </div>
-                <AppButton label="Create Account" type="submit" :loading="loading"
-                    class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
+
+                <AppButton label="Sign in" type="submit" :loading="loading"
+                    class="mt-2 text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </form>
+
 
             <div class="w-full flex flex-col gap-5">
                 <div class="w-full flex items-center">

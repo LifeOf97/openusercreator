@@ -29,26 +29,26 @@ const router = createRouter({
           name: "signup",
           component: () => import("../components/AppSignUp.vue")
         },
-        // {
-        //   path: "signup/social",
-        //   name: "signupsocial",
-        //   component: () => import("../components/AppSignUpSocial.vue")
-        // },
-        // {
-        //   path: "signin",
-        //   name: "signin",
-        //   component: () => import("../components/AppSignIn.vue")
-        // },
-        // {
-        //   path: "help/forgot-password",
-        //   name: "forgotpassword",
-        //   component: () => import("../components/AppForgotPassword.vue")
-        // },
-        // {
-        //   path: "/help/success/reset-password",
-        //   name: "resetpassword",
-        //   component: () => import("../components/AppResetPassword.vue")
-        // },
+        {
+          path: "signup/social",
+          name: "signupsocial",
+          component: () => import("../components/AppSignUpSocial.vue")
+        },
+        {
+          path: "signin",
+          name: "signin",
+          component: () => import("../components/AppSignIn.vue")
+        },
+        {
+          path: "help/forgot-password",
+          name: "forgotpassword",
+          component: () => import("../components/AppForgotPassword.vue")
+        },
+        {
+          path: "help/success/reset-password",
+          name: "resetpassword",
+          component: () => import("../components/AppResetPassword.vue")
+        },
       ]
     }
   ],

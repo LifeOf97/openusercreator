@@ -67,7 +67,7 @@ onUnmounted(() => {
                 
                  <!-- Visible when no user is authenticated -->
                 <div v-else class="flex items-center gap-2">
-                    <RouterLink to="#" class="text-xs text-gray-800 bg-transparent px-4 py-2 rounded-md transition-colors duration-300 hover:bg-white md:text-base">Log in</RouterLink>
+                    <RouterLink :to="{name: 'signin'}" class="text-xs text-gray-800 bg-transparent px-4 py-2 rounded-md transition-colors duration-300 hover:bg-white md:text-base">Log in</RouterLink>
                     <RouterLink :to="{name: 'signup'}" class="text-xs text-white bg-teal-400 px-4 py-2 rounded-md transition-colors duration-300 hover:bg-teal-500 md:text-base">Sign up</RouterLink>
                 </div>
                  <!-- Visible when no user is authenticated -->

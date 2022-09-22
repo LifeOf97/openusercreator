@@ -23,22 +23,26 @@ const loading = ref(false)
 // stores
 const signInStore = useSignInStore()
 </script>
-
+    
 <template>
     <main class="w-full h-full bg-transparent">
 
         <!-- form inputs -->
-        <div class="w-full h-full flex flex-col items-center mt-20">
+        <div class="h-full flex flex-col items-center mt-28">
 
             <!-- header -->
             <div class="w-full flex flex-col">
-                <p class="my-6 self-start px-4 py-2 text-xs text-white font-semibold bg-gray-700 rounded-full">It's free
-                </p>
-                <h3 class="text-3xl text-gray-900 font-semibold sm:text-4xl">Become a Creator</h3>
+                <div class="my-6 self-start px-6 py-2 flex items-center justify-center p-2 rounded bg-gray-900">
+                    <IconGithub v-if="signInStore.social == 'github'" class="w-7 h-7 fill-white" />
+                    <IconTwitter v-else-if="signInStore.social == 'twitter'" class="w-7 h-7 fill-white" />
+                    <IconGoogle v-else-if="signInStore.social == 'google'" class="w-7 h-7 fill-white" />
+                </div>
+                <h3 class="text-3xl text-gray-900 font-semibold capitalize sm:text-4xl">Connect via
+                    {{signInStore.social}}</h3>
                 <span class="mt-2 flex items-center gap-2">
                     <p class="text-xs text-gray-400 font-normal sm:text-sm">Already a creator?</p>
                     <RouterLink :to="{name: 'signin'}"
-                        class="text-xs text-blue-400 font-medium hover:text-blue-500 sm:text-sm">Sign in</RouterLink>
+                        class="text-xs text-blue-400 font-medium hover:text-blue-500 sm:text-sm">Signin</RouterLink>
                 </span>
             </div>
 
@@ -70,34 +74,6 @@ const signInStore = useSignInStore()
                 <AppButton label="Create Account" type="submit" :loading="loading"
                     class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </form>
-
-            <div class="w-full flex flex-col gap-5">
-                <div class="w-full flex items-center">
-                    <div class="w-full border-b border-gray-300"></div>
-                    <span class="w-full text-xs text-center text-gray-400 font-light sm:text-sm">Or continue with</span>
-                    <div class="w-full border-b border-gray-300"></div>
-                </div>
-
-                <div class="relative flex items-center gap-4">
-                    <RouterLink :to="{name: 'signupsocial'}" @click="signInStore.setSocial('github')"
-                        class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
-                        <IconGithub class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial'}" @click="signInStore.setSocial('twitter')"
-                        class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
-                        <IconTwitter class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial'}" @click="signInStore.setSocial('google')"
-                        class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
-                        <IconGoogle class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
-
-                    <!-- shows up when form is submitting to disable social links -->
-                    <div v-show="loading" class="absolute top-0 w-full h-full bg-transparent cursor-not-allowed"></div>
-                    <!-- shows up when form is submitting to disable social links -->
-
-                </div>
-            </div>
 
         </div>
         <!-- form inputs -->
