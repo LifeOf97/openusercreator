@@ -14,8 +14,11 @@ const props = defineProps({
     <button
         :type="props.type"
         :disabled="props.loading"
-        class="p-3 text-xs text-center font-medium transition-all duration-300 rounded cursor-pointer disabled:cursor-not-allowed md:text-base">
-            <p v-if="props.loading">{{props.loadingText}}</p>
-            <p v-else>{{props.label}}</p>
+        class="flex items-center gap-3 px-4 py-2 text-xs text-center font-normal transition-all duration-300 rounded cursor-pointer disabled:cursor-not-allowed md:text-sm">
+            <slot name="icon"></slot>
+            <div>
+                <p v-if="props.loading">{{props.loadingText}}</p>
+                <p v-else>{{props.label}}</p>
+            </div>
     </button>
 </template>

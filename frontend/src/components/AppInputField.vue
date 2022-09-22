@@ -39,7 +39,7 @@ const emits = defineEmits(["update:modelValue"])
             class="w-full bg-transparent text-xs text-gray-700 placeholder:text-gray-400 focus:outline-none md:text-sm"/>
 
         <slot name="icon">
-            <IconPencilOutline class="w-5 h-5 stroke-gray-400" />
+            <!-- <IconPencilOutline class="w-5 h-5 stroke-gray-400" /> -->
         </slot>
 
     </main>

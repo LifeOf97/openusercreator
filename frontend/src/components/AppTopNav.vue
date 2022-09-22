@@ -1,14 +1,15 @@
 <script setup>
 /* eslint-disable */
 import { ref } from 'vue';
-import { onMounted, onUnmounted } from 'vue';
 import { RouterLink } from 'vue-router';
+import { onMounted, onUnmounted } from 'vue';
 import IconUserCircleSolid from './icons/IconUserCircleSolid.vue';
 import IconGithub from './icons/IconGithub.vue';
+import IconLogoutOutline from './icons/IconLogoutOutline.vue';
 
 // refs
 const root = ref(null)
-const isAuth = ref(false)
+const isAuth = ref(true)
 const toggleUserMenu = ref(false)
 
 // methods
@@ -59,7 +60,19 @@ onUnmounted(() => {
                         enter-active-class="transition-all duration-200"
                         leave-to-class="-translate-y-5 opacity-0"
                         leave-active-class="transition-all duration-200">
-                            <div v-if="toggleUserMenu" class="absolute top-12 -right-5 bg-gray-50 w-40 h-40 shadow-md rounded z-10"></div>
+                            <div v-if="toggleUserMenu" class="absolute top-12 -right-5 flex flex-col bg-gray-50 w-44 shadow-md rounded overflow-hidden z-10">
+                                <div class="flex flex-col p-2 border-b">
+                                    <p class="text-xs text-gray-400 font-medium tracking-tighter">Signed in as</p>
+                                    <p class="text-sm text-gray-700 font-medium truncate">RealestKMA</p>
+                                </div>
+                                <RouterLink :to="{name: 'dashboard'}" @click.prevent="toggleUserMenu = false" class="text-left text-gray-700 text-xs px-4 py-2 transition-all duration-300 hover:text-white hover:bg-teal-400 md:text-sm">
+                                    Dashboard
+                                </RouterLink>
+                                <button type="button" class="group text-left text-xs text-gray-500 flex items-center gap-2 px-4 py-2 transition-all duration-300 hover:text-gray-900 hover:bg-white md:text-sm">
+                                    <IconLogoutOutline class="w-5 h-5 fill-gray-500 transition-all duration-300 group-hover:fill-red-500" />
+                                    <p>Sign out</p>
+                                </button>
+                            </div>
                     </transition>
 
                 </div>
