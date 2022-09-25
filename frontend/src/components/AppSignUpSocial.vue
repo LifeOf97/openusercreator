@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import { useSignInStore } from '../stores/signIn';
+import { useAuthStore } from '../stores/auth';
 import AppInputField from './AppInputField.vue';
 import IconUserCircleOutline from './icons/IconUserCircleOutline.vue';
 import IconEnvelopeOutline from './icons/IconEnvelopeOutline.vue';
@@ -22,7 +22,7 @@ const password2 = ref("")
 const loading = ref(false)
 
 // stores
-const signInStore = useSignInStore()
+const authStore = useAuthStore()
 </script>
     
 <template>
@@ -34,12 +34,12 @@ const signInStore = useSignInStore()
             <!-- header -->
             <div class="w-full flex flex-col">
                 <div class="my-6 self-start px-6 py-2 flex items-center justify-center p-2 rounded bg-gray-900">
-                    <IconGithub v-if="signInStore.social == 'github'" class="w-7 h-7 fill-white" />
-                    <IconTwitter v-else-if="signInStore.social == 'twitter'" class="w-7 h-7 fill-white" />
-                    <IconGoogle v-else-if="signInStore.social == 'google'" class="w-7 h-7 fill-white" />
+                    <IconGithub v-if="authStore.social == 'github'" class="w-7 h-7 fill-white" />
+                    <IconTwitter v-else-if="authStore.social == 'twitter'" class="w-7 h-7 fill-white" />
+                    <IconGoogle v-else-if="authStore.social == 'google'" class="w-7 h-7 fill-white" />
                 </div>
                 <h3 class="text-3xl text-gray-900 font-semibold capitalize sm:text-4xl">Connect via
-                    {{signInStore.social}}</h3>
+                    {{authStore.social}}</h3>
                 <span class="mt-2 flex items-center gap-2">
                     <p class="text-xs text-gray-400 font-normal sm:text-sm">Already a creator?</p>
                     <RouterLink :to="{name: 'signin'}"
@@ -57,24 +57,24 @@ const signInStore = useSignInStore()
             <!-- form errors -->
 
             <form @submit.prevent="loading = !loading" class="w-full flex flex-col gap-4 mt-12 mb-5">
-                <AppInputField v-model.trim="username" type="text" label="Username" minLen="4" maxLen="15"
-                    iconPos="left" :disable="loading">
+                <AppInputField v-model="username" type="text" label="Username" :minLen="4" :maxLen="15"
+                    iconPos="left" :disable="loading" class="bg-gray-50">
                     <template #icon>
                         <IconUserCircleOutline class="w-5 h-5 stroke-gray-400" />
                     </template>
                 </AppInputField>
-                <AppInputField v-model="email" type="email" label="email" iconPos="left" :disable="loading">
+                <AppInputField v-model="email" type="email" label="email" iconPos="left" :disable="loading" class="bg-gray-50">
                     <template #icon>
                         <IconEnvelopeOutline class="w-5 h-5 stroke-gray-400" />
                     </template>
                 </AppInputField>
                 <div class="grid grid-cols-1 gap-4 pb-2 sm:grid-cols-2">
-                    <AppPasswordField v-model="password1" label="Password" :disable="loading">
+                    <AppPasswordField v-model="password1" label="Password" :disable="loading" class="bg-gray-50">
                         <template #icon>
                             <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
                         </template>
                     </AppPasswordField>
-                    <AppPasswordField v-model="password2" label="Confirm password" :disable="loading">
+                    <AppPasswordField v-model="password2" label="Confirm password" :disable="loading" class="bg-gray-50">
                         <template #icon>
                             <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
                         </template>

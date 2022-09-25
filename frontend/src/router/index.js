@@ -26,9 +26,24 @@ const router = createRouter({
         },
         {
           path: "settings",
-          name: "dashboardsettings",
+          name: "dashboardusersettings",
           component: () =>  import("../components/AppDashboardSettings.vue")
-        }
+        },
+        {
+          path: "app",
+          name: "dashboardapp",
+          component: () =>  import("../components/AppDashboardApp.vue")
+        },
+        {
+          path: "app/create",
+          name: "dashboardappcreate",
+          component: () =>  import("../components/AppDashboardAppCreate.vue")
+        },
+        {
+          path: "app/settings",
+          name: "dashboardappsettings",
+          component: () =>  import("../components/AppDashboardAppSettings.vue")
+        },
       ]
     },
     {

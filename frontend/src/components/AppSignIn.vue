@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import { useSignInStore } from '../stores/signIn';
+import { useAuthStore } from '../stores/auth';
 import AppInputField from './AppInputField.vue';
 import IconUserCircleOutline from './icons/IconUserCircleOutline.vue';
 import AppPasswordField from './AppPasswordField.vue';
@@ -21,7 +21,7 @@ const rememberMe = ref(false)
 const loading = ref(false)
 
 // stores
-const signInStore = useSignInStore()
+const signInStore = useAuthStore()
 </script>
         
 <template>
@@ -50,13 +50,13 @@ const signInStore = useSignInStore()
             <!-- form errors -->
 
             <form @submit.prevent="loading = !loading" class="w-full flex flex-col gap-4 mt-12 mb-5">
-                <AppInputField v-model.trim="username" type="text" label="Username or Email address" minLen="4"
-                    iconPos="left" :disable="loading">
+                <AppInputField v-model="username" type="text" label="Username or Email address" :minLen="4"
+                    iconPos="left" :disable="loading" class="bg-gray-50">
                     <template #icon>
                         <IconUserCircleOutline class="w-5 h-5 stroke-gray-400" />
                     </template>
                 </AppInputField>
-                <AppPasswordField v-model="password" label="password" :disable="loading">
+                <AppPasswordField v-model="password" label="password" :disable="loading" class="bg-gray-50">
                     <template #icon>
                         <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
                     </template>

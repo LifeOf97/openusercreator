@@ -1,6 +1,5 @@
 <script setup>
 /* eslint-disable */
-import IconPencilOutline from './icons/IconPencilOutline.vue';
 
 // props
 const props = defineProps({
@@ -13,15 +12,30 @@ const props = defineProps({
     disable: {type: Boolean, default: false },
     autocomplete: {type: Boolean, default: false},
     modelValue: {type: String},
+    modelModifiers: { default: () => ({}) }
 })
 
 // emits
-const emits = defineEmits(["update:modelValue"])
+const emit = defineEmits(["update:modelValue"])
+
+// methods
+const emitValue = (e) => {
+    let value = e.target.value
+
+    if (props.modelModifiers.capitalize) {
+        value = value.charAt(0).toUpperCase() + value.slice(1)
+    }
+    else if (props.modelModifiers.lower) {
+        value = value.toLowerCase()
+    }
+
+    emit("update:modelValue", value)
+}
 </script>
 
 <template>
     <main
-        :class="props.iconPos == 'left' ? 'gap-3':'', props.disable ? 'bg-gray-200':'bg-gray-50 hover:ring hover:ring-blue-400 focus-within:ring focus-within:ring-blue-400'"
+        :class="props.iconPos == 'left' ? 'gap-3':'', props.disable ? 'bg-gray-200':'hover:ring hover:ring-blue-400 focus-within:ring focus-within:ring-blue-400'"
         class="w-full p-2 flex items-center ring-1 ring-gray-200 ring-offset-white rounded overflow-hidden transition-all duration-300
         ">
 
@@ -31,12 +45,14 @@ const emits = defineEmits(["update:modelValue"])
             :id="props.label"
             :required="props.required"
             :minlength="props.minLen"
+            :min="props.minLen"
             :maxlength="props.maxLen"
+            :max="props.maxLen"
             :placeholder="props.label"
             :autocomplete="autocomplete"
             :disabled="props.disable"
             :value="modelValue"
-            @input="$emit('update:modelValue', $event.target.value)"
+            @input="emitValue"
             :class="props.iconPos == 'left' ? 'order-2':'', props.disable ? 'cursor-not-allowed':''"
             class="w-full bg-transparent text-xs text-gray-700 placeholder:text-gray-400 focus:outline-none md:text-sm"/>
 

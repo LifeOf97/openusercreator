@@ -51,7 +51,7 @@ const passwordLoading = ref(false)
                 <span class="w-full flex items-center justify-start">
                     <button type="button" @click.prevent="router.back()" class="group flex items-center gap-2">
                         <IconArrowLongLeft class="w-7 h-7 fill-gray-500 transition-all duration-300 group-hover:animate-bounce-hor group-hover:fill-gray-900" />
-                        <p class="text-xs text-gray-500 font-medium transition-all duration-300 group-hover:text-blue-500 sm:text-sm">Home</p>
+                        <p class="text-xs text-gray-500 font-medium transition-all duration-300 group-hover:text-blue-500 sm:text-sm">Dashboard</p>
                     </button>
                 </span>
                 <!-- back link -->
@@ -60,11 +60,11 @@ const passwordLoading = ref(false)
                 <div class="flex flex-col gap-5">
                     <h3 class="text-xl text-gray-600 font-normal md:text-2xl">User Settings</h3>
 
-                    <div class="w-full flex flex-col bg-white rounded overflow-hidden shadow-lg shadow-gray-200">
+                    <div class="w-full flex flex-col bg-white rounded overflow-auto shadow-lg shadow-gray-200">
                         <div class="flex flex-col gap-4 justify-center p-4 border-b border-gray-100">
                             <p class="text-sm text-gray-500 font-normal md:text-base">Below are your personal information.</p>
                              <!-- form errors -->
-                            <span>
+                            <span class="hidden">
                                 <span class="flex items-center gap-2">
                                     <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
                                     <p class="text-xs text-red-500 font-normal">Hello world</p>
@@ -115,11 +115,11 @@ const passwordLoading = ref(false)
                 <div class="flex flex-col gap-5">
                     <h3 class="text-xl text-gray-600 font-normal md:text-2xl">Password</h3>
 
-                    <div class="w-full flex flex-col bg-white rounded overflow-hidden shadow-lg shadow-gray-200">
+                    <div class="w-full flex flex-col bg-white rounded overflow-auto shadow-lg shadow-gray-200">
                         <div class="flex flex-col gap-4 justify-center p-4 border-b border-gray-100">
                             <p class="text-sm text-gray-500 font-normal md:text-base">Change your password.</p>
                              <!-- form errors -->
-                            <span>
+                            <span class="hidden">
                                 <span class="flex items-center gap-2">
                                     <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
                                     <p class="text-xs text-red-500 font-normal">Hello world</p>

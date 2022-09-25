@@ -25,7 +25,7 @@ const inputType = ref("password")
     
 <template>
     <main
-        :class="props.disable ? 'bg-gray-200':'bg-gray-50 hover:ring hover:ring-blue-400 focus-within:ring focus-within:ring-blue-400'"
+        :class="props.disable ? 'bg-gray-200':'hover:ring hover:ring-blue-400 focus-within:ring focus-within:ring-blue-400'"
         class="w-full p-2 flex items-center gap-3 ring-1 ring-gray-200 ring-offset-white rounded overflow-hidden transition-all duration-300">
 
         <slot name="icon">

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import { useSignInStore } from '../stores/signIn';
+import { useAuthStore } from '../stores/auth';
 import AppInputField from './AppInputField.vue';
 import AppButton from './AppButton.vue';
 import IconExclamationTraingleOutline from './icons/IconExclamationTraingleOutline.vue';
@@ -15,7 +15,7 @@ const password2 = ref("")
 const loading = ref(false)
 
 // stores
-const signInStore = useSignInStore()
+const signInStore = useAuthStore()
 </script>
                 
 <template>
@@ -50,8 +50,8 @@ const signInStore = useSignInStore()
             </div>
 
             <form @submit.prevent="loading = !loading" class="w-full flex flex-col gap-4 mb-5">
-                <AppPasswordField v-model="password1" label="Password" :disable="loading" />
-                <AppPasswordField v-model="password2" label="Confirm password" :disable="loading" />
+                <AppPasswordField v-model="password1" label="Password" :disable="loading" class="bg-gray-50" />
+                <AppPasswordField v-model="password2" label="Confirm password" :disable="loading" class="bg-gray-50" />
 
                 <AppButton label="Reset my password" type="submit" :loading="loading" loadingText="Reseting..."
                     class="mt-2 text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />

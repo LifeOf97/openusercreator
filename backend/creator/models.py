@@ -174,7 +174,7 @@ class Openuserapp(models.Model):
     )
     name = models.CharField(
         _("Name"), max_length=20, blank=False, null=False,
-        help_text=_("The name of this Openuser profile. Spaces are replaced with underscores"),
+        help_text=_("The name of this Openuser profile."),
         validators=[
             validators.RegexValidator(
                 regex=r'^[a-zA-Z]([\w -]*[a-zA-Z])?$',

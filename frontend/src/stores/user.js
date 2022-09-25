@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 
 export const useUserStore = defineStore("user", () => {
   const deleteAccount = ref(false);
+  const username = ref('RealestKMA');
 
-  return { deleteAccount };
+  return { deleteAccount, username };
 });

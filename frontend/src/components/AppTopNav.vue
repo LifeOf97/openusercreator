@@ -2,10 +2,14 @@
 /* eslint-disable */
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 import { onMounted, onUnmounted } from 'vue';
 import IconUserCircleSolid from './icons/IconUserCircleSolid.vue';
 import IconGithub from './icons/IconGithub.vue';
 import IconLogoutOutline from './icons/IconLogoutOutline.vue';
+
+// stores
+const authStore = useAuthStore()
 
 // refs
 const root = ref(null)
@@ -68,7 +72,7 @@ onUnmounted(() => {
                                 <RouterLink :to="{name: 'dashboard'}" @click.prevent="toggleUserMenu = false" class="text-left text-gray-700 text-xs px-4 py-2 transition-all duration-300 hover:text-white hover:bg-teal-400 md:text-sm">
                                     Dashboard
                                 </RouterLink>
-                                <button type="button" class="group text-left text-xs text-gray-500 flex items-center gap-2 px-4 py-2 transition-all duration-300 hover:text-gray-900 hover:bg-white md:text-sm">
+                                <button type="button" @click.prevent="authStore.signOut = true" class="group text-left text-xs text-gray-500 flex items-center gap-2 px-4 py-2 transition-all duration-300 hover:text-gray-900 hover:bg-white md:text-sm">
                                     <IconLogoutOutline class="w-5 h-5 fill-gray-500 transition-all duration-300 group-hover:fill-red-500" />
                                     <p>Sign out</p>
                                 </button>

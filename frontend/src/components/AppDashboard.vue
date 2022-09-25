@@ -8,11 +8,11 @@ import IconPencilOutline from './icons/IconPencilOutline.vue';
 import IconQRCodeOutline from './icons/IconQRCodeOutline.vue';
 import IconEnvelopeOutline from './icons/IconEnvelopeOutline.vue';
 import IconClockOutline from './icons/IconClockOutline.vue';
-import IconUserCircleSolid from './icons/IconUserCircleSolid.vue';
 import IconCogSolid from './icons/IconCogSolid.vue';
 import AppEmptyState from './AppEmptyState.vue';
 import IconPlusSolid from './icons/IconPlusSolid.vue';
 import AppButton from './AppButton.vue';
+import IconCubeSolid from './icons/IconCubeSolid.vue';
 
 // computed
 const greet = computed(() => {
@@ -53,7 +53,7 @@ const greet = computed(() => {
                     <div class="w-full flex flex-col bg-white rounded overflow-hidden shadow-lg shadow-gray-200">
                         <div class="flex items-center justify-between p-4 border-b border-gray-100">
                             <p class="text-sm text-gray-500 font-normal md:text-base">Below are your personal information.</p>
-                            <RouterLink :to="{name: 'dashboardsettings'}" class="flex items-center gap-2 px-2 py-1 border border-gray-300 rounded transition-all duration-300 group hover:bg-blue-500">
+                            <RouterLink :to="{name: 'dashboardusersettings'}" class="flex items-center gap-2 px-2 py-1 border border-gray-300 rounded transition-all duration-300 group hover:bg-blue-500">
                                 <IconPencilOutline class="w-4 h-4 stroke-gray-600 transition-all duration-300 group-hover:stroke-white" />
                                 <p class="text-xs text-gray-600 font-normal transition-all duration-300 group-hover:text-white md:text-sm">Edit</p>
                             </RouterLink>
@@ -105,10 +105,10 @@ const greet = computed(() => {
                         <div class="relative flex flex-col gap-5 bg-white p-10 rounded-lg shadow-lg shadow-gray-200 overflow-hidden group transition-all duration-300 hover:bg-blue-500 md:p-7">
                             <span class="flex items-center justify-between">
                                 <span class="flex items-center gap-3">
-                                    <IconUserCircleSolid class="w-5 h-5 fill-gray-600 transition-all duration-300 group-hover:fill-white md:w-10 md:h-10" />
+                                    <IconCubeSolid class="w-5 h-5 fill-gray-600 transition-all duration-300 group-hover:fill-white md:w-7 md:h-7" />
                                     <p class="text-sm text-gray-600 font-medium group-hover:text-white md:text-base">My openuser app</p>
                                 </span>
-                                <RouterLink to="#" class="relative">
+                                <RouterLink :to="{name: 'dashboardapp'}" class="relative">
                                     <IconCogSolid class="hidden w-7 h-7 fill-white transition-all duration-300 group-hover:block md:w-7 md:h-7" />
                                     <IconCogSolid class="absolute top-0 hidden w-7 h-7 fill-white transition-all duration-300 group-hover:animate-ping group-hover:block md:w-7 md:h-7" />
                                 </RouterLink>
@@ -126,11 +126,10 @@ const greet = computed(() => {
                                 <p class="text-xs text-gray-400 font-light md:text-sm">Get started by creating an app</p>
                             </template>
                             <template #tail>
-                                <AppButton label="New app" class="bg-blue-500 text-white hover:bg-blue-600">
-                                    <template #icon>
-                                        <IconPlusSolid class="w-5 h-5 fill-white" />
-                                    </template>
-                                </AppButton>
+                                <RouterLink :to="{name: 'dashboardappcreate'}" class="flex items-center gap-2 px-2 py-1 bg-blue-400 rounded hover:bg-blue-500">
+                                    <IconPlusSolid class="w-5 h-5 fill-white" />
+                                    <p class="text-xs text-white font-normal">New App</p>
+                                </RouterLink>
                             </template>
                         </AppEmptyState>
 
