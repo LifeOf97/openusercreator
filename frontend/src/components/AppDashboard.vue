@@ -8,11 +8,9 @@ import IconPencilOutline from './icons/IconPencilOutline.vue';
 import IconQRCodeOutline from './icons/IconQRCodeOutline.vue';
 import IconEnvelopeOutline from './icons/IconEnvelopeOutline.vue';
 import IconClockOutline from './icons/IconClockOutline.vue';
-import IconCogSolid from './icons/IconCogSolid.vue';
 import AppEmptyState from './AppEmptyState.vue';
 import IconPlusSolid from './icons/IconPlusSolid.vue';
-import AppButton from './AppButton.vue';
-import IconCubeSolid from './icons/IconCubeSolid.vue';
+import AppMyApp from './AppMyApp.vue';
 
 // computed
 const greet = computed(() => {
@@ -102,21 +100,7 @@ const greet = computed(() => {
 
                     <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
 
-                        <div class="relative flex flex-col gap-5 bg-white p-10 rounded-lg shadow-lg shadow-gray-200 overflow-hidden group transition-all duration-300 hover:bg-blue-500 md:p-7">
-                            <span class="flex items-center justify-between">
-                                <span class="flex items-center gap-3">
-                                    <IconCubeSolid class="w-5 h-5 fill-gray-600 transition-all duration-300 group-hover:fill-white md:w-7 md:h-7" />
-                                    <p class="text-sm text-gray-600 font-medium group-hover:text-white md:text-base">My openuser app</p>
-                                </span>
-                                <RouterLink :to="{name: 'dashboardapp'}" class="relative">
-                                    <IconCogSolid class="hidden w-7 h-7 fill-white transition-all duration-300 group-hover:block md:w-7 md:h-7" />
-                                    <IconCogSolid class="absolute top-0 hidden w-7 h-7 fill-white transition-all duration-300 group-hover:animate-ping group-hover:block md:w-7 md:h-7" />
-                                </RouterLink>
-                            </span>
-                            <p class="text-xs text-gray-600 font-light transition-all duration-300 group-hover:text-gray-50 md:text-sm">
-                                Decription of my openuser app and will then follow, for better understanding
-                            </p>
-                        </div>
+                        <AppMyApp title="My first app" description="Description about this app" />
 
                         <AppEmptyState  class="border-gray-200">
                             <template #head>

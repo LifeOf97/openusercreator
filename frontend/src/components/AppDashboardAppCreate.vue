@@ -5,6 +5,10 @@ import IconCubeOutline from './icons/IconCubeOutline.vue';
 import IconArrowLongLeft from './icons/IconArrowLongLeft.vue';
 import IconCheckCircleSolid from './icons/IconCheckCircleSolid.vue';
 import AppDashboardAppForm1 from './AppDashboardAppForm1.vue';
+import AppDashboardAppForm2 from './AppDashboardAppForm2.vue';
+import AppDashboardAppForm3 from './AppDashboardAppForm3.vue';
+import AppDashboardAppCreateConfirm from './AppDashboardAppCreateConfirm.vue';
+import AppDashboardAppCreateSuccess from './AppDashboardAppCreateSuccess.vue';
 
 // router
 const router = useRouter()
@@ -51,7 +55,7 @@ const router = useRouter()
                         </span>
                     </span>
 
-                    <AppDashboardAppForm1 />
+                    <AppDashboardAppCreateSuccess />
 
                 </div>
 

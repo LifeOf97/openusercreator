@@ -12,23 +12,20 @@ const error = ref(null)
 
 // methods
 const saveData = () => {
-    if (appNameIsValid.value && appNameMinLength.value && appNameMaxLength.value) {
+    if (verifyMinValue.value && verifyMaxValue.value && appNameIsValid.value) {
         error.value = null
         localStorage.setItem('app_create_name', appName.value)
         localStorage.setItem('app_create_description', appDes.value)
     }
-    else {
-        error.value = "Please correct the neccessary fields"
-    }
-    console.log('submitted')
+    else error.value = "Please correct the error causing fields"
 }
 
 // computed
-const appNameMinLength = computed(() => {
+const verifyMinValue = computed(() => {
     return appName.value.length >= 4 ? true:false
 })
 
-const appNameMaxLength = computed(() => {
+const verifyMaxValue = computed(() => {
     return appName.value.length <= 20 ? true:false
 })
 
@@ -56,9 +53,9 @@ onMounted(() => {
                 <p v-if="error" class="text-xs text-red-500 font-medium mb-4">{{error}}</p>
                 <AppInputField v-model.lower="appName" label="App name..." :minLen="4" :maxLen="20" class="bg-white"/>
                 <div class="flex items-center justify-between">
-                    <p :class="appNameIsValid ? 'text-green-300':'text-red-500'" class="text-xs font-normal">-Most begin and end with a letter</p>
-                    <p :class="appNameMinLength ? 'text-green-300':'text-red-500'" class="text-xs font-normal">-Min: 4</p>
-                    <p :class="appNameMaxLength ? 'text-green-300':'text-red-500'" class="text-xs font-normal">-Max: 20</p>
+                    <p :class="appNameIsValid ? 'text-green-400':'text-red-400'" class="text-xs font-normal">-Most begin and end with a letter</p>
+                    <p :class="verifyMinValue ? 'text-green-400':'text-red-400'" class="text-xs font-normal">-Min: 4</p>
+                    <p :class="verifyMaxValue ? 'text-green-400':'text-red-400'" class="text-xs font-normal">-Max: 20</p>
                 </div>
             </div>
 

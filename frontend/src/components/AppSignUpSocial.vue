@@ -43,7 +43,7 @@ const authStore = useAuthStore()
                 <span class="mt-2 flex items-center gap-2">
                     <p class="text-xs text-gray-400 font-normal sm:text-sm">Already a creator?</p>
                     <RouterLink :to="{name: 'signin'}"
-                        class="text-xs text-blue-400 font-medium hover:text-blue-500 sm:text-sm">Signin</RouterLink>
+                        class="text-xs text-blue-400 font-medium hover:text-blue-500 sm:text-sm">Sign in</RouterLink>
                 </span>
             </div>
 
