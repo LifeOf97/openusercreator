@@ -5,6 +5,9 @@ import AppInputField from './AppInputField.vue';
 import AppTextArea from './AppTextArea.vue';
 import AppButton from './AppButton.vue';
 
+// emit
+const emit = defineEmits(["button-clicked"])
+
 // refs
 const appName = ref("")
 const appDes = ref("")
@@ -16,6 +19,7 @@ const saveData = () => {
         error.value = null
         localStorage.setItem('app_create_name', appName.value)
         localStorage.setItem('app_create_description', appDes.value)
+        emit("button-clicked", "next")
     }
     else error.value = "Please correct the error causing fields"
 }

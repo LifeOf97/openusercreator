@@ -50,3 +50,18 @@ const authStore = useAuthStore()
 
   </main>
 </template>
+
+<style>
+  .slide-right-enter-active,
+  .slide-right-leave-active,
+  .slide-left-enter-active,
+  .slide-left-leave-active {
+    @apply transition-all duration-200
+  }
+  .slide-right-enter-from {
+    @apply -translate-x-20 opacity-0
+  }
+  .slide-left-enter-from {
+    @apply translate-x-20 opacity-0
+  }
+</style>

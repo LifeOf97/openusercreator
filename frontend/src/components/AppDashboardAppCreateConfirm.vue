@@ -3,6 +3,9 @@
 import { ref } from 'vue';
 import AppButton from './AppButton.vue';
 
+// emits
+const emit = defineEmits(["button-clicked"])
+
 // refs
 const appName = ref(localStorage.getItem("app_create_name"))
 const appDes = ref(localStorage.getItem("app_create_description"))
@@ -36,9 +39,9 @@ const appPassword = ref(localStorage.getItem("app_create_password"))
             </span>
 
             <div class="flex items-center justify-center mt-10 gap-2">
-                <AppButton type="button" label="Back"
+                <AppButton @click.prevent="$emit('button-clicked', 'back')" type="button" label="Back"
                     class="text-gray-900 bg-transparent hover:bg-white disabled:bg-gray-300" />
-                <AppButton type="submit" label="Create App"
+                <AppButton  @click.prevent="$emit('button-clicked', 'next')" type="button" label="Create App"
                     class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </div>
 

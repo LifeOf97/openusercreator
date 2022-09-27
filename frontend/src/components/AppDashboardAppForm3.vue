@@ -4,6 +4,9 @@ import { onMounted, ref, computed } from 'vue';
 import AppButton from './AppButton.vue';
 import AppPasswordField from './AppPasswordField.vue';
 
+// emits
+const emit = defineEmits(["button-clicked"])
+
 // refs
 const appPassword = ref("")
 const error = ref(null)
@@ -15,7 +18,8 @@ const appName = localStorage.getItem("app_create_name")
 const saveData = () => {
     if (verifyMinValue.value && verifyMaxValue.value) {
         error.value = null
-        localStorage.setItem('app_create_profiles', appPassword.value)
+        localStorage.setItem('app_create_password', appPassword.value)
+        emit("button-clicked", "next")
     }
     else error.value = "Please correct the error causing fields"
 }
@@ -40,7 +44,7 @@ onMounted(() => {
 
         <p class="text-xs text-gray-600 font-medium mb-4 md:text-sm">
             Every user profile in your app needs a password for authentication.
-            This password will be given to all user account in your <b>{{appName}}</b> application.
+            This password will be given to all user account in your (<b>{{appName}}</b>) application.
         </p>
 
         <form @submit.prevent="saveData()" class="flex flex-col gap-5">
@@ -55,10 +59,8 @@ onMounted(() => {
             </div>
 
             <div class="flex items-center justify-center gap-2">
-                <AppButton type="button" label="Back"
-                    class="text-gray-900 bg-transparent hover:bg-white disabled:bg-gray-300" />
-                <AppButton type="submit" label="Next"
-                    class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
+                <AppButton @click.prevent="$emit('button-clicked', 'back')" type="button" label="Back" class="text-gray-900 bg-transparent hover:bg-white disabled:bg-gray-300" />
+                <AppButton type="submit" label="Next" class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </div>
         </form>
 

@@ -1,5 +1,6 @@
 <script setup>
 /* eslint-disable */
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import IconCubeOutline from './icons/IconCubeOutline.vue';
 import IconArrowLongLeft from './icons/IconArrowLongLeft.vue';
@@ -12,6 +13,35 @@ import AppDashboardAppCreateSuccess from './AppDashboardAppCreateSuccess.vue';
 
 // router
 const router = useRouter()
+
+// refs
+const currentTabId = ref(1)
+const tabTransition = ref("slide-left")
+
+const formTabs = [
+    {id: 1, title: "Name your App", tab: AppDashboardAppForm1},
+    {id: 2, title: "Number of User", tab: AppDashboardAppForm2},
+    {id: 3, title: "Users Password", tab: AppDashboardAppForm3},
+    {id: 4, title: "Confirm App Details", tab: AppDashboardAppCreateConfirm},
+    {id: 5, title: "Application Created Successfully", tab: AppDashboardAppCreateSuccess},
+]
+
+// computed
+const currentTab = computed(() => {
+    return formTabs.find((tab) => tab.id == currentTabId.value)
+})
+
+// methods
+const updateTab = (value) => {
+    if (value == 'next' && currentTabId.value < 5) {
+        tabTransition.value = "slide-left"
+        currentTabId.value = currentTabId.value + 1
+    }
+    else if (value == 'back' && currentTabId.value > 1) {
+        tabTransition.value = "slide-right"
+        currentTabId.value = currentTabId.value - 1
+    }
+}
 </script>
     
 <template>
@@ -42,20 +72,22 @@ const router = useRouter()
                 <div class="flex flex-col gap-10">
 
                     <span class="flex flex-col items-center gap-5 md:gap-10">
-                        <h3 class="text-2xl text-gray-900 font-semibold md:text-4xl">Name Your App</h3>
+                        <h3 class="text-2xl text-gray-900 font-semibold md:text-4xl">{{currentTab.title}}</h3>
 
                         <span class="flex items-center -space-x-1">
-                            <IconCheckCircleSolid class="w-9 h-9 fill-gray-200 md:w-12 md:h-12"/>
-                            <div class="w-10 border-b border-gray-200 sm:w-20"></div>
-                            <IconCheckCircleSolid class="w-9 h-9 fill-gray-200 md:w-12 md:h-12"/>
-                            <div class="w-10 border-b border-gray-200 sm:w-20"></div>
-                            <IconCheckCircleSolid class="w-9 h-9 fill-gray-200 md:w-12 md:h-12"/>
-                            <div class="w-10 border-b border-gray-200 sm:w-20"></div>
-                            <IconCheckCircleSolid class="w-9 h-9 fill-gray-200 md:w-12 md:h-12"/> 
+                            <IconCheckCircleSolid :class="currentTabId > 1 ? 'fill-blue-500':'fill-gray-200'" class="w-9 h-9 transition-all duration-700 md:w-12 md:h-12"/>
+                            <div :class="currentTabId > 1 ? 'border-blue-500':'border-gray-200'" class="w-10 border-b transition-all duration-700 sm:w-20"></div>
+                            <IconCheckCircleSolid :class="currentTabId > 2 ? 'fill-blue-500':'fill-gray-200'" class="w-9 h-9 transition-all duration-700 md:w-12 md:h-12"/>
+                            <div :class="currentTabId > 2 ? 'border-blue-500':'border-gray-200'" class="w-10 border-b transition-all duration-700 sm:w-20"></div>
+                            <IconCheckCircleSolid :class="currentTabId > 3 ? 'fill-blue-500':'fill-gray-200'" class="w-9 h-9 transition-all duration-700 md:w-12 md:h-12"/>
+                            <div :class="currentTabId > 3 ? 'border-blue-500':'border-gray-200'" class="w-10 border-b transition-all duration-700 sm:w-20"></div>
+                            <IconCheckCircleSolid :class="currentTabId > 4 ? 'fill-blue-500':'fill-gray-200'" class="w-9 h-9 transition-all duration-700 md:w-12 md:h-12"/> 
                         </span>
                     </span>
 
-                    <AppDashboardAppCreateSuccess />
+                    <Transition :name="tabTransition" mode="out-in">
+                        <Component :is="currentTab.tab" @button-clicked="updateTab"></Component>
+                    </Transition>
 
                 </div>
 
