@@ -1,6 +1,5 @@
 <script setup>
 /* eslint-disable */
-import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import bgSvg from '../assets/svgs/bg.svg'
 import AppTopNav from './AppTopNav.vue';

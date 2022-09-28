@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import AppInputField from './AppInputField.vue';
@@ -23,6 +23,10 @@ const loading = ref(false)
 
 // stores
 const authStore = useAuthStore()
+
+onMounted(() => {
+    document.title = `Sign Up | ${authStore.social} | Open User Data`
+})
 </script>
     
 <template>

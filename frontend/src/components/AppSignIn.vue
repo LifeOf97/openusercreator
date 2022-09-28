@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import AppInputField from './AppInputField.vue';
@@ -14,14 +14,34 @@ import IconTwitter from './icons/IconTwitter.vue';
 import AppCheckbox from './AppCheckbox.vue';
 import IconKeyOutline from './icons/IconKeyOutline.vue';
 
+// stores
+const authStore = useAuthStore()
+
 // refs
 const username = ref("")
 const password = ref("")
 const rememberMe = ref(false)
-const loading = ref(false)
 
-// stores
-const signInStore = useAuthStore()
+// methods
+const submit = () => {
+    const data = {
+        username: username.value,
+        password: password.value,
+        rememberMe: rememberMe.value
+    }
+    authStore.submitSignIn(data)
+}
+
+// computed
+const isError = computed(() => {
+    return authStore.signIn.error || authStore.signIn.username || authStore.signIn.password
+})
+
+// hooks
+onMounted(() => {
+    username.value = localStorage.getItem("remember_me")
+    rememberMe.value = localStorage.getItem("remember_me") ? true:false
+})
 </script>
         
 <template>
@@ -41,22 +61,30 @@ const signInStore = useAuthStore()
             </div>
 
             <!-- form errors -->
-            <div class="hidden mt-7 w-full list-inside list-disc">
-                <span class="flex items-center gap-2">
+            <div  v-if="isError" class="mt-7 w-full flex flex-col gap-1">
+                <span v-if="authStore.signIn.error" class="flex items-center gap-2">
                     <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
-                    <p class="text-xs text-red-500 font-normal md:text-sm">Hello world</p>
+                    <p class="text-xs text-red-500 font-normal md:text-sm">{{authStore.signIn.error}}</p>
+                </span>
+                <span v-if="authStore.signIn.username" class="flex items-center gap-2">
+                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                    <p class="text-xs text-red-500 font-normal md:text-sm">{{authStore.signIn.username}}</p>
+                </span>
+                <span v-if="authStore.signIn.password" class="flex items-center gap-2">
+                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                    <p class="text-xs text-red-500 font-normal md:text-sm">{{authStore.signIn.email}}</p>
                 </span>
             </div>
             <!-- form errors -->
 
-            <form @submit.prevent="loading = !loading" class="w-full flex flex-col gap-4 mt-12 mb-5">
+            <form @submit.prevent="submit()" class="w-full flex flex-col gap-4 mt-12 mb-5">
                 <AppInputField v-model="username" type="text" label="Username or Email address" :minLen="4"
-                    iconPos="left" :disable="loading" class="bg-gray-50">
+                    iconPos="left" :disable="authStore.signIn.loading" class="bg-gray-50">
                     <template #icon>
                         <IconUserCircleOutline class="w-5 h-5 stroke-gray-400" />
                     </template>
                 </AppInputField>
-                <AppPasswordField v-model="password" label="password" :disable="loading" class="bg-gray-50">
+                <AppPasswordField v-model="password" label="password" :disable="authStore.signIn.loading" class="bg-gray-50">
                     <template #icon>
                         <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
                     </template>
@@ -69,7 +97,7 @@ const signInStore = useAuthStore()
                     </RouterLink>
                 </div>
 
-                <AppButton label="Sign in" type="submit" :loading="loading"
+                <AppButton label="Sign in" type="submit" :loading="authStore.signIn.loading"
                     class="mt-2 text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </form>
 
@@ -82,21 +110,21 @@ const signInStore = useAuthStore()
                 </div>
 
                 <div class="relative flex items-center gap-4">
-                    <RouterLink :to="{name: 'signupsocial'}" @click="signInStore.setSocial('github')"
+                    <RouterLink :to="{name: 'signupsocial'}" @click="authStore.setSocial('github')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconGithub class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
                     </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial'}" @click="signInStore.setSocial('twitter')"
+                    <RouterLink :to="{name: 'signupsocial'}" @click="authStore.setSocial('twitter')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconTwitter class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
                     </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial'}" @click="signInStore.setSocial('google')"
+                    <RouterLink :to="{name: 'signupsocial'}" @click="authStore.setSocial('google')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconGoogle class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
                     </RouterLink>
 
                     <!-- shows up when form is submitting to disable social links -->
-                    <div v-show="loading" class="absolute top-0 w-full h-full bg-transparent cursor-not-allowed"></div>
+                    <div v-show="authStore.signIn.loading" class="absolute top-0 w-full h-full bg-transparent cursor-not-allowed"></div>
                     <!-- shows up when form is submitting to disable social links -->
 
                 </div>

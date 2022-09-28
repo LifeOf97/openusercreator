@@ -72,7 +72,7 @@ const updateTab = (value) => {
                 <div class="flex flex-col gap-10">
 
                     <span class="flex flex-col items-center gap-5 md:gap-10">
-                        <h3 class="text-2xl text-gray-900 font-semibold md:text-4xl">{{currentTab.title}}</h3>
+                        <h3 class="text-xl text-gray-900 font-semibold md:text-4xl">{{currentTab.title}}</h3>
 
                         <span class="flex items-center -space-x-1">
                             <IconCheckCircleSolid :class="currentTabId > 1 ? 'fill-blue-500':'fill-gray-200'" class="w-9 h-9 transition-all duration-700 md:w-12 md:h-12"/>

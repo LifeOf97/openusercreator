@@ -5,9 +5,24 @@ import { useAuthStore } from "./stores/auth";
 import AppModalState from "./components/AppModalState.vue";
 import AppButton from "./components/AppButton.vue";
 import IconLogoutOutline from "./components/icons/IconLogoutOutline.vue";
+import { onMounted } from "vue";
+import VueCookies from "vue-cookies";
 
 // stores
 const authStore = useAuthStore()
+
+// methods
+const getUserProfile = () => {
+  if (VueCookies.get("access") && !authStore.userProfile) authStore.getUserProfile()
+  else if (!VueCookies.get("access")) authStore.submitSignOut()
+  else authStore.submitSignOut()
+}
+
+// hooks
+onMounted(() => {
+  // check user data is present
+  getUserProfile()
+})
 </script>
 
 <template>
@@ -39,7 +54,7 @@ const authStore = useAuthStore()
 
               <template #actions>
                 <AppButton @click.prevent="authStore.signOut = false" type="button" label="Cancle" class="text-gray-900 hover:bg-white" />
-                <AppButton type="button" label="Yes, sign out" class="text-white bg-red-500 hover:bg-red-600" />
+                <AppButton @click.prevent="authStore.submitSignOut()" type="button" label="Yes, sign out" class="text-white bg-red-500 hover:bg-red-600" />
               </template>
 
             </AppModalState>

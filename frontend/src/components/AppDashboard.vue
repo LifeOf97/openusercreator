@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import {DateTime} from 'luxon';
 import IconUserCircleOutline from './icons/IconUserCircleOutline.vue';
@@ -11,6 +11,11 @@ import IconClockOutline from './icons/IconClockOutline.vue';
 import AppEmptyState from './AppEmptyState.vue';
 import IconPlusSolid from './icons/IconPlusSolid.vue';
 import AppMyApp from './AppMyApp.vue';
+import { useAuthStore } from '../stores/auth';
+import IconCalenderOutline from './icons/IconCalenderOutline.vue';
+
+// stores
+const authStore = useAuthStore()
 
 // computed
 const greet = computed(() => {
@@ -20,6 +25,16 @@ const greet = computed(() => {
   else return "evening"
 })
 
+// methods
+const formatDate = (value) => {
+    return value ? DateTime.fromISO(value).toFormat('LLLL dd, yyyy @ HH:mm'):
+    DateTime.fromISO(authStore.userProfile['date_joined']).toFormat('LLLL dd, yyyy @ HH:mm');
+}
+
+// hooks
+onMounted(() => {
+    document.title = `${authStore.userProfile['username']} | Dashboard | Open User Data`
+})
 </script>
 
 <template>
@@ -29,11 +44,11 @@ const greet = computed(() => {
         <div class="relative w-full bg-white pt-48 pb-14 overflow-hidden">
             <div class="w-11/12 mx-auto md:w-10/12">
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-gray-400 font-normal flex items-center gap-2 md:text-base">
+                    <span class="text-xs text-gray-400 font-normal flex items-center gap-2 md:text-lg">
                         <code class="text-2xl">&#128075;</code>
                         Good {{greet}}
                     </span>
-                    <h3 class="text-3xl text-gray-600 font-bold md:text-4xl">RealestKMA</h3>
+                    <h3 class="text-3xl text-gray-600 font-bold capitalize md:text-6xl">{{authStore.userProfile['username']}}</h3>
                 </div>
             </div>
             <IconUserCircleOutline class="hidden absolute -top-7 right-0 w-86 h-96 stroke-gray-50 md:block" :strokeWidth="0.2" />
@@ -47,8 +62,12 @@ const greet = computed(() => {
                 <!-- profile overview -->
                 <div class="flex flex-col gap-5">
                     <h3 class="text-xl text-gray-600 font-normal md:text-2xl">Profile Overview</h3>
+                    
+                    <!-- loading user profile effect -->
+                    <div v-if="authStore.getUser.loading" class="w-full h-96 bg-white rounded overflow-hidden shadow-lg shadow-gray-200 animate-pulse"></div>
+                    <!-- loading user profile effect -->
 
-                    <div class="w-full flex flex-col bg-white rounded overflow-hidden shadow-lg shadow-gray-200">
+                    <div v-else class="w-full flex flex-col bg-white rounded overflow-hidden shadow-lg shadow-gray-200">
                         <div class="flex items-center justify-between p-4 border-b border-gray-100">
                             <p class="text-sm text-gray-500 font-normal md:text-base">Below are your personal information.</p>
                             <RouterLink :to="{name: 'dashboardusersettings'}" class="flex items-center gap-2 px-2 py-1 border border-gray-300 rounded transition-all duration-300 group hover:bg-blue-500">
@@ -64,28 +83,35 @@ const greet = computed(() => {
                                         <IconQRCodeOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">UID:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">1234567890</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{authStore.userProfile['uid']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconUserCircleOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Username:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">RealestKMA</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{authStore.userProfile['username']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconEnvelopeOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Email address:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">kelvinmayoayeni@gmail.com</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{authStore.userProfile['email']}}</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="flex items-center gap-3 py-4">
+                                        <IconCalenderOutline :strokeWidth="1" class="w-5 h-5 stroke-gray-400" />
+                                        <p class="text-xs text-gray-400 font-normal md:text-sm">Date joined:</p>
+                                    </td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{formatDate(authStore.userProfile['date_joined'])}}</td>
                                 </tr>
                                 <tr class="">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconClockOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Last seen:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">September 22, 2022 @14:40</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{formatDate(authStore.userProfile['last_login'])}}</td>
                                 </tr>
                             </table>
                         </div>
