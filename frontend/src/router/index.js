@@ -4,7 +4,6 @@ import HomeView from "../views/HomeView.vue";
 import AuthView from "../views/AuthView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import { useAuthStore } from "../stores/auth";
-import { useUserStore } from "../stores/user";
 
 
 const router = createRouter({
@@ -104,10 +103,10 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   document.title = to.meta.title
-  const userStore = useUserStore()
+  const authStore = useAuthStore()
 
   if (to.name == 'home' && JSON.parse(localStorage.getItem('is_auth'))) {
-    return {name: 'dashboard', params: {username: userStore.userProfile['username']}}
+    return {name: 'dashboard', params: {username: authStore.userProfile['username']}}
   }
   if (to.meta.requiresAuth && !JSON.parse(localStorage.getItem('is_auth'))) {
     return {name: 'signin', query: {redirect: to.path}}

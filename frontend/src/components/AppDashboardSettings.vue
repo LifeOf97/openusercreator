@@ -1,7 +1,8 @@
 <script setup>
 /* eslint-disable */
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter} from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 import { useUserStore } from '../stores/user';
 import IconUserCircleOutline from './icons/IconUserCircleOutline.vue';
 import IconQRCodeOutline from './icons/IconQRCodeOutline.vue';
@@ -19,6 +20,7 @@ const router = useRouter()
 
 // stores
 const userStore = useUserStore()
+const authStore = useAuthStore()
 
 // refs
 const username = ref("")
@@ -28,6 +30,11 @@ const password1 = ref("")
 const password2 = ref("")
 const userLoading = ref(false)
 const passwordLoading = ref(false)
+
+// hooks
+onMounted(() => {
+    document.title = `${authStore.userProfile['username']} | Settings | Open User Data`
+})
 </script>
     
 <template>
@@ -67,7 +74,7 @@ const passwordLoading = ref(false)
                             <span class="hidden">
                                 <span class="flex items-center gap-2">
                                     <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
-                                    <p class="text-xs text-red-500 font-normal">Hello world</p>
+                                    <p class="text-xs text-red-500 font-normal">Error</p>
                                 </span>
                             </span>
                             <!-- form errors -->
@@ -80,7 +87,7 @@ const passwordLoading = ref(false)
                                         <IconQRCodeOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">UID:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">1234567890</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{authStore.userProfile['uid']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-6">
@@ -88,7 +95,7 @@ const passwordLoading = ref(false)
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Username:</p>
                                     </td>
                                     <td>
-                                        <AppInputField v-model="username" label="RealestKMA" :disable="userLoading" />
+                                        <AppInputField v-model="username" :label="authStore.userProfile['username']" :disable="userLoading" />
                                     </td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
@@ -97,7 +104,7 @@ const passwordLoading = ref(false)
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Email address:</p>
                                     </td>
                                     <td>
-                                        <AppInputField v-model="email" type="email" label="kelvinmayoayeni@gmail.com" :disable="userLoading" />
+                                        <AppInputField v-model="email" type="email" :label="authStore.userProfile['email']" :disable="userLoading" />
                                     </td>
                                 </tr>
                             </table>

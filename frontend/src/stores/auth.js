@@ -2,7 +2,6 @@
 import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
-import { useUserStore } from "./user";
 import axios from "axios";
 import VueCookies from 'vue-cookies';
 
@@ -10,7 +9,12 @@ import VueCookies from 'vue-cookies';
 export const useAuthStore = defineStore("auth", () => {
   // router
   const router = useRouter()
-  
+
+  ////////////////////////////////////////////
+  // app notification functionality
+  ////////////////////////////////////////////
+  const notify = reactive({open: false, detail: null, state: null})
+
   const isAuthenticated = ref(JSON.parse(localStorage.getItem("is_auth")))
 
   ////////////////////////////////////////////
@@ -48,6 +52,16 @@ export const useAuthStore = defineStore("auth", () => {
 
         // navigate to dashboard
         router.push({name :'dashboard', params: {username: resp.data['user']['username']}})
+
+        // update notify
+        notify.open = true
+        notify.detail = "Account created successfully"
+        notify.state = "good"
+    
+        setTimeout(() => {
+          notify.open = false
+          notify.detail = notify.state = null
+        }, 5000);
       })
       .catch((err) => {
         if (err.response) {
@@ -71,7 +85,6 @@ export const useAuthStore = defineStore("auth", () => {
     signIn.loading = true
     signIn.username = signIn.password = signIn.error = null
 
-    // await axios.post("api/v1/creators/new/", data, {headers: {'Authorization': `Bearer ${VueCookies.get('access')}` }})
     await axios.post("api/v1/auth/login/token/", data)
       .then((resp) => {
         signIn.loading = false
@@ -89,6 +102,16 @@ export const useAuthStore = defineStore("auth", () => {
         // get the authenticated users profile
         getUserProfile()
         isAuthenticated.value = true
+
+        // update notify
+        notify.open = true
+        notify.detail = "Signed in successfully"
+        notify.state = "good"
+    
+        setTimeout(() => {
+          notify.open = false
+          notify.detail = notify.state = null
+        }, 5000);
       })
       .catch((err) => {
         if (err.response) {
@@ -101,7 +124,6 @@ export const useAuthStore = defineStore("auth", () => {
         else {
           signIn.loading = isAuthenticated.value = false
           signIn.error = "An error occured, please try again."
-          console.log(err.message)
         }
       })
   }
@@ -164,6 +186,6 @@ export const useAuthStore = defineStore("auth", () => {
   return {
     isAuthenticated, social, setSocial, signUp, submitSignUp,
     signIn, submitSignIn, getUser, userProfile, getUserProfile,
-    signOut, submitSignOut
+    signOut, submitSignOut, notify
   };
 });

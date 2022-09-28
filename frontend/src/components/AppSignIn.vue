@@ -78,7 +78,7 @@ onMounted(() => {
             <!-- form errors -->
 
             <form @submit.prevent="submit()" class="w-full flex flex-col gap-4 mt-12 mb-5">
-                <AppInputField v-model="username" type="text" label="Username or Email address" :minLen="4"
+                <AppInputField v-model.lower="username" type="text" label="Username or Email address" :minLen="4"
                     iconPos="left" :disable="authStore.signIn.loading" class="bg-gray-50">
                     <template #icon>
                         <IconUserCircleOutline class="w-5 h-5 stroke-gray-400" />

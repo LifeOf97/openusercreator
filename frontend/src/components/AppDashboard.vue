@@ -48,7 +48,7 @@ onMounted(() => {
                         <code class="text-2xl">&#128075;</code>
                         Good {{greet}}
                     </span>
-                    <h3 class="text-3xl text-gray-600 font-bold capitalize md:text-6xl">{{authStore.userProfile['username']}}</h3>
+                    <h3 class="text-3xl text-gray-800 font-bold capitalize md:text-6xl">{{authStore.userProfile['username']}}</h3>
                 </div>
             </div>
             <IconUserCircleOutline class="hidden absolute -top-7 right-0 w-86 h-96 stroke-gray-50 md:block" :strokeWidth="0.2" />

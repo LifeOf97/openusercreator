@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { RouterView } from 'vue-router';
 import { useUserStore } from '../stores/user';
 import { useAppStore } from '../stores/apps';
+import { useAuthStore } from '../stores/auth';
 import AppTopNav from '../components/AppTopNav.vue';
 import AppModalState from '../components/AppModalState.vue';
 import AppInputField from '../components/AppInputField.vue';
@@ -13,6 +14,7 @@ import IconCubeOutline from '../components/icons/IconCubeOutline.vue';
 
 // stores
 const userStore = useUserStore()
+const authStore = useAuthStore()
 const appStore = useAppStore()
 
 // refs
@@ -61,7 +63,7 @@ const closeAppModal = () => {
                         </template>
 
                         <template #form>
-                            <AppInputField v-model="username" :label="userStore.username" iconPos="left">
+                            <AppInputField v-model.lower="username" :label="authStore.userProfile['username']" iconPos="left">
                                 <template #icon>
                                     <IconUserCircleOutline class="w-5 h-5 stroke-gray-400" />
                                 </template>
@@ -71,9 +73,12 @@ const closeAppModal = () => {
                         <template #actions>
                             <AppButton @click.prevent="closeAccountModal()" type="button" label="Cancle"
                                 class="text-gray-900 hover:bg-white" />
-                            <AppButton type="button" label="Delete Account"
-                                :disabled="userStore.username.toLowerCase() !== username.toLowerCase()"
-                                :class="userStore.username.toLowerCase() == username.toLowerCase() ? 'bg-red-500 hover:bg-red-600':'bg-red-300'"
+                            <AppButton
+                                type="button"
+                                label="Delete Account"
+                                :disabled="username !== authStore.userProfile['username']"
+                                @click.prevent="userStore.submitDeleteAccount()"
+                                :class="username.toLowerCase() == authStore.userProfile['username'] ? 'bg-red-500 hover:bg-red-600':'bg-red-300'"
                                 class="text-white" />
                         </template>
 
