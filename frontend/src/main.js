@@ -5,8 +5,14 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import axios from "axios";
-import VueCookies from "vue-cookies";
+import VueTippy from "vue-tippy";
+
 import "./assets/styles/index.css";
+import "tippy.js/dist/tippy.css";
+import "tippy.js/animations/scale.css";
+import "tippy.js/themes/translucent.css";
+
+const app = createApp(App);
 
 // axios settings
 axios.defaults.baseURL = "http://192.168.43.208:8000/";
@@ -15,7 +21,20 @@ axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 9000;
 
-const app = createApp(App);
+// tippy.js
+app.use(
+    VueTippy,
+    // optional
+    {
+        directive: "tippy", // => v-tippy
+        component: "tippy", // => <tippy/>
+        componentSingleton: "tippy-singleton", // => <tippy-singleton/>,
+        defaultProps: {
+            placement: "top",
+            allowHTML: true,
+        }, // => Global default options * see all props
+    }
+);
 
 app.use(createPinia());
 app.use(router);

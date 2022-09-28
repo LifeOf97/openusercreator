@@ -13,6 +13,8 @@ import IconPlusSolid from './icons/IconPlusSolid.vue';
 import AppMyApp from './AppMyApp.vue';
 import { useAuthStore } from '../stores/auth';
 import IconCalenderOutline from './icons/IconCalenderOutline.vue';
+import IconCheckCircleSolid from './icons/IconCheckCircleSolid.vue';
+import IconInfoCircleSolid from './icons/IconInfoCircleSolid.vue';
 
 // stores
 const authStore = useAuthStore()
@@ -41,10 +43,10 @@ onMounted(() => {
     <main class="w-full mx-auto h-full">
 
         <!-- dashboard header -->
-        <div class="relative w-full bg-white pt-48 pb-14 overflow-hidden">
+        <div class="relative w-full bg-white pt-44 pb-14 overflow-hidden md:pt-48">
             <div class="w-11/12 mx-auto md:w-10/12">
                 <div class="flex flex-col gap-1">
-                    <span class="text-xs text-gray-400 font-normal flex items-center gap-2 md:text-lg">
+                    <span class="text-sm text-gray-400 font-normal flex items-center gap-2 md:text-lg">
                         <code class="text-2xl">&#128075;</code>
                         Good {{greet}}
                     </span>
@@ -97,7 +99,17 @@ onMounted(() => {
                                         <IconEnvelopeOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Email address:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{authStore.userProfile['email']}}</td>
+                                    <td class="relative text-xs text-gray-600 font-medium md:text-sm">
+                                        {{authStore.userProfile['email']}}
+                                        <IconCheckCircleSolid
+                                            v-if="authStore.userProfile['is_verified']"
+                                            class="absolute top-4 right-0 w-5 h-5 fill-green-500 cursor-pointer"
+                                            v-tippy="{content: 'Email address verified', animation: 'scale', theme: 'translucent', placement: 'left'}" />
+                                        <IconInfoCircleSolid
+                                            v-else
+                                            class="absolute top-4 right-0 w-5 h-5 fill-red-500 cursor-pointer"
+                                            v-tippy="{content: 'Please verify your email address', animation: 'scale', theme: 'translucent', placement: 'left'}" />
+                                    </td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">

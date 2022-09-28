@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
 import { useAuthStore } from "./auth";
 import axios from "axios";
@@ -9,6 +9,36 @@ export const useUserStore = defineStore("user", () => {
 
   // stores
   const authStore = useAuthStore()
+
+  ////////////////////////////////////////////////////////////
+  // update user account functionality
+  ////////////////////////////////////////////////////////////
+  const updateUser = reactive({loading: false, username: null, email: null, error: null})
+
+  async function submitUpdateUser(data) {
+    updateUser.loading = true
+    updateUser.username = updateUser.email = updateUser.error = null
+
+    await axios.put("api/v1/creators/me/update/", data, {headers: {'Authorization': `Bearer ${VueCookies.get('access')}` }})
+      .then((resp) => {
+        updateUser.loading = true
+        updateUser.username = updateUser.email = updateUser.error = null
+        
+        // update localStorage
+        authStore.userProfile = resp.data
+        localStorage.setItem("user_profile", JSON.stringify(resp.data))
+
+        // update notify
+        authStore.notify.open = true
+        authStore.notify.detail = "Profile deleted successfully"
+        authStore.notify.state = "good"
+
+        setTimeout(() => {
+          authStore.notify.open = false
+          authStore.notify.detail = authStore.notify.state = null
+        }, 5000);
+      })
+  }
 
   ////////////////////////////////////////////////////////////
   // delete authenticated user account functionality
@@ -23,6 +53,9 @@ export const useUserStore = defineStore("user", () => {
 
         // sign out the user
         authStore.submitSignOut()
+
+        // clear remember me sign state
+        localStorage.removeItem("remember_me")
 
         // update notify
         authStore.notify.open = true

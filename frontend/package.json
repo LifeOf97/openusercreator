@@ -15,7 +15,8 @@
     "pinia": "^2.0.21",
     "vue": "^3.2.38",
     "vue-cookies": "^1.8.1",
-    "vue-router": "^4.1.5"
+    "vue-router": "^4.1.5",
+    "vue-tippy": "^6.0.0-alpha.63"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
