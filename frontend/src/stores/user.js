@@ -161,7 +161,7 @@ export const useUserStore = defineStore("user", () => {
         setTimeout(() => {
           authStore.notify.open = false
           authStore.notify.detail = authStore.notify.state = null
-        }, 10000);
+        }, 5000);
       })
       .catch((err) => {
         if (err.response) console.log("Response Error: ", err.response.data)

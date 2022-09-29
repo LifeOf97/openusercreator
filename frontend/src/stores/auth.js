@@ -55,7 +55,7 @@ export const useAuthStore = defineStore("auth", () => {
 
         // update notify
         notify.open = true
-        notify.detail = String.fromCodePoint(0x1F44B) + " " + resp.data['user']['username'] + ", welcome to Open User Data"
+        notify.detail = resp.data['user']['username'] + ", welcome to Open User Data"
         notify.state = "good"
     
         setTimeout(() => {
