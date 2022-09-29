@@ -55,13 +55,13 @@ export const useAuthStore = defineStore("auth", () => {
 
         // update notify
         notify.open = true
-        notify.detail = "Account created successfully"
+        notify.detail = String.fromCodePoint(0x1F44B) + " " + resp.data['user']['username'] + ", welcome to Open User Data"
         notify.state = "good"
     
         setTimeout(() => {
           notify.open = false
           notify.detail = notify.state = null
-        }, 5000);
+        }, 10000);
       })
       .catch((err) => {
         if (err.response) {
@@ -119,7 +119,6 @@ export const useAuthStore = defineStore("auth", () => {
           'username' in err.response.data ? signIn.username = err.response.data['username'][0]:''
           'password' in err.response.data ? signIn.password = err.response.data['password'][0]:''
           'detail' in err.response.data ? signIn.error = 'Wrong username or password provided':''
-          console.log(err.response.data)
         }
         else {
           signIn.loading = isAuthenticated.value = false
@@ -151,7 +150,7 @@ export const useAuthStore = defineStore("auth", () => {
       .catch((err) => {
         if (err.response) {
           getUser.loading = false
-          err.response.status == 401 ? getUser.error = 'Token expired, please relog in':'Connection error'
+          err.response.status == 401 ? getUser.error = 'Token expired, please log in':'Connection error'
           submitSignOut()
         }
         else {

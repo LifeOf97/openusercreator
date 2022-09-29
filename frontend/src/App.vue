@@ -8,6 +8,8 @@ import IconLogoutOutline from "./components/icons/IconLogoutOutline.vue";
 import { onMounted } from "vue";
 import VueCookies from "vue-cookies";
 import AppNotificationState from "./components/AppNotificationState.vue";
+import IconCheckCircleSolid from "./components/icons/IconCheckCircleSolid.vue";
+import IconInfoCircleSolid from "./components/icons/IconInfoCircleSolid.vue";
 
 // stores
 const authStore = useAuthStore()
@@ -39,6 +41,10 @@ onMounted(() => {
       leave-active-class="transition-all duration-700">
       <div v-if="authStore.notify.open" class="w-full bg-transparent absolute top-24 flex items-center justify-center z-30">
         <AppNotificationState @closeBtnClicked="authStore.notify.open = false">
+          <template #icon>
+            <IconCheckCircleSolid v-if="authStore.notify.state == 'good'" class="w-7 h-7 fill-green-500" />
+            <IconInfoCircleSolid v-else-if="authStore.notify.state == 'error'" class="w-7 h-7 fill-yellow-500" />
+          </template>
           <template #title>
             {{authStore.notify.detail}}
           </template>

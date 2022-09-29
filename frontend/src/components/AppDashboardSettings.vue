@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter} from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { useUserStore } from '../stores/user';
@@ -28,8 +28,44 @@ const email = ref("")
 const oldPassword = ref("")
 const password1 = ref("")
 const password2 = ref("")
-const userLoading = ref(false)
-const passwordLoading = ref(false)
+
+// methods
+const submitUser = () => {
+    let data = {}
+
+    if (username.value) data['username'] = username.value
+    if (email.value) data['email'] = email.value
+    userStore.submitUpdateUser(data)
+}
+
+const submitPassword = () => {
+    let data = {
+        old_password: oldPassword.value,
+        new_password1: password1.value,
+        new_password2: password2.value,
+    }
+    userStore.submitUpdatePassword(data)
+}
+
+// computed
+const disableUserBtn = computed(() => {
+    return (
+        username.value == authStore.userProfile['username'] ||
+        email.value == authStore.userProfile['email'] || 
+        username.value == "" && email.value == ""
+    )
+})
+
+const saveUserError = computed(() => {
+    return userStore.updateUser.error || userStore.updateUser.username || userStore.updateUser.email
+})
+
+const savePasswordError = computed(() => {
+    return userStore.updatePassword.oldPassword ||
+    userStore.updatePassword.password1 ||
+    userStore.updatePassword.password2 ||
+    userStore.updatePassword.error
+})
 
 // hooks
 onMounted(() => {
@@ -70,17 +106,27 @@ onMounted(() => {
                     <div class="w-full flex flex-col bg-white rounded overflow-auto shadow-lg shadow-gray-200">
                         <div class="flex flex-col gap-4 justify-center p-4 border-b border-gray-100">
                             <p class="text-sm text-gray-500 font-normal md:text-base">Below are your personal information.</p>
-                             <!-- form errors -->
-                            <span class="hidden">
-                                <span class="flex items-center gap-2">
-                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
-                                    <p class="text-xs text-red-500 font-normal">Error</p>
-                                </span>
-                            </span>
+                            
                             <!-- form errors -->
+                            <div  v-if="saveUserError" class="mt-7 w-full flex flex-col gap-1">
+                                <span v-if="userStore.updateUser.error" class="flex items-center gap-2">
+                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                                    <p class="text-xs text-red-500 font-normal md:text-sm">{{userStore.updateUser.error}}</p>
+                                </span>
+                                <span v-if="userStore.updateUser.username" class="flex items-center gap-2">
+                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                                    <p class="text-xs text-red-500 font-normal md:text-sm">{{userStore.updateUser.username}}</p>
+                                </span>
+                                <span v-if="userStore.updateUser.email" class="flex items-center gap-2">
+                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                                    <p class="text-xs text-red-500 font-normal md:text-sm">{{userStore.updateUser.email}}</p>
+                                </span>
+                            </div>
+                            <!-- form errors -->
+                            
                         </div>
 
-                        <form @submit.prevent="userLoading = !userLoading" class="w-full p-4">
+                        <form @submit.prevent="submitUser()" class="w-full p-4">
                             <table class="w-full table-auto">
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-6">
@@ -95,7 +141,13 @@ onMounted(() => {
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Username:</p>
                                     </td>
                                     <td>
-                                        <AppInputField v-model="username" :label="authStore.userProfile['username']" :disable="userLoading" />
+                                        <AppInputField
+                                            v-model="username"
+                                            :label="authStore.userProfile['username']"
+                                            :minLen="4"
+                                            :maxLen="15"
+                                            :required="false"
+                                            :disable="userStore.updateUser.loading" />
                                     </td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
@@ -104,14 +156,25 @@ onMounted(() => {
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Email address:</p>
                                     </td>
                                     <td>
-                                        <AppInputField v-model="email" type="email" :label="authStore.userProfile['email']" :disable="userLoading" />
+                                        <AppInputField
+                                            v-model="email"
+                                            type="email"
+                                            :required="false"
+                                            :label="authStore.userProfile['email']"
+                                            :disable="userStore.updateUser.loading" />
                                     </td>
                                 </tr>
                             </table>
 
                             <div class="flex items-center justify-end gap-5 pt-4">
-                                <AppButton label="Cancle" class="text-gray-900 bg-transparent transition-all duration-300 hover:bg-gray-100" />
-                                <AppButton type="submit" label="Save changes" :loading="userLoading" loadingText="Saving..." class="text-white bg-blue-400 transition-all duration-300 hover:bg-blue-500" />
+                                <AppButton @click.prevent="username = email = ''" label="Cancle" class="text-gray-900 bg-transparent transition-all duration-300 hover:bg-gray-100" />
+                                <AppButton
+                                    type="submit"
+                                    label="Save changes"
+                                    :loading="userStore.updateUser.loading"
+                                    :disabled="disableUserBtn"
+                                    loadingText="Saving..."
+                                    class="text-white bg-blue-500 transition-all duration-300 hover:bg-blue-600 disabled:bg-blue-300" />
                             </div>
                         </form>
                     </div>
@@ -125,17 +188,31 @@ onMounted(() => {
                     <div class="w-full flex flex-col bg-white rounded overflow-auto shadow-lg shadow-gray-200">
                         <div class="flex flex-col gap-4 justify-center p-4 border-b border-gray-100">
                             <p class="text-sm text-gray-500 font-normal md:text-base">Change your password.</p>
-                             <!-- form errors -->
-                            <span class="hidden">
-                                <span class="flex items-center gap-2">
-                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
-                                    <p class="text-xs text-red-500 font-normal">Hello world</p>
-                                </span>
-                            </span>
+                             
                             <!-- form errors -->
+                            <div  v-if="savePasswordError" class="mt-7 w-full flex flex-col gap-1">
+                                <span v-if="userStore.updatePassword.error" class="flex items-center gap-2">
+                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                                    <p class="text-xs text-red-500 font-normal md:text-sm">{{userStore.updatePassword.error}}</p>
+                                </span>
+                                <span v-if="userStore.updatePassword.oldPassword" class="flex items-center gap-2">
+                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                                    <p class="text-xs text-red-500 font-normal md:text-sm">{{userStore.updatePassword.oldPassword}}</p>
+                                </span>
+                                <span v-if="userStore.updatePassword.password1" class="flex items-center gap-2">
+                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                                    <p class="text-xs text-red-500 font-normal md:text-sm">{{userStore.updatePassword.password1}}</p>
+                                </span>
+                                <span v-if="userStore.updatePassword.password2" class="flex items-center gap-2">
+                                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                                    <p class="text-xs text-red-500 font-normal md:text-sm">{{userStore.updatePassword.password2}}</p>
+                                </span>
+                            </div>
+                            <!-- form errors -->
+                            
                         </div>
 
-                        <form @submit.prevent="passwordLoading = !passwordLoading" class="w-full p-4">
+                        <form @submit.prevent="submitPassword()" class="w-full p-4">
                             <table class="w-full table-auto">
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-6">
@@ -143,7 +220,7 @@ onMounted(() => {
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Old Password:</p>
                                     </td>
                                     <td>
-                                        <AppPasswordField v-model="oldPassword" label="Old Password" :disable="passwordLoading" />
+                                        <AppPasswordField v-model="oldPassword" label="Old Password" :disable="userStore.updatePassword.loading" />
                                     </td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
@@ -152,7 +229,7 @@ onMounted(() => {
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">New Password:</p>
                                     </td>
                                     <td>
-                                        <AppPasswordField v-model="password1" label="New Password" :disable="passwordLoading" />
+                                        <AppPasswordField v-model="password1" label="New Password" :disable="userStore.updatePassword.loading" />
                                     </td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
@@ -160,15 +237,20 @@ onMounted(() => {
                                         <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Confirm Password:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">
-                                        <AppPasswordField v-model="password2" label="Confirm Password" :disable="passwordLoading" />
+                                    <td>
+                                        <AppPasswordField v-model="password2" label="Confirm Password" :disable="userStore.updatePassword.loading" />
                                     </td>
                                 </tr>
                             </table>
 
                             <div class="flex items-center justify-end gap-5 pt-4">
                                 <AppButton label="Cancle" class="text-gray-900 bg-transparent transition-all duration-300 hover:bg-gray-100" />
-                                <AppButton type="submit" label="Save changes" :loading="passwordLoading" loadingText="Saving..." class="text-white bg-blue-400 transition-all duration-300 hover:bg-blue-500" />
+                                <AppButton
+                                    type="submit"
+                                    label="Save changes"
+                                    :loading="userStore.updatePassword.loading"
+                                    loadingText="Saving..."
+                                    class="text-white bg-blue-500 transition-all duration-300 hover:bg-blue-600 disabled:bg-blue-300" />
                             </div>
                         </form>
 

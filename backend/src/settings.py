@@ -222,6 +222,10 @@ REST_FRAMEWORK = {
 }
 
 
+# Django rest auth settigns
+OLD_PASSWORD_FIELD_ENABLED = True
+# LOGOUT_ON_PASSWORD_CHANGE = True
+
 # Simplejwt settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),
@@ -271,12 +275,6 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 # CELERY_WORKER_CONCURRENCY = 50
 
-
-# Django-allauth social auth settings
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "none"
-SOCIALACCOUNT_AUTO_SIGNUP = True
-SOCIALACCOUNT_STORE_TOKENS = True
 
 
 # DjSpectacular Schema settings

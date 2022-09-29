@@ -2,6 +2,7 @@
 import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
 import { useAuthStore } from "./auth";
+import { useRouter } from "vue-router";
 import axios from "axios";
 import VueCookies from "vue-cookies";
 
@@ -9,6 +10,9 @@ export const useUserStore = defineStore("user", () => {
 
   // stores
   const authStore = useAuthStore()
+
+  // routers
+  const router = useRouter()
 
   ////////////////////////////////////////////////////////////
   // update user account functionality
@@ -21,22 +25,114 @@ export const useUserStore = defineStore("user", () => {
 
     await axios.put("api/v1/creators/me/update/", data, {headers: {'Authorization': `Bearer ${VueCookies.get('access')}` }})
       .then((resp) => {
-        updateUser.loading = true
+        updateUser.loading = false
         updateUser.username = updateUser.email = updateUser.error = null
         
         // update localStorage
         authStore.userProfile = resp.data
         localStorage.setItem("user_profile", JSON.stringify(resp.data))
 
+        // refresh user dashboard with new user data
+        router.push({name: 'dashboard', params: {username: resp.data['username']}})
+
         // update notify
         authStore.notify.open = true
-        authStore.notify.detail = "Profile deleted successfully"
+        authStore.notify.detail = "Profile updated successfully"
         authStore.notify.state = "good"
 
         setTimeout(() => {
           authStore.notify.open = false
           authStore.notify.detail = authStore.notify.state = null
         }, 5000);
+      })
+      .catch((err) => {
+        if (err.response) {
+          updateUser.loading = false
+          'username' in err.response.data ? updateUser.username = err.response.data['username'][0]:''
+          'email' in err.response.data ? updateUser.email = err.response.data['email'][0]:''
+          
+          if (err.response.status == 401) {
+            updateUser.error = 'Token expired, please log in'
+            authStore.submitSignOut()
+            
+            // clear errors
+            updateUser.username = updateUser.email = updateUser.error = null
+            
+            // update notify
+            authStore.notify.open = true
+            authStore.notify.detail = "Token expired, please log in"
+            authStore.notify.state = "error"
+
+            setTimeout(() => {
+              authStore.notify.open = false
+              authStore.notify.detail = authStore.notify.state = null
+            }, 5000);
+          }
+        }
+        else {
+          updateUser.error = "An error occured, please try again."
+          updateUser.loading = false
+        }
+      })
+  }
+
+
+  ////////////////////////////////////////////////////////////
+  // update user password functionality
+  ////////////////////////////////////////////////////////////
+  const updatePassword = reactive({loading: false, oldPassword: null, password1: null, password2: null, error: null})
+
+  async function submitUpdatePassword(data) {
+    updatePassword.loading = true
+    updatePassword.oldPassword = updatePassword.password1 = updatePassword.password2 = updatePassword.error = null
+
+    await axios.post("api/v1/creators/me/password/change/", data, {headers: {'Authorization': `Bearer ${VueCookies.get('access')}` }})
+      .then((resp) => {
+        updatePassword.loading = false
+        updatePassword.oldPassword = updatePassword.password1 = updatePassword.password2 = updatePassword.error = null
+        
+        // refresh user dashboard with new user data
+        router.push({name: 'dashboard', params: {username: authStore.userProfile['username']}})
+
+        // update notify
+        authStore.notify.open = true
+        authStore.notify.detail = resp.data['detail']
+        authStore.notify.state = "good"
+
+        setTimeout(() => {
+          authStore.notify.open = false
+          authStore.notify.detail = authStore.notify.state = null
+        }, 5000);
+      })
+      .catch((err) => {
+        if (err.response) {
+          updatePassword.loading = false
+          'old_password' in err.response.data ? updatePassword.oldPassword = err.response.data['old_password'][0]:''
+          'new_password1' in err.response.data ? updatePassword.password1 = err.response.data['new_password1'][0]:''
+          'new_password2' in err.response.data ? updatePassword.password2 = err.response.data['new_password2'][0]:''
+          
+          if (err.response.status == 401) {
+            updatePassword.error = 'Token expired, please log in'
+            authStore.submitSignOut()
+            
+            // clear errors
+            updatePassword.oldPassword = updatePassword.password1 = updatePassword.password2 = updatePassword.error = null
+            
+            // update notify
+            authStore.notify.open = true
+            authStore.notify.detail = "Token expired, please log in"
+            authStore.notify.state = "error"
+
+            setTimeout(() => {
+              authStore.notify.open = false
+              authStore.notify.detail = authStore.notify.state = null
+            }, 5000);
+          }
+        }
+        else {
+          updatePassword.loading = false
+          updatePassword.error = "An error occured, please try again."
+        }
       })
   }
 
@@ -65,7 +161,7 @@ export const useUserStore = defineStore("user", () => {
         setTimeout(() => {
           authStore.notify.open = false
           authStore.notify.detail = authStore.notify.state = null
-        }, 5000);
+        }, 10000);
       })
       .catch((err) => {
         if (err.response) console.log("Response Error: ", err.response.data)
@@ -75,6 +171,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   return {
-    deleteAccount, submitDeleteAccount
+    deleteAccount, submitDeleteAccount, updateUser,
+    submitUpdateUser, updatePassword, submitUpdatePassword
   };
 });

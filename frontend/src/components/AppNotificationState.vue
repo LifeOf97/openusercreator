@@ -1,7 +1,7 @@
 <script setup>
 /* eslint-disable */
-import IconCheckAllSolid from './icons/IconCheckAllSolid.vue';
 import IconCloseBig from './icons/IconCloseBig.vue';
+import IconCheckCircleSolid from './icons/IconCheckCircleSolid.vue';
 
 // emits
 const emit = defineEmits(["closeBtnClicked"])
@@ -13,9 +13,9 @@ const emit = defineEmits(["closeBtnClicked"])
         <div class="bg-white flex items-center gap-5 px-4 py-2 shadow-lg shadow-graye-300 rounded-lg">
 
             <!-- icon -->
-            <div class="p-1 border border-green-500 flex items-center justify-center rounded-full">
+            <div class="flex items-center justify-center rounded-full">
                 <slot name="icon">
-                    <IconCheckAllSolid class="w-4 h-4 fill-green-500" />
+                    <IconCheckCircleSolid class="w-7 h-7 fill-green-500" />
                 </slot>
             </div>
             <!-- icon -->
