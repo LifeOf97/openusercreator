@@ -3,12 +3,23 @@
 import { RouterLink } from 'vue-router';
 import IconCubeSolid from './icons/IconCubeSolid.vue';
 import IconCogSolid from './icons/IconCogSolid.vue';
+import { useAppStore } from '../stores/apps';
 
 // props
 const props = defineProps({
-    title: {type: String, default: "Title"},
+    name: {type: String, default: "name"},
     description: {type: String, default: "Description"}
 })
+
+// stores
+const appStore = useAppStore()
+
+// methods
+const appInView = () => {
+    const app = appStore.myApps.data.find((app) => app.name == props.name)
+    appStore.appInView = app
+    localStorage.setItem("app_in_view", JSON.stringify(app))
+}
 </script>
 
 <template>
@@ -19,9 +30,9 @@ const props = defineProps({
                 <span class="flex items-center gap-3">
                     <IconCubeSolid
                         class="w-5 h-5 fill-gray-600 transition-all duration-300 group-hover:fill-white md:w-7 md:h-7" />
-                    <p class="text-sm text-gray-600 font-medium transition-all duration-300 group-hover:text-white md:text-base">{{props.title}}</p>
+                    <p class="text-sm text-gray-600 font-medium capitalize transition-all duration-300 group-hover:text-white md:text-base">{{props.name.replaceAll("-", " ")}}</p>
                 </span>
-                <RouterLink :to="{name: 'dashboardapp'}" class="relative">
+                <RouterLink :to="{name: 'dashboardapp', params: {appName: props.name}}" @click="appInView()" class="relative">
                     <IconCogSolid
                         class="hidden w-7 h-7 fill-white transition-all duration-300 group-hover:block md:w-7 md:h-7" />
                     <IconCogSolid

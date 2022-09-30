@@ -110,15 +110,15 @@ onMounted(() => {
                 </div>
 
                 <div class="relative flex items-center gap-4">
-                    <RouterLink :to="{name: 'signupsocial'}" @click="authStore.setSocial('github')"
+                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'github'}}" @click="authStore.setSocial('github')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconGithub class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
                     </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial'}" @click="authStore.setSocial('twitter')"
+                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'twitter'}}" @click="authStore.setSocial('twitter')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconTwitter class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
                     </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial'}" @click="authStore.setSocial('google')"
+                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'google'}}" @click="authStore.setSocial('google')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconGoogle class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
                     </RouterLink>

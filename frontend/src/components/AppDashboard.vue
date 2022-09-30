@@ -11,20 +11,27 @@ import IconClockOutline from './icons/IconClockOutline.vue';
 import AppEmptyState from './AppEmptyState.vue';
 import IconPlusSolid from './icons/IconPlusSolid.vue';
 import AppMyApp from './AppMyApp.vue';
+import { useAppStore } from '../stores/apps';
 import { useAuthStore } from '../stores/auth';
 import IconCalenderOutline from './icons/IconCalenderOutline.vue';
 import IconCheckCircleSolid from './icons/IconCheckCircleSolid.vue';
 import IconInfoCircleSolid from './icons/IconInfoCircleSolid.vue';
+import { useTitle } from "@vueuse/core"
 
 // stores
 const authStore = useAuthStore()
+const appStore = useAppStore()
 
 // computed
 const greet = computed(() => {
   const hour = DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE).slice(0,2)
   if (hour < 12) return "morning"
-  else if ((hour >= 12) && (hour < 18)) return "afternoon"
+  else if ((hour >= 12) && (hour < 17)) return "afternoon"
   else return "evening"
+})
+
+const appsAvailable = computed(() => {
+    return appStore.myApps.data?.length ?? 0
 })
 
 // methods
@@ -35,7 +42,10 @@ const formatDate = (value) => {
 
 // hooks
 onMounted(() => {
-    document.title = `${authStore.userProfile['username']} | Dashboard | Open User Data`
+    // set title
+    useTitle(`${authStore.userProfile['username']} | Dashboard`)
+    // get apps
+    appStore.myApps.data?.length ? '':appStore.getMyApps()
 })
 </script>
 
@@ -136,26 +146,42 @@ onMounted(() => {
                 <div class="flex flex-col gap-5">
                     <h3 class="text-xl text-gray-600 font-normal md:text-2xl">My Apps</h3>
 
-                    <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
 
-                        <AppMyApp title="My first app" description="Description about this app" />
+                    <div class="grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                        <AppMyApp v-if="appsAvailable" v-for="app in appStore.myApps.data" :key="app.id" v-bind="app" />
 
-                        <AppEmptyState  class="border-gray-200">
+                        <!-- app is less than 2 state -->
+                        <AppEmptyState v-if="appsAvailable < 2 && !appStore.myApps.loading" class="border-gray-200">
                             <template #head>
-                                <p class="text-xs text-gray-400 font-medium md:text-sm">1/2 Apps</p>
+                                <p class="text-xs text-gray-400 font-medium md:text-sm">
+                                    {{appsAvailable}}/2 Apps
+                                </p>
                             </template>
                             <template #body>
                                 <p class="text-xs text-gray-400 font-light md:text-sm">Get started by creating an app</p>
                             </template>
                             <template #tail>
-                                <RouterLink :to="{name: 'dashboardappcreate'}" class="flex items-center gap-2 px-2 py-1 bg-blue-400 rounded hover:bg-blue-500">
+                                <RouterLink :to="{name: 'dashboardappcreate'}" class="flex items-center gap-2 px-2 py-1 bg-blue-500 rounded hover:bg-blue-600">
                                     <IconPlusSolid class="w-5 h-5 fill-white" />
                                     <p class="text-xs text-white font-normal">New App</p>
                                 </RouterLink>
                             </template>
                         </AppEmptyState>
+                        <!-- app is less than 2 state -->
+                    </div>
+                    
+
+                    <div class="grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                        <!-- loading apps state -->
+                        <div v-if="appStore.myApps.loading" class="col-span-full grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                            <div class="w-full h-40 bg-white shadow-lg rounded-lg animate-pulse"></div>
+                            <div class="w-full h-40 bg-white shadow-lg rounded-lg animate-pulse"></div>
+                        </div>
+                        <!-- loading apps state -->
+
 
                     </div>
+
                 </div>
                 <!-- my apps -->
 

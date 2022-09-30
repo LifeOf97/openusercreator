@@ -20,12 +20,6 @@ const getUserProfile = () => {
   else if (!VueCookies.get("access")) authStore.submitSignOut()
   else authStore.submitSignOut()
 }
-
-// hooks
-onMounted(() => {
-  // check user data is present
-  // getUserProfile()
-})
 </script>
 
 <template>

@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import VueCookies from 'vue-cookies';
+import { useStorage } from "@vueuse/core" 
 
 
 export const useAuthStore = defineStore("auth", () => {
@@ -15,12 +16,12 @@ export const useAuthStore = defineStore("auth", () => {
   ////////////////////////////////////////////
   const notify = reactive({open: false, detail: null, state: null})
 
-  const isAuthenticated = ref(JSON.parse(localStorage.getItem("is_auth")))
+  const isAuthenticated = useStorage('is_auth', false)
 
   ////////////////////////////////////////////
   // social authentication functionality
   ///////////////////////////////////////////
-  const social = ref(localStorage.getItem('auth_social'));
+  const social = useStorage('auth_social', "");
   function setSocial(value) {
     social.value = value
     localStorage.setItem('auth_social', value)
@@ -46,7 +47,7 @@ export const useAuthStore = defineStore("auth", () => {
 
         // save user data in localStorage
         userProfile.value = resp.data['user']
-        localStorage.setItem("user_profile", JSON.stringify(resp.data['user']))
+        localStorage.setItem("user_profile", resp.data['user'])
         localStorage.setItem("is_auth", JSON.stringify(true))
         isAuthenticated.value = true
 
@@ -130,7 +131,7 @@ export const useAuthStore = defineStore("auth", () => {
   ////////////////////////////////////////////
   // user profiles functionality
   ////////////////////////////////////////////
-  const userProfile = ref(JSON.parse(localStorage.getItem("user_profile")))
+  const userProfile = useStorage("user_profile", {})
   const getUser = reactive({loading: false, error: null})
 
   async function getUserProfile() {
@@ -171,6 +172,8 @@ export const useAuthStore = defineStore("auth", () => {
 
     // clear localStorage data
     localStorage.removeItem("user_profile")
+    localStorage.removeItem("user_apps")
+    localStorage.removeItem("app_in_view")
     localStorage.setItem("is_auth", JSON.stringify(false))
     isAuthenticated.value = false
     

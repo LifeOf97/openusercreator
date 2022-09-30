@@ -110,7 +110,7 @@ class OpenuserappSerializer(serializers.ModelSerializer):
     class Meta:
         model = Openuserapp
         fields = (
-            'id', 'creator', 'name', 'profiles', 'profile_password',
+            'id', 'creator', 'name', 'description', 'profiles', 'profile_password',
             'date_created', 'last_updated', 'endpoint', 'status'
         )
         validators = [

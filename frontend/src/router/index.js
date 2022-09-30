@@ -35,17 +35,17 @@ const router = createRouter({
           component: () =>  import("../components/AppDashboardSettings.vue"),
         },
         {
-          path: "app",
+          path: "apps/:appName",
           name: "dashboardapp",
           component: () =>  import("../components/AppDashboardApp.vue"),
         },
         {
-          path: "app/create",
+          path: "apps/create",
           name: "dashboardappcreate",
           component: () =>  import("../components/AppDashboardAppCreate.vue"),
         },
         {
-          path: "app/settings",
+          path: "apps/:appName/settings",
           name: "dashboardappsettings",
           component: () =>  import("../components/AppDashboardAppSettings.vue"),
         },
@@ -64,7 +64,7 @@ const router = createRouter({
           meta: {title: "Sign up | Open User Data"}
         },
         {
-          path: "signup/social",
+          path: "signup/social/:provider",
           name: "signupsocial",
           component: () => import("../components/AppSignUpSocial.vue"),
         },

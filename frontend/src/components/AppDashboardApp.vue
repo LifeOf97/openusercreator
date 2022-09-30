@@ -3,17 +3,36 @@
 import { RouterLink, useRouter } from 'vue-router';
 import IconPencilOutline from './icons/IconPencilOutline.vue';
 import IconQRCodeOutline from './icons/IconQRCodeOutline.vue';
-import IconClockOutline from './icons/IconClockOutline.vue';
 import IconCubeOutline from './icons/IconCubeOutline.vue';
 import IconHashtag from './icons/IconHashtag.vue';
 import IconLinkSolid from './icons/IconLinkSolid.vue';
 import IconUserGroupOutline from './icons/IconUserGroupOutline.vue';
 import IconKeyOutline from './icons/IconKeyOutline.vue';
 import IconArrowLongLeft from './icons/IconArrowLongLeft.vue';
+import { onMounted } from 'vue';
+import { useAppStore } from '../stores/apps';
+import { useTitle } from '@vueuse/core';
+import IconCalenderOutline from './icons/IconCalenderOutline.vue';
+import { DateTime } from 'luxon';
+import IconClockOutline from './icons/IconClockOutline.vue';
 
 // routers
 const router = useRouter()
 
+// stores
+const appStore = useAppStore()
+
+// methods
+const formatDate = (value) => {
+    return value ? DateTime.fromISO(value).toFormat('LLLL dd, yyyy @ HH:mm'):
+    DateTime.fromISO(authStore.userProfile['date_joined']).toFormat('LLLL dd, yyyy @ HH:mm');
+}
+
+// hooks
+onMounted(() => {
+    // set title
+    useTitle(`Apps | ${appStore.appInView['name'].replaceAll("-", " ")}`)
+})
 </script>
     
 <template>
@@ -22,7 +41,7 @@ const router = useRouter()
         <!-- dashboard header -->
         <div class="relative w-full bg-white pt-48 pb-14 overflow-hidden">
             <div class="w-11/12 mx-auto md:w-10/12">                
-                <h3 class="text-3xl text-gray-600 font-bold md:text-4xl">My App Name</h3>
+                <h3 class="text-3xl text-gray-600 font-bold capitalize md:text-4xl">{{appStore.appInView['name'].replaceAll("-", " ")}}</h3>
             </div>
             <IconCubeOutline class="hidden absolute -top-7 right-0 w-86 h-96 stroke-gray-50 md:block" :strokeWidth="0.2" />
         </div>
@@ -65,58 +84,56 @@ const router = useRouter()
                                         <IconQRCodeOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App ID:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">143ad74c-5726-4d38-940a-1f801108ac92</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['id']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconCubeOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App Name:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">My-app-name</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['name']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconHashtag class="w-5 h-5 fill-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App Description:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">Application description comes here</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['description']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconLinkSolid class="w-5 h-5 fill-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App URL:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">https://openuserdata.com/api/v1/25445099391964575813/my-first-app/users/</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['endpoint']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconUserGroupOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App User Profiles:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">50</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['profiles']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconKeyOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App Users Password:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">p@ssw0rd</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['profile_password']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
-                                        <IconClockOutline class="w-5 h-5 stroke-gray-400" />
+                                        <IconCalenderOutline :strokeWidth="1" class="w-4 h-4 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Date Created:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">September 22, 2022 @14:40
-                                    </td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{formatDate(appStore.appInView['date_created'])}}</td>
                                 </tr>
                                 <tr class="">
                                     <td class="flex items-center gap-3 py-4">
                                         <IconClockOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Last Updated:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">September 22, 2022 @14:40
-                                    </td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{formatDate(appStore.appInView['last_updated'])}}</td>
                                 </tr>
                             </table>
                         </div>

@@ -276,7 +276,6 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # CELERY_WORKER_CONCURRENCY = 50
 
 
-
 # DjSpectacular Schema settings
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Openuserdata Creators API',

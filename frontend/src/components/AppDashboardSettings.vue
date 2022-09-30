@@ -69,7 +69,7 @@ const savePasswordError = computed(() => {
 
 // hooks
 onMounted(() => {
-    document.title = `${authStore.userProfile['username']} | Settings | Open User Data`
+    document.title = `${authStore.userProfile['username']} | Settings`
 })
 </script>
     

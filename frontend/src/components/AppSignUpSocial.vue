@@ -13,6 +13,7 @@ import IconGithub from './icons/IconGithub.vue';
 import IconGoogle from './icons/IconGoogle.vue';
 import IconTwitter from './icons/IconTwitter.vue';
 import IconKeyOutline from './icons/IconKeyOutline.vue';
+import { useTitle } from '@vueuse/core';
 
 // refs
 const username = ref("")
@@ -25,7 +26,7 @@ const loading = ref(false)
 const authStore = useAuthStore()
 
 onMounted(() => {
-    document.title = `Sign Up | ${authStore.social} | Open User Data`
+    useTitle(`Sign Up | ${authStore.social.toUpperCase()} | Open User Data`)
 })
 </script>
     

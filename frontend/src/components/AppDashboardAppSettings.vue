@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '../stores/apps'
 import IconQRCodeOutline from './icons/IconQRCodeOutline.vue';
@@ -14,6 +14,7 @@ import IconKeyOutline from './icons/IconKeyOutline.vue';
 import IconCubeOutline from './icons/IconCubeOutline.vue';
 import IconUserGroupOutline from './icons/IconUserGroupOutline.vue';
 import IconHashtag from './icons/IconHashtag.vue';
+import { useTitle } from '@vueuse/core';
 
 // router
 const router = useRouter()
@@ -26,6 +27,11 @@ const appName = ref("")
 const appDes = ref("")
 const appUserProfiles = ref("")
 const appUserPassword = ref("")
+
+// hooks
+onMounted(() => {
+    useTitle(`Apps | ${appStore.appInView['name'].replaceAll("-", " ")} | Settings`)
+})
 </script>
         
 <template>
@@ -33,8 +39,9 @@ const appUserPassword = ref("")
 
         <!-- dashboard header -->
         <div class="relative w-full bg-white pt-48 pb-14 overflow-hidden">
-            <div class="w-11/12 mx-auto md:w-10/12">
-                <h3 class="text-3xl text-gray-600 font-bold md:text-4xl">App Settings</h3>
+            <div class="w-11/12 mx-auto flex flex-col gap-2 md:w-10/12">
+                <h3 class="text-sm text-gray-400 font-medium md:text-lg">Settings</h3>
+                <h3 class="text-3xl text-gray-600 font-bold capitalize md:text-4xl">{{appStore.appInView['name'].replaceAll("-", " ")}}</h3>
             </div>
             <IconCogOutline class="hidden absolute -top-11 right-0 w-86 h-96 stroke-gray-50 md:block"
                 :strokeWidth="0.2" />
@@ -68,7 +75,7 @@ const appUserPassword = ref("")
                             <span class="hidden">
                                 <span class="flex items-center gap-2">
                                     <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
-                                    <p class="text-xs text-red-500 font-normal">Hello world</p>
+                                    <p class="text-xs text-red-500 font-normal">Error</p>
                                 </span>
                             </span>
                             <!-- form errors -->
@@ -81,7 +88,7 @@ const appUserPassword = ref("")
                                         <IconQRCodeOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App ID:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">143ad74c-5726-4d38-940a-1f801108ac92</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['id']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-6">
@@ -89,7 +96,7 @@ const appUserPassword = ref("")
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App Name:</p>
                                     </td>
                                     <td>
-                                        <AppInputField v-model="appName" label="App name" />
+                                        <AppInputField v-model="appName" :label="appStore.appInView['name'].replaceAll('-', ' ')" />
                                     </td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
@@ -98,7 +105,7 @@ const appUserPassword = ref("")
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App Description:</p>
                                     </td>
                                     <td>
-                                        <AppInputField v-model="appDes" label="App description" />
+                                        <AppInputField v-model="appDes" :label="appStore.appInView['description']" />
                                     </td>
                                 </tr>
                             </table>
@@ -138,7 +145,7 @@ const appUserPassword = ref("")
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App User Profiles:</p>
                                     </td>
                                     <td>
-                                        <AppInputField v-model="appUserProfiles" label="10" type="number" :minLen="5" :maxLen="50" />
+                                        <AppInputField v-model="appUserProfiles" :label="appStore.appInView['profiles']" type="number" :minLen="5" :maxLen="50" />
                                     </td>
                                 </tr>
                             </table>
@@ -180,7 +187,7 @@ const appUserPassword = ref("")
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App Users Password:</p>
                                     </td>
                                     <td>
-                                        <AppInputField v-model="appUserPassword" label="p@ssw0rd" />
+                                        <AppInputField v-model="appUserPassword" :label="appStore.appInView['profile_password']" />
                                     </td>
                                 </tr>
                             </table>
