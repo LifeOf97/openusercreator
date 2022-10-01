@@ -151,7 +151,7 @@ onMounted(() => {
                                     </td>
                                     <td>
                                         <AppInputField
-                                            v-model="appName"
+                                            v-model.lower="appName"
                                             :label="appStore.appInView['name'].replaceAll('-', ' ')"
                                             :required="false"
                                             :minLen="4"

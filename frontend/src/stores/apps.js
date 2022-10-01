@@ -93,7 +93,7 @@ export const useAppStore = defineStore("apps", () => {
         updateAppDetails.error = updateAppProfiles.error = updateAppPassword.error = null
 
         // update data and localStorage
-        appInView.value = resp.data
+        appInView = resp.data
         localStorage.setItem("app_in_view", JSON.stringify(resp.data))
 
         // navigate to app view

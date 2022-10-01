@@ -365,7 +365,7 @@ class TestOpenUserApi:
         assert res.status_code == status.HTTP_200_OK
 
         # openuserdata's
-        data_1 = dict(name='FirstApp', profiles=4, profile_password="P@ssw0rd")
+        data_1 = dict(name='FirstApp', profiles=5, profile_password="P@ssw0rd")
         data_2 = dict(name='second-app', profiles=24, profile_password="P@ssw0rd")
         data_3 = dict(name='ThireaPP', profiles=25, profile_password="P@ssw0rd")
 
