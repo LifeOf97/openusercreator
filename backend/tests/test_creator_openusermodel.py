@@ -179,7 +179,7 @@ class TestOpenUserModel:
 
         assert Openuserapp.objects.count() == 1
         assert app.creator == created
-        assert app.profiles == 2
+        assert app.profiles == 5
         assert isinstance(app.profiles, int)
         assert app.name == slugify(data['name'].lower().replace("_", " "))
         assert app.profile_password == 'p@ssw0rd'

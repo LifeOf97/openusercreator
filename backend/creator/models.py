@@ -189,7 +189,7 @@ class Openuserapp(models.Model):
         help_text=_("Number of openuser profiles to create, default is 5"),
         validators=[
             validators.MaxValueValidator(limit_value=50),
-            validators.MinValueValidator(limit_value=2),
+            validators.MinValueValidator(limit_value=5),
         ],
     )
     profile_password = models.CharField(
@@ -201,7 +201,8 @@ class Openuserapp(models.Model):
                 regex=r'\s',
                 message=_("Profile password cannot contain spaces"),
                 inverse_match=True
-            )
+            ),
+            validators.MinLengthValidator(limit_value=8),
         ]
     )
     date_created = models.DateTimeField(

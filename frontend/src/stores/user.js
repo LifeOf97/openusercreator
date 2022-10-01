@@ -18,7 +18,12 @@ export const useUserStore = defineStore("user", () => {
   ////////////////////////////////////////////////////////////
   // update user account functionality
   ////////////////////////////////////////////////////////////
-  const updateUser = reactive({loading: false, username: null, email: null, error: null})
+  const updateUser = reactive({
+    loading: false,
+    username: null,
+    email: null,
+    error: null
+  })
 
   async function submitUpdateUser(data) {
     updateUser.loading = true
@@ -33,10 +38,10 @@ export const useUserStore = defineStore("user", () => {
         authStore.userProfile = resp.data
         localStorage.setItem("user_profile", JSON.stringify(resp.data))
 
-        // refresh user dashboard with new user data
+        // navigate to user dashboard with new user data
         router.push({name: 'dashboard', params: {username: resp.data['username']}})
 
-        // update notify
+        // show notify
         authStore.notify.open = true
         authStore.notify.detail = "Profile updated successfully"
         authStore.notify.state = "good"
@@ -53,15 +58,14 @@ export const useUserStore = defineStore("user", () => {
           'email' in err.response.data ? updateUser.email = err.response.data['email'][0]:''
           
           if (err.response.status == 401) {
-            updateUser.error = 'Token expired, please log in'
             authStore.submitSignOut()
             
             // clear errors
             updateUser.username = updateUser.email = updateUser.error = null
             
-            // update notify
+            // show notify
             authStore.notify.open = true
-            authStore.notify.detail = "Token expired, please log in"
+            authStore.notify.detail = "Token expired, please relog in"
             authStore.notify.state = "error"
 
             setTimeout(() => {
@@ -71,8 +75,8 @@ export const useUserStore = defineStore("user", () => {
           }
         }
         else {
-          updateUser.error = "An error occured, please try again."
           updateUser.loading = false
+          updateUser.error = "An error occured, please try again."
         }
       })
   }
@@ -81,7 +85,13 @@ export const useUserStore = defineStore("user", () => {
   ////////////////////////////////////////////////////////////
   // update user password functionality
   ////////////////////////////////////////////////////////////
-  const updatePassword = reactive({loading: false, oldPassword: null, password1: null, password2: null, error: null})
+  const updatePassword = reactive({
+    loading: false,
+    oldPassword: null,
+    password1: null,
+    password2: null,
+    error: null
+  })
 
   async function submitUpdatePassword(data) {
     updatePassword.loading = true
@@ -92,10 +102,10 @@ export const useUserStore = defineStore("user", () => {
         updatePassword.loading = false
         updatePassword.oldPassword = updatePassword.password1 = updatePassword.password2 = updatePassword.error = null
         
-        // refresh user dashboard with new user data
+        // navigate to user dashboard
         router.push({name: 'dashboard', params: {username: authStore.userProfile['username']}})
 
-        // update notify
+        // show notify
         authStore.notify.open = true
         authStore.notify.detail = resp.data['detail']
         authStore.notify.state = "good"
@@ -113,15 +123,14 @@ export const useUserStore = defineStore("user", () => {
           'new_password2' in err.response.data ? updatePassword.password2 = err.response.data['new_password2'][0]:''
           
           if (err.response.status == 401) {
-            updatePassword.error = 'Token expired, please log in'
             authStore.submitSignOut()
             
             // clear errors
             updatePassword.oldPassword = updatePassword.password1 = updatePassword.password2 = updatePassword.error = null
             
-            // update notify
+            // show notify
             authStore.notify.open = true
-            authStore.notify.detail = "Token expired, please log in"
+            authStore.notify.detail = "Token expired, please relog in"
             authStore.notify.state = "error"
 
             setTimeout(() => {
@@ -138,7 +147,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   ////////////////////////////////////////////////////////////
-  // delete authenticated user account functionality
+  // delete user account functionality
   ////////////////////////////////////////////////////////////
   const deleteAccount = ref(false);
 
@@ -154,7 +163,7 @@ export const useUserStore = defineStore("user", () => {
         // clear remember me sign state
         localStorage.removeItem("remember_me")
 
-        // update notify
+        // show notify
         authStore.notify.open = true
         authStore.notify.detail = "Account deleted successfully"
         authStore.notify.state = "good"
@@ -165,8 +174,22 @@ export const useUserStore = defineStore("user", () => {
         }, 5000);
       })
       .catch((err) => {
-        if (err.response) console.log("Response Error: ", err.response.data)
-        if (err.request) console.log("Request Error: ", err.request.data)
+        deleteAccount.value = false
+        if (err.response) {
+          if (err.response.status == 401) {
+            authStore.submitSignOut()
+            
+            // show notify
+            authStore.notify.open = true
+            authStore.notify.detail = "Token expired, please relog in"
+            authStore.notify.state = "error"
+
+            setTimeout(() => {
+              authStore.notify.open = false
+              authStore.notify.detail = authStore.notify.state = null
+            }, 5000);
+          }
+        } 
         else console.log("Error: ", err.message)
       })
   }

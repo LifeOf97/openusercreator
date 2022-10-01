@@ -7,7 +7,7 @@ const props = defineProps({
     label: {type: String, default: "Label"},
     required: {type: Boolean, default: true},
     minLen: {type: Number, default: 0},
-    maxLen: {type: Number, default: 200},
+    maxLen: {type: Number, default: 255},
     iconPos: {type: String, default: "right"},
     disable: {type: Boolean, default: false },
     autocomplete: {type: Boolean, default: false},
