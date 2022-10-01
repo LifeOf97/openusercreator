@@ -4,7 +4,6 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import VueCookies from 'vue-cookies';
-import { useStorage } from "@vueuse/core" 
 
 
 export const useAuthStore = defineStore("auth", () => {
@@ -16,15 +15,16 @@ export const useAuthStore = defineStore("auth", () => {
   ////////////////////////////////////////////
   const notify = reactive({open: false, detail: null, state: null})
 
-  const isAuthenticated = useStorage('is_auth', false)
+  const isAuthenticated = ref(JSON.parse(localStorage.getItem('is_auth')))
 
   ////////////////////////////////////////////
   // social authentication functionality
   ///////////////////////////////////////////
-  const social = useStorage('auth_social', "");
+  const social = ref(localStorage.getItem('auth_social'));
+
   function setSocial(value) {
     social.value = value
-    localStorage.setItem('auth_social', value)
+    localStorage.setItem('auth_social', JSON.stringify(value))
   }
 
   ////////////////////////////////////////////
@@ -131,7 +131,7 @@ export const useAuthStore = defineStore("auth", () => {
   ////////////////////////////////////////////
   // user profiles functionality
   ////////////////////////////////////////////
-  const userProfile = useStorage("user_profile", {})
+  const userProfile = ref(JSON.parse(localStorage.getItem("user_profile")))
   const getUser = reactive({loading: false, error: null})
 
   async function getUserProfile() {

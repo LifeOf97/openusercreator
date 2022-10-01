@@ -3,7 +3,6 @@ import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
 import { useAuthStore } from "./auth";
 import axios from "axios";
-import { useStorage } from "@vueuse/core";
 import VueCookies from "vue-cookies";
 import { useRouter } from "vue-router";
 
@@ -21,7 +20,7 @@ export const useAppStore = defineStore("apps", () => {
   //////////////////////////////////////////////
   const myApps = reactive({
     loading: false,
-    data: useStorage("user_apps", {}),
+    data: JSON.parse(localStorage.getItem("user_apps")),
     error: null
   })
 
@@ -64,7 +63,7 @@ export const useAppStore = defineStore("apps", () => {
   //////////////////////////////////////////////
   // App currently in view
   //////////////////////////////////////////////
-  const appInView = useStorage("app_in_view", {})
+  const appInView = ref(JSON.parse(localStorage.getItem("app_in_view")))
 
 
   //////////////////////////////////////////////
@@ -92,9 +91,10 @@ export const useAppStore = defineStore("apps", () => {
         // clear errors
         updateAppDetails.error = updateAppProfiles.error = updateAppPassword.error = null
 
-        // update data and localStorage
+        // get all apps, update app in view and localStorage
         appInView = resp.data
         localStorage.setItem("app_in_view", JSON.stringify(resp.data))
+        getMyApps()
 
         // navigate to app view
         router.push({name: 'dashboardapp', params: {appName: resp.data['name']}})
@@ -135,7 +135,13 @@ export const useAppStore = defineStore("apps", () => {
               authStore.notify.detail = authStore.notify.state = null
             }, 5000);
           }
-          else updateApp.error = "An error occured, please try again later."
+          else {
+            'name' in data ? updateAppDetails.error = 'An error occured, please try again later.':''
+            'description' in data ? updateAppDetails.error = 'An error occured, please try again later.':''
+            'profiles' in data ? updateAppProfiles.error = 'An error occured, please try again later.':''
+            'profile_password' in data ? updateAppPassword.error = 'An error occured, please try again later.':''
+        
+          }
         }
       })
   }

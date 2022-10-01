@@ -45,7 +45,7 @@ const updateApp = () => {
 
 // computed
 const appNameIsValid = computed(() => {
-    const re = /^[a-zA-Z]([a-zA-Z0-9 ]*[a-zA-Z])?$/
+    const re = /^[a-zA-Z]+(\s?[\w-]+\s?[a-zA-Z]+)?$/
     const valid = re.exec(appName.value)
     return valid ? true:false
 })
@@ -53,7 +53,8 @@ const appNameIsValid = computed(() => {
 const disableDetailBtn = computed(() => {
     return (
         (appName.value == "" && appDes.value == "") ||
-        (appName.value == unSlugify(appStore.appInView['name']).value)
+        (appName.value == unSlugify(appStore.appInView['name']).value) ||
+        !appNameIsValid.value
     )
 
 })

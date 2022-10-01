@@ -177,8 +177,8 @@ class Openuserapp(models.Model):
         help_text=_("The name of this Openuser profile."),
         validators=[
             validators.RegexValidator(
-                regex=r'^[a-zA-Z]([\w -]*[a-zA-Z])?$',
-                message=_("Must begin and end with a letter. And can only contain letters, numbers and hyphens"),
+                regex=r'^[a-zA-Z]+(\s?[\w-]+\s?[a-zA-Z]+)?$',
+                message=_("Must begin and end with a letter. Maximum of 2 whitespaces"),
             ),
             validators.MinLengthValidator(limit_value=4)
         ]
