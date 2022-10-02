@@ -47,7 +47,7 @@ const formIsValid = computed(() => {
 })
 
 const appNameIsAvailable = computed(() => {
-    // check to make sure the use does not have an app with the same name
+    // check to make sure the user does not already have an app with the same name
     return !appStore.myApps.data?.find((app) => useSlugify(app.name).data.value == appName.value)
 })
 
