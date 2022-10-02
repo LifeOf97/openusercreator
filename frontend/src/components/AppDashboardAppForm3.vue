@@ -3,6 +3,7 @@
 import { onMounted, ref, computed } from 'vue';
 import AppButton from './AppButton.vue';
 import AppPasswordField from './AppPasswordField.vue';
+import { useVerifySize } from '../composables/verifySize';
 
 // emits
 const emit = defineEmits(["button-clicked"])
@@ -16,7 +17,7 @@ const appName = localStorage.getItem("app_create_name")
 
 // methods
 const saveData = () => {
-    if (verifyMinValue.value && verifyMaxValue.value) {
+    if (formIsValid.value) {
         error.value = null
         localStorage.setItem('app_create_password', appPassword.value)
         emit("button-clicked", "next")
@@ -25,12 +26,11 @@ const saveData = () => {
 }
 
 // computed
-const verifyMinValue = computed(() => {
-    return appPassword.value.length >= 8 ? true : false
-})
-
-const verifyMaxValue = computed(() => {
-    return appPassword.value.length <= 15 ? true : false
+const formIsValid = computed(() => {
+    return (
+        useVerifySize(appPassword.value.length, 8, 'gte').data.value &&
+        useVerifySize(appPassword.value.length, 15, 'lte').data.value
+    )
 })
 
 // hooks
@@ -53,14 +53,22 @@ onMounted(() => {
 
                 <AppPasswordField v-model="appPassword" label="Password" :minLen="8" :maxLen="15" class="bg-white" />
                 <div class="flex items-center justify-between">
-                    <p :class="verifyMinValue ? 'text-green-400':'text-red-400'" class="text-xs font-normal">-Min: 8</p>
-                    <p :class="verifyMaxValue ? 'text-green-400':'text-red-400'" class="text-xs font-normal">-Max: 15</p>
+                    <p :class="appPassword ? useVerifySize(appPassword.length, 8, 'gte').data.value ? 'text-green-400':'text-red-400':'text-gray-400'" class="text-xs font-normal">Min: 8</p>
+                    <p :class="appPassword ? useVerifySize(appPassword.length, 15, 'lte').data.value ? 'text-green-400':'text-red-400':'text-gray-400'" class="text-xs font-normal">Max: 15</p>
                 </div>
             </div>
 
             <div class="flex items-center justify-center gap-2">
-                <AppButton @click.prevent="$emit('button-clicked', 'back')" type="button" label="Back" class="text-gray-900 bg-transparent hover:bg-white disabled:bg-gray-300" />
-                <AppButton type="submit" label="Next" class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
+                <AppButton
+                    @click.prevent="$emit('button-clicked', 'back')"
+                    type="button"
+                    label="Back"
+                    class="text-gray-900 bg-transparent hover:bg-white disabled:bg-gray-300" />
+                <AppButton
+                    type="submit"
+                    label="Next"
+                    :disabled="!formIsValid"
+                    class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </div>
         </form>
 

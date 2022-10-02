@@ -11,6 +11,7 @@ import AppInputField from '../components/AppInputField.vue';
 import IconUserCircleOutline from '../components/icons/IconUserCircleOutline.vue';
 import AppButton from '../components/AppButton.vue';
 import IconCubeOutline from '../components/icons/IconCubeOutline.vue';
+import { useSlugify } from '../composables/slugify';
 
 // stores
 const userStore = useUserStore()
@@ -107,7 +108,7 @@ const closeAppModal = () => {
                         </template>
 
                         <template #form>
-                            <AppInputField v-model="appName" label="My app name" iconPos="left">
+                            <AppInputField v-model.lower="appName" :label="useSlugify(appStore.appInView['name']).data.value" iconPos="left">
                                 <template #icon>
                                     <IconCubeOutline class="w-5 h-5 stroke-gray-400" />
                                 </template>
@@ -117,9 +118,12 @@ const closeAppModal = () => {
                         <template #actions>
                             <AppButton @click.prevent="closeAppModal()" type="button" label="Cancle"
                                 class="text-gray-900 hover:bg-white" />
-                            <AppButton type="button" label="Delete Account"
-                                :disabled="appStore.appName.toLowerCase() !== appName.toLowerCase()"
-                                :class="appStore.appName.toLowerCase() == appName.toLowerCase() ? 'bg-red-500 hover:bg-red-600':'bg-red-300'"
+                            <AppButton
+                                type="button"
+                                label="Delete Account"
+                                :disabled="appName !== useSlugify(appStore.appInView['name']).data.value"
+                                @click.prevent="appStore.submitDeleteApp()"
+                                :class="appName == useSlugify(appStore.appInView['name']).data.value ? 'bg-red-500 hover:bg-red-600':'bg-red-300'"
                                 class="text-white" />
                         </template>
 

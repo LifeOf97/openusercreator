@@ -10,7 +10,7 @@ const emit = defineEmits(["closeBtnClicked"])
 <template>
     <main class="bg-transparent">
 
-        <div class="bg-white flex items-center gap-5 px-4 py-2 shadow-lg shadow-graye-300 rounded-lg">
+        <div class="bg-white/50 backdrop-blur-sm flex items-center gap-5 px-4 py-2 shadow-lg shadow-graye-300 rounded-lg">
 
             <!-- icon -->
             <div class="flex items-center justify-center rounded-full">

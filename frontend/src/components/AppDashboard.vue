@@ -45,7 +45,7 @@ onMounted(() => {
     // set title
     useTitle(`${authStore.userProfile['username']} | Dashboard`)
     // get apps
-    appStore.myApps.data?.length ? '':appStore.getMyApps()
+    appStore.myApps.data?.length >= 0 ? '':appStore.getMyApps()
 })
 </script>
 

@@ -33,7 +33,7 @@ const getUserProfile = () => {
       enter-active-class="transition-all duration-700"
       leave-to-class="-translate-y-5 opacity-0"
       leave-active-class="transition-all duration-700">
-      <div v-if="authStore.notify.open" class="w-full bg-transparent absolute top-24 flex items-center justify-center z-30">
+      <div v-if="authStore.notify.open" class="w-full bg-transparent absolute top-10 flex items-center justify-center z-30">
         <AppNotificationState @closeBtnClicked="authStore.notify.open = false">
           <template #icon>
             <IconCheckCircleSolid v-if="authStore.notify.state == 'good'" class="w-7 h-7 fill-green-500" />

@@ -142,7 +142,7 @@ onMounted(() => {
                                     </td>
                                     <td>
                                         <AppInputField
-                                            v-model="username"
+                                            v-model.lower="username"
                                             :label="authStore.userProfile['username']"
                                             :minLen="4"
                                             :maxLen="15"
@@ -157,7 +157,7 @@ onMounted(() => {
                                     </td>
                                     <td>
                                         <AppInputField
-                                            v-model="email"
+                                            v-model.lower="email"
                                             type="email"
                                             :required="false"
                                             :label="authStore.userProfile['email']"

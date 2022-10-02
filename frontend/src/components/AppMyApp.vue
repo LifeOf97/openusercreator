@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router';
 import IconCubeSolid from './icons/IconCubeSolid.vue';
 import IconCogSolid from './icons/IconCogSolid.vue';
 import { useAppStore } from '../stores/apps';
+import { useSlugify } from '../composables/slugify';
 
 // props
 const props = defineProps({
@@ -30,7 +31,7 @@ const appInView = () => {
                 <span class="flex items-center gap-3">
                     <IconCubeSolid
                         class="w-5 h-5 fill-gray-600 transition-all duration-300 group-hover:fill-white md:w-7 md:h-7" />
-                    <p class="text-sm text-gray-600 font-medium capitalize transition-all duration-300 group-hover:text-white md:text-base">{{props.name.replaceAll("-", " ")}}</p>
+                    <p class="text-sm text-gray-600 font-medium capitalize transition-all duration-300 group-hover:text-white md:text-base">{{useSlugify(props.name).data.value}}</p>
                 </span>
                 <RouterLink :to="{name: 'dashboardapp', params: {appName: props.name}}" @click="appInView()" class="relative">
                     <IconCogSolid

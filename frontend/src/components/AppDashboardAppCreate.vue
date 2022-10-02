@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import IconCubeOutline from './icons/IconCubeOutline.vue';
 import IconArrowLongLeft from './icons/IconArrowLongLeft.vue';
@@ -10,9 +10,14 @@ import AppDashboardAppForm2 from './AppDashboardAppForm2.vue';
 import AppDashboardAppForm3 from './AppDashboardAppForm3.vue';
 import AppDashboardAppCreateConfirm from './AppDashboardAppCreateConfirm.vue';
 import AppDashboardAppCreateSuccess from './AppDashboardAppCreateSuccess.vue';
+import { useAppStore } from '../stores/apps';
+import { useTitle } from '@vueuse/core';
 
 // router
 const router = useRouter()
+
+// stores
+const appStore = useAppStore()
 
 // refs
 const currentTabId = ref(1)
@@ -20,7 +25,7 @@ const tabTransition = ref("slide-left")
 
 const formTabs = [
     {id: 1, title: "Name your App", tab: AppDashboardAppForm1},
-    {id: 2, title: "Number of User", tab: AppDashboardAppForm2},
+    {id: 2, title: "Number of Users", tab: AppDashboardAppForm2},
     {id: 3, title: "Users Password", tab: AppDashboardAppForm3},
     {id: 4, title: "Confirm App Details", tab: AppDashboardAppCreateConfirm},
     {id: 5, title: "Application Created Successfully", tab: AppDashboardAppCreateSuccess},
@@ -31,9 +36,13 @@ const currentTab = computed(() => {
     return formTabs.find((tab) => tab.id == currentTabId.value)
 })
 
+const createAppSuccess = computed(() => {
+    return appStore.createApp.success
+})
+
 // methods
 const updateTab = (value) => {
-    if (value == 'next' && currentTabId.value < 5) {
+    if ((value == 'next' || createAppSuccess.value) && currentTabId.value < 5) {
         tabTransition.value = "slide-left"
         currentTabId.value = currentTabId.value + 1
     }
@@ -42,6 +51,11 @@ const updateTab = (value) => {
         currentTabId.value = currentTabId.value - 1
     }
 }
+
+// hooks
+onMounted(() => {
+    useTitle("Create App | Open User Data")
+})
 </script>
     
 <template>

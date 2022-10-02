@@ -3,6 +3,7 @@
 import { onMounted, ref, computed } from 'vue';
 import AppInputField from './AppInputField.vue';
 import AppButton from './AppButton.vue';
+import { useVerifySize } from '../composables/verifySize';
 
 // emits
 const emit = defineEmits(["button-clicked"])
@@ -16,7 +17,7 @@ const appName = localStorage.getItem("app_create_name")
 
 // methods
 const saveData = () => {
-    if (verifyMinValue.value && verifyMaxValue.value) {
+    if (formIsValid.value) {
         error.value = null
         localStorage.setItem('app_create_profiles', appProfiles.value)
         emit("button-clicked", "next")
@@ -25,12 +26,11 @@ const saveData = () => {
 }
 
 // computed
-const verifyMinValue = computed(() => {
-    return appProfiles.value >= 5 ? true:false
-})
-
-const verifyMaxValue = computed(() => {
-    return appProfiles.value <= 50 ? true:false
+const formIsValid = computed(() => {
+    return (
+        useVerifySize(appProfiles.value, 5, 'gte').data.value &&
+        useVerifySize(appProfiles.value, 50, 'lte').data.value
+    )
 })
 
 // hooks
@@ -52,14 +52,24 @@ onMounted(() => {
                 
                 <AppInputField v-model="appProfiles" label="5" type="number" :minLen="5" :maxLen="50" class="bg-white" />
                 <div class="flex items-center justify-between">
-                    <p :class="verifyMinValue ? 'text-green-400':'text-red-400'" class="text-xs font-normal">-Min: 5</p>
-                    <p :class="verifyMaxValue ? 'text-green-400':'text-red-400'" class="text-xs font-normal">-Max: 50</p>
+                    <p
+                        :class="appProfiles ? useVerifySize(appProfiles, 5, 'gte').data.value ? 'text-green-400':'text-red-400':'text-gray-400'"
+                        class="text-xs font-normal">-Min: 5</p>
+                    <p
+                        :class="appProfiles ? useVerifySize(appProfiles, 50, 'lte').data.value ? 'text-green-400':'text-red-400':'text-gray-400'"
+                        class="text-xs font-normal">-Max: 50</p>
                 </div>
             </div>
 
             <div class="flex items-center justify-center gap-2">
-                <AppButton @click.prevent="$emit('button-clicked', 'back')" type="button" label="Back" class="text-gray-900 bg-transparent hover:bg-white disabled:bg-gray-300" />
-                <AppButton type="submit" label="Next" class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
+                <AppButton
+                    @click.prevent="$emit('button-clicked', 'back')"
+                    type="button" label="Back" class="text-gray-900 bg-transparent hover:bg-white disabled:bg-gray-300" />
+                <AppButton
+                    type="submit"
+                    label="Next"
+                    :disabled="!formIsValid"
+                    class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </div>
         </form>
 

@@ -58,6 +58,7 @@ class SocialUserApiView(viewsets.GenericViewSet):
             )
             # create new authentication refresh/access tokens
             refresh = RefreshToken.for_user(user)
+
             # pass the created auth tokens to the response data
             return Response(
                 data={

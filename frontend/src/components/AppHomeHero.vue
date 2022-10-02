@@ -32,7 +32,7 @@ const data = {
                     </div>
 
                     <div class="w-11/12 mx-auto text-center text-xl text-gray-700 font-normal md:text-2xl md:w-8/12 lg:w-9/12 lg:text-4xl">
-                        <p class="leading-7 md:leading-9 lg:leading-[3rem]">Fully Functional Free Fake User Data API for Testing and Prototying with Authentication</p>
+                        <p class="leading-7 md:leading-9 lg:leading-[3rem]">Fully Functional Free Fake User Data API for Testing and Prototyping. With Authentication</p>
                     </div>
 
                     <div class="flex flex-col items-center justify-center gap-4 mt-10 sm:flex-row">

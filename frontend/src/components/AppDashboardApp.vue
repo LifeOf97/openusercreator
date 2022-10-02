@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { RouterLink, useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import IconPencilOutline from './icons/IconPencilOutline.vue';
 import IconQRCodeOutline from './icons/IconQRCodeOutline.vue';
 import IconCubeOutline from './icons/IconCubeOutline.vue';
@@ -15,12 +15,12 @@ import { useTitle } from '@vueuse/core';
 import IconCalenderOutline from './icons/IconCalenderOutline.vue';
 import { DateTime } from 'luxon';
 import IconClockOutline from './icons/IconClockOutline.vue';
-
-// routers
-const router = useRouter()
+import { useAuthStore } from '../stores/auth';
+import { useSlugify } from '../composables/slugify';
 
 // stores
 const appStore = useAppStore()
+const authStore = useAuthStore()
 
 // methods
 const formatDate = (value) => {
@@ -31,7 +31,7 @@ const formatDate = (value) => {
 // hooks
 onMounted(() => {
     // set title
-    useTitle(`Apps | ${appStore.appInView['name'].replaceAll("-", " ")}`)
+    useTitle(`Apps | ${useSlugify(appStore.appInView['name']).data.value}`)
 })
 </script>
     
@@ -41,7 +41,7 @@ onMounted(() => {
         <!-- dashboard header -->
         <div class="relative w-full bg-white pt-48 pb-14 overflow-hidden">
             <div class="w-11/12 mx-auto md:w-10/12">                
-                <h3 class="text-3xl text-gray-600 font-bold capitalize md:text-4xl">{{appStore.appInView['name'].replaceAll("-", " ")}}</h3>
+                <h3 class="text-3xl text-gray-600 font-bold capitalize md:text-4xl">{{useSlugify(appStore.appInView['name']).data.value}}</h3>
             </div>
             <IconCubeOutline class="hidden absolute -top-7 right-0 w-86 h-96 stroke-gray-50 md:block" :strokeWidth="0.2" />
         </div>
@@ -53,10 +53,10 @@ onMounted(() => {
 
                 <!-- back link -->
                 <span class="w-full flex items-center justify-start">
-                    <button type="button" @click.prevent="router.back()" class="group flex items-center gap-2">
+                    <RouterLink :to="{name: 'dashboarduser', params: {username: authStore.userProfile['username']}}" class="group flex items-center gap-2">
                         <IconArrowLongLeft class="w-7 h-7 fill-gray-500 transition-all duration-300 group-hover:animate-bounce-hor group-hover:fill-gray-900" />
                         <p class="text-xs text-gray-500 font-medium transition-all duration-300 group-hover:text-blue-500 sm:text-sm">Dashboard</p>
-                    </button>
+                    </RouterLink>
                 </span>
                 <!-- back link -->
 

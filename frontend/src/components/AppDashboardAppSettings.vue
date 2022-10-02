@@ -14,7 +14,7 @@ import IconCubeOutline from './icons/IconCubeOutline.vue';
 import IconUserGroupOutline from './icons/IconUserGroupOutline.vue';
 import IconHashtag from './icons/IconHashtag.vue';
 import { useTitle } from '@vueuse/core';
-import { unSlugify } from '../composables/unSlugify'
+import { useSlugify } from '../composables/slugify'
 import IconExclamationTraingleOutline1 from './icons/IconExclamationTraingleOutline.vue';
 
 // router
@@ -53,7 +53,7 @@ const appNameIsValid = computed(() => {
 const disableDetailBtn = computed(() => {
     return (
         (appName.value == "" && appDes.value == "") ||
-        (appName.value == unSlugify(appStore.appInView['name']).value) ||
+        (appName.value == useSlugify(appStore.appInView['name']).data.value) ||
         !appNameIsValid.value
     )
 
@@ -86,7 +86,7 @@ onMounted(() => {
         <div class="relative w-full bg-white pt-48 pb-14 overflow-hidden">
             <div class="w-11/12 mx-auto flex flex-col gap-2 md:w-10/12">
                 <h3 class="text-sm text-gray-400 font-medium md:text-lg">Settings</h3>
-                <h3 class="text-3xl text-gray-600 font-bold capitalize md:text-4xl">{{unSlugify(appStore.appInView['name']).value}}</h3>
+                <h3 class="text-3xl text-gray-600 font-bold capitalize md:text-4xl">{{useSlugify(appStore.appInView['name']).data.value}}</h3>
             </div>
             <IconCogOutline class="hidden absolute -top-11 right-0 w-86 h-96 stroke-gray-50 md:block"
                 :strokeWidth="0.2" />

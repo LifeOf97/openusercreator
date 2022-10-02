@@ -153,7 +153,7 @@ export const useUserStore = defineStore("user", () => {
 
   async function submitDeleteAccount() {
     await axios.delete("api/v1/creators/me/delete/", {headers: {'Authorization': `Bearer ${VueCookies.get('access')}` }})
-      .then((resp) => {
+      .then(() => {
         // close delete account modal
         deleteAccount.value = false
 
