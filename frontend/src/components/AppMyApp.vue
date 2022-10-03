@@ -40,7 +40,7 @@ const appInView = () => {
                         class="absolute top-0 hidden w-7 h-7 fill-white transition-all duration-300 group-hover:animate-ping group-hover:block md:w-7 md:h-7" />
                 </RouterLink>
             </span>
-            <p class="text-xs text-gray-600 font-light transition-all duration-300 group-hover:text-gray-50 md:text-sm">
+            <p class="text-xs text-gray-600 font-light transition-all duration-300 truncate group-hover:text-gray-50 md:text-sm">
                 {{props.description}}
             </p>
         </div>

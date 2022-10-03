@@ -17,6 +17,7 @@ import { DateTime } from 'luxon';
 import IconClockOutline from './icons/IconClockOutline.vue';
 import { useAuthStore } from '../stores/auth';
 import { useSlugify } from '../composables/slugify';
+import VueCookies from 'vue-cookies';
 
 // stores
 const appStore = useAppStore()
@@ -32,6 +33,7 @@ const formatDate = (value) => {
 onMounted(() => {
     // set title
     useTitle(`Apps | ${useSlugify(appStore.appInView['name']).data.value}`)
+    console.log(VueCookies.get('access'))
 })
 </script>
     
@@ -123,7 +125,7 @@ onMounted(() => {
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">
-                                        <IconCalenderOutline :strokeWidth="1" class="w-4 h-4 stroke-gray-400" />
+                                        <IconCalenderOutline :strokeWidth="1" class="w-3 h-3 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">Date Created:</p>
                                     </td>
                                     <td class="text-xs text-gray-600 font-medium md:text-sm">{{formatDate(appStore.appInView['date_created'])}}</td>

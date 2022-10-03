@@ -3,35 +3,19 @@
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
-import { useUserStore } from '../stores/user';
-import { onMounted, onUnmounted } from 'vue';
 import IconUserCircleSolid from './icons/IconUserCircleSolid.vue';
 import IconGithub from './icons/IconGithub.vue';
 import IconLogoutOutline from './icons/IconLogoutOutline.vue';
+import { onClickOutside } from '@vueuse/core';
 
 // stores
 const authStore = useAuthStore()
-const userStore = useUserStore()
 
 // refs
 const root = ref(null)
 const toggleUserMenu = ref(false)
 
-// methods
-const closeUserMenu = (e) => {
-    if (!root.value.contains(e.target)) {
-        toggleUserMenu.value = false;
-    }
-}
-
-// hooks
-onMounted(() => {
-    document.addEventListener("click", closeUserMenu)
-})
-
-onUnmounted(() => {
-    document.removeEventListener("click", closeUserMenu)
-})
+onClickOutside(root, () => toggleUserMenu.value = false)
 </script>
 
 <template>

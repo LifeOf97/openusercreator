@@ -4,11 +4,15 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import VueCookies from 'vue-cookies';
-
+import { useAppStore } from "./apps";
+import { DateTime } from 'luxon';
 
 export const useAuthStore = defineStore("auth", () => {
   // router
   const router = useRouter()
+
+  // stores
+  const appStore = useAppStore()
 
   ////////////////////////////////////////////
   // app notification functionality
@@ -113,6 +117,10 @@ export const useAuthStore = defineStore("auth", () => {
           notify.open = false
           notify.detail = notify.state = null
         }, 5000);
+
+        setTimeout(() => {
+          submitSignOut()
+        }, 43200000);
       })
       .catch((err) => {
         if (err.response) {
@@ -176,6 +184,7 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.removeItem("app_in_view")
     localStorage.setItem("is_auth", JSON.stringify(false))
     isAuthenticated.value = false
+    appStore.myApps.data = JSON.parse(localStorage.getItem("user_apps"))
     
     // clear cookies data also
     VueCookies.remove("access")

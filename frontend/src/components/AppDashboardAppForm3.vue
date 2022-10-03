@@ -28,8 +28,8 @@ const saveData = () => {
 // computed
 const formIsValid = computed(() => {
     return (
-        useVerifySize(appPassword.value.length, 8, 'gte').data.value &&
-        useVerifySize(appPassword.value.length, 15, 'lte').data.value
+        useVerifySize(appPassword.value?.length, 8, 'gte').data.value &&
+        useVerifySize(appPassword.value?.length, 15, 'lte').data.value
     )
 })
 

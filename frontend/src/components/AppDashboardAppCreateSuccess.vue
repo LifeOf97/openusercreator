@@ -1,10 +1,14 @@
 <script setup>
 /* eslint-disable */
+import { useAppStore } from '../stores/apps';
 import AppMyApp from './AppMyApp.vue';
+
+// store
+const appStore = useAppStore()
 </script>
 
 <template>
     <main class="w-11/12 mx-auto bg-transparent sm:w-8/12 lg:w-6/12 xl:w-5/12">
-        <AppMyApp title="My new app" description="A brief detail about this newly created application :)" />
+        <AppMyApp v-bind="appStore.appInView" />
     </main>
 </template>

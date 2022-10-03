@@ -36,13 +36,9 @@ const currentTab = computed(() => {
     return formTabs.find((tab) => tab.id == currentTabId.value)
 })
 
-const createAppSuccess = computed(() => {
-    return appStore.createApp.success
-})
-
 // methods
 const updateTab = (value) => {
-    if ((value == 'next' || createAppSuccess.value) && currentTabId.value < 5) {
+    if ((value == 'next') && currentTabId.value < 5) {
         tabTransition.value = "slide-left"
         currentTabId.value = currentTabId.value + 1
     }

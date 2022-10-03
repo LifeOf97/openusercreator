@@ -41,8 +41,8 @@ const appNameIsValid = computed(() => {
 const formIsValid = computed(() => {
     return (
         appNameIsValid.value && appNameIsAvailable.value &&
-        useVerifySize(appName.value.length, 4, 'gte').data.value &&
-        useVerifySize(appName.value.length, 20, 'lte').data.value
+        useVerifySize(appName.value?.length, 4, 'gte').data.value &&
+        useVerifySize(appName.value?.length, 20, 'lte').data.value
     )
 })
 

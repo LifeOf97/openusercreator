@@ -30,17 +30,20 @@ export const useAppStore = defineStore("apps", () => {
         createApp.success = true
         createApp.error = null
 
-        // declare variable to update apps in localstorage
-        let data = []
-
-        // update apps list and localStorage, to avoid making a get request for the list of app
-        data = data.push(resp.data)
+        // update apps list and localStorage, to avoid making a get request for the list of app        
+        const data = myApps.data.push(resp.data)
         localStorage.setItem("user_apps", JSON.stringify(data))
 
         // set current app in view
         appInView.value = resp.data
         myApps.data = data
         localStorage.setItem("app_in_view", JSON.stringify(resp.data))
+
+        // clear create app localstorage
+        localStorage.removeItem("app_create_name")
+        localStorage.removeItem("app_create_description")
+        localStorage.removeItem("app_create_profiles")
+        localStorage.removeItem("app_create_password")
       })
       .catch((err) => {
         createApp.loading = createApp.success = false

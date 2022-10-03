@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { onMounted, reactive, computed, ref } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '../stores/apps'
 import IconQRCodeOutline from './icons/IconQRCodeOutline.vue';
@@ -50,14 +50,26 @@ const appNameIsValid = computed(() => {
     return valid ? true:false
 })
 
+const appNameIsAvailable = computed(() => {
+    // check to make sure the user does not already have an app with the same name
+    return !appStore.myApps.data?.find((app) => useSlugify(app.name).data.value == appName.value)
+})
+
 const disableDetailBtn = computed(() => {
     return (
         (appName.value == "" && appDes.value == "") ||
-        (appName.value == useSlugify(appStore.appInView['name']).data.value) ||
-        !appNameIsValid.value
+        (appName.value && !appNameIsValid.value) ||
+        !appNameIsAvailable.value
     )
-
 })
+
+// const disableDetailBtn = computed(() => {
+//     return (
+//         (appName.value == "" && appDes.value == "") ||
+//         (appName.value == useSlugify(appStore.appInView['name']).data.value ||
+//         !appNameIsValid.value || !appNameIsAvailable.value
+//     )
+// })
 
 const disableProfilesBtn = computed(() => {
     return (
@@ -120,7 +132,7 @@ onMounted(() => {
                                 <div class="flex items-center gap-2">
                                     <IconExclamationTraingleOutline1 :class="appName ? appNameIsValid ? 'stroke-green-400':'stroke-red-400':'stroke-gray-400'" class="w-4 h-4"/>
                                     <p :class="appName ? appNameIsValid ? 'text-green-400':'text-red-400':'text-gray-400'" class="text-xs font-normal">
-                                        App name must begin and end with a letter. And can only contain letters, numbers and hyphens.
+                                        App name must begin and end with a letter and a maximum of 2 whitespaces.
                                     </p>
                                 </div>
                             </div>
@@ -184,7 +196,7 @@ onMounted(() => {
                                     loadingText="Saving..."
                                     :loading="appStore.updateAppDetails.loading"
                                     :disabled="disableDetailBtn"
-                                    class="text-white bg-blue-400 transition-all duration-300 hover:bg-blue-500 disabled:bg-blue-300" />
+                                    class="text-white bg-blue-500 transition-all duration-300 hover:bg-blue-600 disabled:bg-blue-300" />
                             </div>
                         </form>
                     </div>
@@ -238,7 +250,7 @@ onMounted(() => {
                                     loadingText="Saving..."
                                     :loading="appStore.updateAppProfiles.loading"
                                     :disabled="disableProfilesBtn"
-                                    class="text-white bg-blue-400 transition-all duration-300 hover:bg-blue-500 disabled:bg-blue-300" />
+                                    class="text-white bg-blue-500 transition-all duration-300 hover:bg-blue-600 disabled:bg-blue-300" />
                             </div>
                         </form>
 
@@ -292,7 +304,7 @@ onMounted(() => {
                                     loadingText="Saving..."
                                     :loading="appStore.updateAppPassword.loading"
                                     :disabled="disablePasswordBtn"
-                                    class="text-white bg-blue-400 transition-all duration-300 hover:bg-blue-500 disabled:bg-blue-300" />
+                                    class="text-white bg-blue-500 transition-all duration-300 hover:bg-blue-600 disabled:bg-blue-300" />
                             </div>
                         </form>
 

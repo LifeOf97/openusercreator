@@ -1,14 +1,14 @@
 <script setup>
 /* eslint-disable */
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useAppStore } from '../stores/apps';
 import AppButton from './AppButton.vue';
 
-// emits
-const emit = defineEmits(["button-clicked"])
-
 // stores
 const appStore = useAppStore()
+
+// emits
+const emit = defineEmits(["button-clicked"])
 
 // refs
 const appName = ref(localStorage.getItem("app_create_name"))
@@ -17,14 +17,16 @@ const appProfiles = ref(localStorage.getItem("app_create_profiles"))
 const appPassword = ref(localStorage.getItem("app_create_password"))
 
 // methods
-const createApp = () => {
+const createApp = async () => {
     const data = {
         name: appName.value,
         description: appDes.value,
         profiles: appProfiles.value,
         profile_password: appPassword.value
     }
-    appStore.submitCreateApp(data)
+    await appStore.submitCreateApp(data)
+    .then(() => emit("button-clicked", "next"))
+    .catch(() => console.log("An error occured"))
 }
 </script>
 
@@ -59,7 +61,7 @@ const createApp = () => {
                     type="button"
                     label="Back"
                     class="text-gray-900 bg-transparent hover:bg-white disabled:bg-gray-300" />
-                <AppButton 
+                <AppButton
                     @click.prevent="createApp()"
                     type="button"
                     label="Create App"

@@ -16,7 +16,7 @@ import { useAuthStore } from '../stores/auth';
 import IconCalenderOutline from './icons/IconCalenderOutline.vue';
 import IconCheckCircleSolid from './icons/IconCheckCircleSolid.vue';
 import IconInfoCircleSolid from './icons/IconInfoCircleSolid.vue';
-import { useTitle } from "@vueuse/core"
+import { useTitle } from '@vueuse/core';
 
 // stores
 const authStore = useAuthStore()
