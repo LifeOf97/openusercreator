@@ -1,7 +1,7 @@
 <script setup>
 /* eslint-disable */
-import { computed, reactive, ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { computed, onMounted, ref } from 'vue';
+import { RouterLink, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import AppInputField from './AppInputField.vue';
 import IconUserCircleOutline from './icons/IconUserCircleOutline.vue';
@@ -37,9 +37,17 @@ const submit = () => {
     }
     else error.value = "Password fields does not match"
 }
+
 // computed
 const isError = computed(() => {
     return error.value || authStore.signUp.error || authStore.signUp.username || authStore.signUp.email
+})
+
+// hooks
+onMounted(() => {    
+    authStore.getGithubUrl()
+    authStore.getTwitterUrl()
+    authStore.getGoogleUrl()
 })
 </script>
 
@@ -118,18 +126,18 @@ const isError = computed(() => {
                 </div>
 
                 <div class="relative flex items-center gap-4">
-                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'github'}}" @click="authStore.setSocial('github')"
+                    <a :href="authStore.socialGithub.url" @click="authStore.setSocial('github')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconGithub class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'twitter'}}" @click="authStore.setSocial('twitter')"
+                    </a>
+                    <a :href="authStore.socialTwitter.url" @click="authStore.setSocial('twitter')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconTwitter class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'google'}}" @click="authStore.setSocial('google')"
+                    </a>
+                    <a :href="authStore.socialGoogle.url" @click="authStore.setSocial('google')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconGoogle class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
+                    </a>
 
                     <!-- shows up when form is submitting to disable social links -->
                     <div v-show="authStore.signUp.loading" class="absolute top-0 w-full h-full bg-transparent cursor-not-allowed"></div>

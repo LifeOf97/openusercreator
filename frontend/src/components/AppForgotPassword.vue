@@ -42,7 +42,7 @@ const signInStore = useAuthStore()
             <!-- form errors -->
 
             <div class="mt-10 mb-5 w-full">
-                <p class="text-xs text-left text-gray-600 font-normal sm:text-sm md:text-base">
+                <p class="text-xs text-left text-gray-600 font-normal md:text-sm">
                     Please enter the email address linked to your account, we’ll send you
                     instructions on how to reset your password.
                 </p>

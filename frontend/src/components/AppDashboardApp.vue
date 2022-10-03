@@ -17,7 +17,6 @@ import { DateTime } from 'luxon';
 import IconClockOutline from './icons/IconClockOutline.vue';
 import { useAuthStore } from '../stores/auth';
 import { useSlugify } from '../composables/slugify';
-import VueCookies from 'vue-cookies';
 
 // stores
 const appStore = useAppStore()
@@ -33,7 +32,6 @@ const formatDate = (value) => {
 onMounted(() => {
     // set title
     useTitle(`Apps | ${useSlugify(appStore.appInView['name']).data.value}`)
-    console.log(VueCookies.get('access'))
 })
 </script>
     

@@ -36,9 +36,14 @@ class SocialUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'auth_email', 'auth_provider', 'auth_provider_id')
+        fields = (
+            'uid', 'email', 'username', 'password', 'auth_email', 'auth_provider',
+            'auth_provider_id', 'date_joined', 'last_login', 'is_verified'
+        )
         extra_kwargs = {
             'password': {'write_only': True},
+            'uid': {'read_only': True},
+            'auth_provider': {'read_only': True},
         }
 
     def to_internal_value(self, data):

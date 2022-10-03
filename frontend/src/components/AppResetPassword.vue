@@ -44,7 +44,7 @@ const signInStore = useAuthStore()
             <!-- form errors -->
 
             <div class="mt-10 mb-5 w-full">
-                <p class="text-xs text-gray-600 font-normal sm:text-sm md:text-base">
+                <p class="text-xs text-gray-600 font-normal md:text-sm">
                     Create a new password.
                 </p>
             </div>

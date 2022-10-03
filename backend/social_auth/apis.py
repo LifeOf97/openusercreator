@@ -84,7 +84,7 @@ class GithubLoginGenerateUrl(views.APIView):
         params = urlencode(
             {
                 'client_id': os.environ.get('GITHUB_CLIENT_ID'),
-                'redirect_uri': 'http://127.0.0.1:8000/api/v1/auth/github/get/user/',
+                'redirect_uri': 'http://127.0.0.1:8080/auth/signup/social/github',
                 'state': base64.b32hexencode(secrets.token_hex().encode()).decode()
             }
         )
@@ -117,7 +117,7 @@ class GithubLoginGetUser(views.APIView):
                 'client_id': os.environ.get('GITHUB_CLIENT_ID'),
                 'client_secret': os.environ.get('GITHUB_CLIENT_SECRET'),
                 'code': dict(request.GET)['code'][0],
-                'redirect_uri': 'http://127.0.0.1:8000/api/v1/auth/github/get/user/',
+                'redirect_uri': 'http://127.0.0.1:8080/auth/signup/social/github',
             }
         )
         headers = dict(Accept='application/json')
@@ -197,8 +197,8 @@ class TwitterLoginGenerateUrl(views.APIView):
         Returns a twitter authorize url.
         """
         request_token_url = 'https://api.twitter.com/oauth/request_token'
-        # authorize_token_url = 'https://api.twitter.com/oauth/authorize?oauth_token='
-        authenticate_token_url = 'https://api.twitter.com/oauth/authenticate?oauth_token='
+        authorize_token_url = 'https://api.twitter.com/oauth/authorize?oauth_token='
+        # authenticate_token_url = 'https://api.twitter.com/oauth/authenticate?oauth_token='
 
         oauth = requests_oauthlib.OAuth1(
             client_key=os.environ.get('TWITTER_API_KEY'),
@@ -212,7 +212,7 @@ class TwitterLoginGenerateUrl(views.APIView):
         auth_token = response.text.split('&')[0].split('=')[1]
         # oauth_token_secret = response.text.split('&')[1].split('=')[1]
 
-        return Response(data={'url': F"{authenticate_token_url}{auth_token}"}, status=status.HTTP_200_OK)
+        return Response(data={'url': F"{authorize_token_url}{auth_token}"}, status=status.HTTP_200_OK)
 
 
 class TwitterLoginGetUser(views.APIView):

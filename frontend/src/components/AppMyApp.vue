@@ -17,7 +17,7 @@ const appStore = useAppStore()
 
 // methods
 const appInView = () => {
-    const app = appStore.myApps.data.find((app) => app.name == props.name)
+    const app = appStore.myApps.data?.find((app) => app.name == props.name)
     appStore.appInView = app
     localStorage.setItem("app_in_view", JSON.stringify(app))
 }

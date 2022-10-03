@@ -108,7 +108,7 @@ router.beforeEach(async (to, from) => {
   if (to.name == 'home' && JSON.parse(localStorage.getItem('is_auth'))) {
     return {name: 'dashboard', params: {username: authStore.userProfile['username']}}
   }
-  if (to.meta.requiresAuth && !JSON.parse(localStorage.getItem('is_auth'))) {
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     return {name: 'signin', query: {redirect: to.path}}
   }
 })
