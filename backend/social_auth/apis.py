@@ -205,7 +205,7 @@ class TwitterLoginGenerateUrl(views.APIView):
             client_secret=os.environ.get('TWITTER_API_SECRET')
         )
         data = urlencode(
-            {'oauth_callback': 'http://127.0.0.1:8000/api/v1/auth/twitter/get/user/'}
+            {'oauth_callback': 'http://127.0.0.1:8080/auth/signup/social/twitter'}
         )
 
         response = requests.post(request_token_url, auth=oauth, data=data)

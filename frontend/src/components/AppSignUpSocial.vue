@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable */
-import { onMounted, ref, computed, onBeforeMount } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import AppInputField from './AppInputField.vue';
@@ -29,6 +29,7 @@ const email = ref("")
 const password1 = ref("")
 const password2 = ref("")
 const error = ref(null)
+const endpoint = ref("")
 
 // methods
 const submit = () => {
@@ -53,43 +54,58 @@ const isError = computed(() => {
 
 // hooks
 onMounted(async () => {
-    useTitle(`Sign Up | ${authStore.social.toUpperCase()} | Open User Data`)
-    
     // get user data from social provider via backend
-    if (route.path.includes('github') && 'code' in route.query) {
-        await authStore.getUserDataViaGithub(route.fullPath.slice(route.fullPath.indexOf('?')))
-            .then(() => {
-                // if user has no account with useAuthStore, then create a new one
-                if ('auth_provider' in authStore.socialData.data) {
-                    username.value = authStore.socialData.data['username']
-                    email.value = authStore.socialData.data['email']
-                }
-                // if user has an account with us, then sign in the user
-                else if ('access' in authStore.socialData.data) {
-                    // set cookies
-                    VueCookies.set("refresh", authStore.socialData.data['refresh'], "1d")
-                    VueCookies.set("access", authStore.socialData.data['access'], "12h")
+    if (route.fullPath.includes('github')) endpoint.value = "api/v1/auth/github/get/user/"
+    else if (route.fullPath.includes('google')) endpoint.value = "api/v1/auth/google/get/user/"
+    else if (route.fullPath.includes('twitter')) endpoint.value = "api/v1/auth/twitter/get/user/"
 
-                    // set is authenticated to true
-                    localStorage.setItem("is_auth", JSON.stringify(true))
-                    authStore.isAuthenticated = true
+    await authStore.getUserDataViaSocialProvider(
+        endpoint.value,
+        route.fullPath.slice(route.fullPath.indexOf('?'))
+    )
+        .then(() => {
+            // if user has no account with us, create a new one
+            if ('auth_provider' in authStore.socialData.data) {
+                username.value = authStore.socialData.data['username']
+                email.value = authStore.socialData.data['email']
+            }
+            // if user has an account with us, sign in the user
+            else if ('access' in authStore.socialData.data) {
+                // set cookies
+                VueCookies.set("refresh", authStore.socialData.data['refresh'], "1d")
+                VueCookies.set("access", authStore.socialData.data['access'], "12h")
 
-                    // get user profile
-                    authStore.getUserProfile()
+                // set is authenticated to true
+                localStorage.setItem("is_auth", JSON.stringify(true))
+                authStore.isAuthenticated = true
 
-                    // remove sensitive data from localstorage
-                    localStorage.removeItem("auth_social_data")
-                }
-                else console.log("An error ocured")
-            })
-            .catch((err) => {
-                console.log(err.message)
-            })
-    }
-    else console.log("Error...")
+                // get user profile
+                authStore.getUserProfile()
+
+                // update notify
+                authStore.notify.open = true
+                authStore.notify.detail = "Signed in successfully"
+                authStore.notify.state = "good"
+            
+                setTimeout(() => {
+                    authStore.notify.open = false
+                    authStore.notify.detail = authStore.notify.state = null
+                }, 10000);
+
+                // remove sensitive data from localstorage
+                localStorage.removeItem("auth_social_data")
+            }
+            else console.log("An error ocured")
+        })
+        .catch((err) => {
+            console.log(err.message)
+        })
 })
+
+// set page title
+useTitle(`Sign Up | ${authStore.social.toUpperCase()} | Open User Data`)
 </script>
-    
+
 <template>
     <main class="w-full h-full bg-transparent">
 
@@ -171,7 +187,7 @@ onMounted(async () => {
                     loadingText="Creating..."
                     class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
 
-                
+
                 <!-- start of effect to show/hide social sign up form -->
                 <div v-if="authStore.socialData.loading || authStore.socialData.error" class="absolute top-0 flex items-center justify-center w-full h-full bg-white/10 backdrop-blur-sm">
                     <span v-if="authStore.socialData.loading" class="flex flex-col items-center justify-center gap-2">

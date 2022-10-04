@@ -47,7 +47,7 @@ const isError = computed(() => {
 onMounted(() => {    
     authStore.getGithubUrl()
     authStore.getTwitterUrl()
-    authStore.getGoogleUrl()
+    // authStore.getGoogleUrl()
 })
 </script>
 

@@ -108,6 +108,7 @@ export const useAuthStore = defineStore("auth", () => {
           notify.detail = notify.state = null
         }, 5000);
 
+        // the system will automatically sign the user out in the nest 12 hours
         setTimeout(() => {
           submitSignOut()
         }, 43200000);
@@ -141,6 +142,31 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.setItem('auth_social', JSON.stringify(value))
   }
 
+  async function getUserDataViaSocialProvider(url, data) {
+    socialData.loading = true
+    socialData.error = null
+    
+    await axios.get(`${url}${data}`)
+      .then((resp) => {
+        socialData.loading = false
+        socialData.error = null
+        socialData.data = resp.data
+
+        // save to localStorage
+        localStorage.setItem("auth_social_data", JSON.stringify(resp.data))
+      })
+      .catch((err) => {
+        socialData.loading = false
+
+        if (err.response) {
+          if (err.response.status == 400) socialData.error = err.response.data['error']
+          if (err.response.status == 500) socialData.error = "Link expired"
+          else socialData.error = err.response.data['error']
+        }
+        else socialData.error = "An error occured"
+      })
+  }
+
   ////////////////////////////////////////////
   // GITHUB auth functionallity
   ////////////////////////////////////////////
@@ -160,31 +186,6 @@ export const useAuthStore = defineStore("auth", () => {
         socialGithub.loading = false
         socialGithub.url = null
         socialGithub.error = "An error occured, please try again"
-      })
-  }
-
-  async function getUserDataViaGithub(data) {
-    socialData.loading = true
-    socialData.error = null
-    
-    await axios.get(`api/v1/auth/github/get/user/${data}`)
-      .then((resp) => {
-        socialData.loading = false
-        socialData.error = null
-        socialData.data = resp.data
-
-        // save to localStorage
-        localStorage.setItem("auth_social_data", JSON.stringify(resp.data))
-      })
-      .catch((err) => {
-        socialData.loading = false
-
-        if (err.response) {
-          if (err.response.status == 400) socialData.error = err.response.data['error']
-          if (err.response.status == 500) socialData.error = "Link expired"
-          else socialData.error = err.response.data['error']
-        }
-        else socialData.error = "An error occured"
       })
   }
 
@@ -349,7 +350,7 @@ export const useAuthStore = defineStore("auth", () => {
     isAuthenticated, social, setSocial, signUp, submitSignUp,
     signIn, submitSignIn, getUser, userProfile, getUserProfile,
     signOut, submitSignOut, notify, socialData, socialGithub,
-    socialGoogle, socialTwitter, getGithubUrl, getUserDataViaGithub,
+    socialGoogle, socialTwitter, getGithubUrl, getUserDataViaSocialProvider,
     getGoogleUrl, getTwitterUrl, signUpSocial, submitSignUpSocial
   };
 });

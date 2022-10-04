@@ -14,66 +14,6 @@ export const useAppStore = defineStore("apps", () => {
   // stores
   const authStore = useAuthStore()
 
-  //////////////////////////////////////////////
-  // Create a new apps
-  //////////////////////////////////////////////
-  const createApp = reactive({loading: false, success: false, error: null})
-
-  async function submitCreateApp(data) {
-    createApp.loading = true
-    createApp.success = false
-    createApp.error = null
-
-    await axios.post("api/v1/creators/me/apps/new/", data, {headers: {'Authorization': `Bearer ${VueCookies.get('access')}` }})
-      .then((resp) => {
-        createApp.loading = false
-        createApp.success = true
-        createApp.error = null
-
-        // update apps list and localStorage, to avoid making a get request for the list of app        
-        const data = myApps.data.push(resp.data)
-        localStorage.setItem("user_apps", JSON.stringify(data))
-
-        // set current app in view
-        appInView.value = resp.data
-        myApps.data = data
-        localStorage.setItem("app_in_view", JSON.stringify(resp.data))
-
-        // clear create app localstorage
-        localStorage.removeItem("app_create_name")
-        localStorage.removeItem("app_create_description")
-        localStorage.removeItem("app_create_profiles")
-        localStorage.removeItem("app_create_password")
-      })
-      .catch((err) => {
-        createApp.loading = createApp.success = false
-
-        if (err.response) {
-          if (err.response.status == 400) {
-            'name' in err.response.data ? createApp.error = err.response.data['name'][0]:''
-            'error' in err.response.data ? createApp.error = err.response.data['error'][0]:''
-            'profiles' in err.response.data ? createApp.error = err.response.data['profiles'][0]:''
-            'profile_password' in err.response.data ? createApp.error = err.response.data['profile_password'][0]:''
-          }
-          else if (err.response.status == 401) {
-            // auth token expired
-            authStore.submitSignOut()
-            
-            // show notify
-            authStore.notify.open = true
-            authStore.notify.detail = "Token expired, please relog in"
-            authStore.notify.state = "error"
-
-            setTimeout(() => {
-              authStore.notify.open = false
-              authStore.notify.detail = authStore.notify.state = null
-            }, 5000);
-          }
-          else createApp.error = 'An error occured, please try again later.'
-        }
-      })
-  }
-
 
   //////////////////////////////////////////////
   // Retrieve all users apps
@@ -116,6 +56,66 @@ export const useAppStore = defineStore("apps", () => {
             }, 5000)
           }
           else myApps.error = "An error occured, please try agan later"
+        }
+      })
+  }
+
+  //////////////////////////////////////////////
+  // Create a new apps
+  //////////////////////////////////////////////
+  const createApp = reactive({loading: false, success: false, error: null})
+
+  async function submitCreateApp(data) {
+    createApp.loading = true
+    createApp.success = false
+    createApp.error = null
+
+    await axios.post("api/v1/creators/me/apps/new/", data, {headers: {'Authorization': `Bearer ${VueCookies.get('access')}` }})
+      .then((resp) => {
+        createApp.loading = false
+        createApp.success = true
+        createApp.error = null
+
+        // update apps list and localStorage, to avoid making a get request for the list of app        
+        const data = [...myApps.data, resp.data]
+        localStorage.setItem("user_apps", JSON.stringify(data))
+
+        // set current app in view
+        appInView.value = resp.data
+        myApps.data = data
+        localStorage.setItem("app_in_view", JSON.stringify(resp.data))
+
+        // clear create app localstorage
+        localStorage.removeItem("app_create_name")
+        localStorage.removeItem("app_create_description")
+        localStorage.removeItem("app_create_profiles")
+        localStorage.removeItem("app_create_password")
+      })
+      .catch((err) => {
+        createApp.loading = createApp.success = false
+
+        if (err.response) {
+          if (err.response.status == 400) {
+            'name' in err.response.data ? createApp.error = err.response.data['name'][0]:''
+            'error' in err.response.data ? createApp.error = err.response.data['error'][0]:''
+            'profiles' in err.response.data ? createApp.error = err.response.data['profiles'][0]:''
+            'profile_password' in err.response.data ? createApp.error = err.response.data['profile_password'][0]:''
+          }
+          else if (err.response.status == 401) {
+            // auth token expired
+            authStore.submitSignOut()
+            
+            // show notify
+            authStore.notify.open = true
+            authStore.notify.detail = "Token expired, please relog in"
+            authStore.notify.state = "error"
+
+            setTimeout(() => {
+              authStore.notify.open = false
+              authStore.notify.detail = authStore.notify.state = null
+            }, 5000);
+          }
+          else createApp.error = 'An error occured, please try again later.'
         }
       })
   }
