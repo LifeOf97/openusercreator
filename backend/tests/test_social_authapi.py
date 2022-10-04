@@ -13,7 +13,7 @@ import os
         ),
         (
             reverse('login_via_twitter', kwargs={'version': 'v1'}),
-            "https://api.twitter.com/oauth/authenticate?oauth_token="
+            "https://api.twitter.com/oauth/authorize?oauth_token="
         )
     ]
 )
