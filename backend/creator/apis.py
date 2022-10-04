@@ -143,7 +143,7 @@ class ResendVerifyEmail(viewsets.GenericViewSet):
 
 
 class VerifyEmail(views.APIView):
-    permission_classes = [permissions.AllowAny,]
+    permission_classes = [permissions.AllowAny, ]
     authentication_classes = []
 
     @extend_schema(
