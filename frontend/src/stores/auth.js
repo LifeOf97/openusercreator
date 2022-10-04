@@ -5,7 +5,6 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import VueCookies from 'vue-cookies';
 import { useAppStore } from "./apps";
-import { DateTime } from 'luxon';
 
 export const useAuthStore = defineStore("auth", () => {
   // router
@@ -346,11 +345,38 @@ export const useAuthStore = defineStore("auth", () => {
     router.push({name: 'home'})
   }
 
+  ////////////////////////////////////////////
+  // Verify email functionality
+  ////////////////////////////////////////////
+  const verifyEmail = reactive({loading: false, data: null, error: null})
+
+  async function submitVerifyEmail(token) {
+    verifyEmail.loading = true
+    verifyEmail.data = verifyEmail.error = null
+
+    axios.get(`api/v1/creators/verify-email/${token}`)
+      .then((resp) => {
+        verifyEmail.loading = false
+        verifyEmail.data = resp.data['detail']
+        verifyEmail.error = null
+
+        setTimeout(() => {
+          router.push({name: 'home'})
+        }, 5000);
+      })
+      .catch((err) => {
+        if (err.response.status == 400) verifyEmail.error = err.response.data['error']
+        else if (err.response.status == 404) verifyEmail.error = "Not Found"
+        else verifyEmail.error = "An error occured, Login to your dashboard and request new verification link"
+      })
+  }
+
   return {
     isAuthenticated, social, setSocial, signUp, submitSignUp,
     signIn, submitSignIn, getUser, userProfile, getUserProfile,
     signOut, submitSignOut, notify, socialData, socialGithub,
     socialGoogle, socialTwitter, getGithubUrl, getUserDataViaSocialProvider,
-    getGoogleUrl, getTwitterUrl, signUpSocial, submitSignUpSocial
+    getGoogleUrl, getTwitterUrl, signUpSocial, submitSignUpSocial,
+    verifyEmail, submitVerifyEmail
   };
 });

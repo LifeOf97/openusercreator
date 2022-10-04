@@ -20,7 +20,7 @@ urlpatterns = [
         name="creators_create"
     ),
     path(
-        "<version>/creators/new/verify-email/",
+        "<version>/creators/verify-email/",
         apis.VerifyEmail.as_view(),
         name="creators_verify_email"
     ),

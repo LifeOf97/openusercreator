@@ -78,13 +78,19 @@ const router = createRouter({
           path: "help/forgot-password",
           name: "forgotpassword",
           component: () => import("../components/AppForgotPassword.vue"),
-          meta: {title: `Forgot password | Open User Data`}
+          meta: {title: 'Forgot password | Open User Data'}
         },
         {
           path: "help/success/reset-password",
           name: "resetpassword",
           component: () => import("../components/AppResetPassword.vue"),
-          meta: {title: `Reset password | Open User Data`}
+          meta: {title: 'Reset password | Open User Data'}
+        },
+        {
+          path: "verify-email",
+          name: "verifyemail",
+          component: () => import("../components/AppVerifyEmail.vue"),
+          meta: {title: 'Verify Email | Open User Data'}
         },
       ]
     },

@@ -143,7 +143,8 @@ class ResendVerifyEmail(viewsets.GenericViewSet):
 
 
 class VerifyEmail(views.APIView):
-    permission_classes = []
+    permission_classes = [permissions.AllowAny,]
+    authentication_classes = []
 
     @extend_schema(
         parameters=[
@@ -167,12 +168,14 @@ class VerifyEmail(views.APIView):
             check_token = jwt.decode(token, key=settings.SECRET_KEY, algorithms='HS256')
         except jwt.ExpiredSignatureError:
             return Response(
-                data={"error": _('Activation link expired, please request a new one.')},
+                data={
+                    "error": _('Verification link expired, please login to your dashboard and request a new one.')
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
         except jwt.DecodeError:
             return Response(
-                data={"error": _('Invalid token, please request a new one.')},
+                data={"error": _('Invalid token, please login to your dashboard and request a new one.')},
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
