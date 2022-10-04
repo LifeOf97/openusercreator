@@ -10,7 +10,6 @@ black==22.6.0
 blessings==1.7
 blinker==1.4
 bpython==0.22.1
-Brlapi==0.8.3
 cachetools==5.2.0
 celery==5.2.7
 certifi==2022.5.18.1
