@@ -12,7 +12,7 @@ const route = useRoute()
         <RouterLink
             to="#crud"
             :class="route.fullPath.endsWith('crud') ? 'bg-red-600 text-white border-transparent':'text-gray-500'"
-            class="shrink-0 px-4 py-1 bg-white rounded-xl border border-gray-300 transition-all duration-300 hover:bg-red-500 hover:border-transparent hover:text-white md:py-2">
+            class="shrink-0 px-4 py-1 bg-white rounded-xl border border-gray-300 transition-all duration-300 hover:bg-red-600 hover:border-transparent hover:text-white md:py-2">
                 CRUD
         </RouterLink>
 

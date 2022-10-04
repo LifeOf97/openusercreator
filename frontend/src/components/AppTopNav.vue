@@ -28,7 +28,7 @@ onClickOutside(root, () => toggleUserMenu.value = false)
             
             <div class="flex items-center gap-2 font-normal">
                 <a href="https://github.com/realestKMA/openuserdata" target="_blank" rel="noopener noreferrer" class="border-r border-gray-300 pr-2 group">
-                    <IconGithub class="w-6 h-6 fill-gray-500 group-visited:fill-teal-500 group-active:fill-yellow-500 group-hover:fill-blue-500" />
+                    <IconGithub class="w-6 h-6 fill-gray-500 group-hover:fill-blue-500" />
                 </a>
 
                 <!-- Visible when a user is authenticated -->

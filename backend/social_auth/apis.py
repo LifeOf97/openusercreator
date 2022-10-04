@@ -150,7 +150,8 @@ class GoogleLoginGenerateUrl(views.APIView):
                 'openid'
             ]
         )
-        flow.redirect_uri = "http://127.0.0.1:8000/api/v1/auth/google/get/user/"
+        flow.redirect_uri = "http://127.0.0.1:8080/auth/signup/social/google"
+        # flow.redirect_uri = "http://127.0.0.1:8000/api/v1/auth/google/get/user/"
         auth_url, state = flow.authorization_url(
             access_type='offline',
             prompt='consent',

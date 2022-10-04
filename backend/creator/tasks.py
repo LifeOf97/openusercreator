@@ -1,8 +1,8 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
-from django.contrib.sites.models import Site
-from rest_framework.reverse import reverse
+# from django.contrib.sites.models import Site
+# from rest_framework.reverse import reverse
 from .pika_producers import RabbitMQProducer
 from django.core.mail import send_mail
 from django.conf import settings
@@ -23,18 +23,19 @@ def send_email_verification(email):
     user = AppUser.objects.get(email=email)
     token = RefreshToken.for_user(user).access_token
 
-    domain = Site.objects.get_current().domain
-    rel_link = reverse(
-        "creators_verify_email",
-        kwargs={'version': settings.REST_FRAMEWORK['DEFAULT_VERSION']}
-    )
-    absolute_url = F"{domain}{rel_link}?token={token}"
+    # domain = Site.objects.get_current().domain
+    # rel_link = reverse(
+    #     "creators_verify_email",
+    #     kwargs={'version': settings.REST_FRAMEWORK['DEFAULT_VERSION']}
+    # )
+    # absolute_url = F"{domain}{rel_link}?token={token}"
+    absolute_url_frontend = F"http://127.0.0.1:8080/auth/verify-email?token={token}"
 
     body = render_to_string(
         'email_verification.txt',
         context={
             'username': user.username,
-            'url': absolute_url,
+            'url': absolute_url_frontend,
             'wave': '\U0001F44B',
             'heart': '\U0001F499',
             'author': settings.DEVELOPER['LAST_NAME'],
@@ -62,18 +63,19 @@ def resend_email_verification(email):
     user = AppUser.objects.get(email=email)
     token = RefreshToken.for_user(user).access_token
 
-    domain = Site.objects.get_current().domain
-    rel_link = reverse(
-        "creators_verify_email",
-        kwargs={'version': settings.REST_FRAMEWORK['DEFAULT_VERSION']}
-    )
-    absolute_url = F"{domain}{rel_link}?token={token}"
+    # domain = Site.objects.get_current().domain
+    # rel_link = reverse(
+    #     "creators_verify_email",
+    #     kwargs={'version': settings.REST_FRAMEWORK['DEFAULT_VERSION']}
+    # )
+    # absolute_url = F"{domain}{rel_link}?token={token}"
+    absolute_url_frontend = F"http://127.0.0.1:8080/auth/verify-email?token={token}"
 
     body = render_to_string(
         'resend_email_verification.txt',
         context={
             'username': user.username,
-            'url': absolute_url,
+            'url': absolute_url_frontend,
             'wave': '\U0001F44B',
             'heart': '\U0001F499',
             'author': settings.DEVELOPER['LAST_NAME'],

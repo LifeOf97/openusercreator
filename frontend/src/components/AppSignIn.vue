@@ -41,6 +41,11 @@ const isError = computed(() => {
 onMounted(() => {
     username.value = localStorage.getItem("remember_me")
     rememberMe.value = localStorage.getItem("remember_me") ? true:false
+
+    // get social login urls
+    authStore.getGithubUrl()
+    authStore.getTwitterUrl()
+    authStore.getGoogleUrl()
 })
 </script>
         
@@ -110,18 +115,18 @@ onMounted(() => {
                 </div>
 
                 <div class="relative flex items-center gap-4">
-                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'github'}}" @click="authStore.setSocial('github')"
+                    <a :href="authStore.socialGithub.url" @click="authStore.setSocial('github')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconGithub class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'twitter'}}" @click="authStore.setSocial('twitter')"
+                    </a>
+                    <a :href="authStore.socialTwitter.url" @click="authStore.setSocial('twitter')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconTwitter class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
-                    <RouterLink :to="{name: 'signupsocial', params: {provider: 'google'}}" @click="authStore.setSocial('google')"
+                    </a>
+                    <a :href="authStore.socialGoogle.url" @click="authStore.setSocial('google')"
                         class="w-full flex items-center justify-center p-2 rounded bg-transparent border border-gray-300 group transition-all duration-300 cursor-pointer hover:bg-gray-900">
                         <IconGoogle class="w-7 h-7 fill-gray-400 transition-all duration-300 group-hover:fill-white" />
-                    </RouterLink>
+                    </a>
 
                     <!-- shows up when form is submitting to disable social links -->
                     <div v-show="authStore.signIn.loading" class="absolute top-0 w-full h-full bg-transparent cursor-not-allowed"></div>

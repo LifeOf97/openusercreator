@@ -31,7 +31,8 @@ def google_authenticate_user(state: str, code: str):
         state=state
     )
 
-    flow.redirect_uri = "http://127.0.0.1:8000/api/v1/auth/google/get/user/"
+    flow.redirect_uri = "http://127.0.0.1:8080/auth/signup/social/google"
+    # flow.redirect_uri = "http://127.0.0.1:8000/api/v1/auth/google/get/user/"
     flow.fetch_token(code=code)
 
     session = flow.authorized_session()

@@ -13,7 +13,7 @@ urlpatterns = [
     path('api/', include('creator.urls')),
     path('api/', include('social_auth.urls')),
     path(
-        "api/auth/help/password/reset/",
+        "api/auth/help/forgot/password/",
         dj_rest.PasswordResetView.as_view(),
         name="password_reset"
     ),

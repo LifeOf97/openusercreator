@@ -44,10 +44,10 @@ const isError = computed(() => {
 })
 
 // hooks
-onMounted(() => {    
+onMounted(() => {
     authStore.getGithubUrl()
     authStore.getTwitterUrl()
-    // authStore.getGoogleUrl()
+    authStore.getGoogleUrl()
 })
 </script>
 

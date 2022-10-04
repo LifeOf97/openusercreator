@@ -6,6 +6,7 @@ import App from "./App.vue";
 import router from "./router";
 import axios from "axios";
 import VueTippy from "vue-tippy";
+import FlagIcon from "vue-flag-icon";
 
 import "./assets/styles/index.css";
 import "tippy.js/dist/tippy.css";
@@ -38,5 +39,6 @@ app.use(
 
 app.use(createPinia());
 app.use(router);
+app.use(FlagIcon);
 
 app.mount("#app");

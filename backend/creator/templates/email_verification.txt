@@ -11,5 +11,5 @@ This link will expire in 3 minutes.
 If you did not make this request, please disregard this email.
 
 Love {{ heart|safe }}, {{ author|safe }}
-Creator Openuserdata API
+Creator Openuserdata REST API
 (alias: {{ alias|safe }})

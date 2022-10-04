@@ -66,6 +66,7 @@ const createApp = async () => {
                     type="button"
                     label="Create App"
                     :loading="appStore.createApp.loading"
+                    loadingText="Creating..."
                     class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </div>
 

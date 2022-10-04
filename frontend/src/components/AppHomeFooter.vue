@@ -26,8 +26,16 @@ const year = computed(() => {
 
             <div class="flex items-center gap-2">
                 <p class="text-gray-900 font-semibold">API Docs:</p>
-                <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-500 font-light hover:text-blue-600">Swagger,</a>
-                <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-500 font-light hover:text-blue-600">REDOC</a>
+                <a 
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-blue-500 font-light hover:text-blue-600">Swagger,</a>
+                <a 
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-blue-500 font-light hover:text-blue-600">REDOC</a>
             </div>
         </div>
 
@@ -36,6 +44,7 @@ const year = computed(() => {
                 <p>Developed by the</p>
                 <a href="https://twitter.com/realestkma" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-600">RealestKMA</a>
                 <p>from the 234</p>
+                <flag iso="ng" />
             </div>
             <div class="flex items-center justify-center gap-4 md:justify-start">
                 <a href="http://twitter.com/realestkma" target="_blank" rel="noopener noreferrer">
