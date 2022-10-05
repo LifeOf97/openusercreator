@@ -1,9 +1,45 @@
 <script setup>
 /* eslint-disable */
 import { RouterLink } from 'vue-router';
+import { onMounted, ref } from 'vue';
 import IconLockClosedSolid from './icons/IconLockClosedSolid.vue';
 import IconKeySolid from './icons/IconKeySolid.vue';
 import IconLinkSolid from './icons/IconLinkSolid.vue';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+
+// register gsap plugins
+gsap.registerPlugin(ScrollTrigger)
+
+// refs
+const authTextOne = ref(null)
+const authTextTwo = ref(null)
+const authIconOne = ref(null)
+const authIconTwo = ref(null)
+
+// methods
+const animate = () => {
+    gsap.from(
+        [authIconOne.value, authIconTwo.value],
+        {
+            scrollTrigger: {trigger: "#authentication", start: "200px bottom"},
+            duration: 1.5, scale: 0.7, y: 50
+        }
+    )
+    gsap.from(
+        [authTextOne.value, authTextTwo.value],
+        {
+            scrollTrigger: {trigger: "#authentication", start: "200px bottom"},
+            duration: 1.5, y: 50, opacity: 0, stagger: 0.3
+        }
+    )
+
+}
+
+// hooks
+onMounted(() => {
+    animate()
+})
 </script>
 
 <template>
@@ -21,7 +57,7 @@ import IconLinkSolid from './icons/IconLinkSolid.vue';
             <!-- crud text and table -->
             <div class="flex-1 flex flex-col gap-12 order-1 md:order-2">
                 
-                <div class="w-full flex flex-col gap-3">
+                <div ref="authTextOne" class="w-full flex flex-col gap-3">
                     <h3 class="text-xl font-semibold text-gray-900 md:text-3xl">Token Based Authentication</h3>
                     <p class="text-xs text-gray-600 font-light md:text-sm">
                         Open user data uses JWT (JSON WEB TOKEN) for it's token based authentication.
@@ -32,7 +68,7 @@ import IconLinkSolid from './icons/IconLinkSolid.vue';
                     </p>
                 </div>
 
-                <div class="w-full flex flex-col gap-3">
+                <div ref="authTextTwo" class="w-full flex flex-col gap-3">
                     <h3 class="text-xl font-semibold text-gray-900 md:text-3xl">Session Based Authentication</h3>
                     <p class="text-xs text-gray-600 font-light md:text-sm">
                         Session based authentication keeps authentication details in the form of cookies.
@@ -46,10 +82,10 @@ import IconLinkSolid from './icons/IconLinkSolid.vue';
             <!-- crud text and table -->
 
             <div class="flex-1 grid grid-cols-2 items-start content-center order-2 md:order-1">
-                <div class="justify-self-start bg-yellow-400 p-5 rounded-md col-start-2">
+                <div ref="authIconOne" class="justify-self-start bg-yellow-400 p-5 rounded-md col-start-2">
                     <IconLockClosedSolid class="w-20 h-20 fill-white md:w-32 md:h-32 lg:w-40 lg:h-40" />
                 </div>
-                <div class="justify-self-end bg-gray-600 p-5 rounded-md">
+                <div ref="authIconTwo" class="justify-self-end bg-gray-600 p-5 rounded-md">
                     <IconKeySolid class="w-20 h-20 fill-white md:w-32 md:h-32 lg:w-40 lg:h-40" />
                 </div>
             </div>

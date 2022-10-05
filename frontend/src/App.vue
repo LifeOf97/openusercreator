@@ -5,7 +5,6 @@ import { useAuthStore } from "./stores/auth";
 import AppModalState from "./components/AppModalState.vue";
 import AppButton from "./components/AppButton.vue";
 import IconLogoutOutline from "./components/icons/IconLogoutOutline.vue";
-import { onMounted } from "vue";
 import VueCookies from "vue-cookies";
 import AppNotificationState from "./components/AppNotificationState.vue";
 import IconCheckCircleSolid from "./components/icons/IconCheckCircleSolid.vue";

@@ -10,7 +10,7 @@ import AppHomeFooter from '../components/AppHomeFooter.vue';
 </script>
 
 <template>
-  <main class="w-full h-full bg-white font-Poppins">
+  <main class="relative w-full h-full bg-white font-Poppins overflow-hidden">
 
     <header>
       <AppHomeHero />

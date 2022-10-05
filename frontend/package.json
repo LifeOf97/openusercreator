@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^9.3.0",
+    "gsap": "^3.11.3",
     "pinia": "^2.0.21",
     "vue": "^3.2.38",
     "vue-cookies": "^1.8.1",
