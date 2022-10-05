@@ -79,7 +79,7 @@ const animate = () => {
         ".crudExplain",
         {
             scrollTrigger: "#crudExplain",
-            duration: 1, y: 50, x: 10, opacity: 0, stagger: 0.2
+            duration: 1, y: 50, x: 50, opacity: 0, stagger: 0.2
         }
     )
 }

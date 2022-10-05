@@ -1,8 +1,19 @@
 <script setup>
 /* eslint-disable */
+import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import IconLinkSolid from './icons/IconLinkSolid.vue';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
 
+// register gsap plugins
+gsap.registerPlugin(ScrollTrigger)
+
+// refs
+const reqHeaderOne = ref(null)
+const reqHeaderTwo = ref(null)
+
+// data
 const data = {
     endpointOne: [
         {id: 1, method: "GET", endpoint: "/users/"},
@@ -25,6 +36,29 @@ const data = {
         {id: 5, method: "POST", endpoint: "/auth/logout/session/"},
     ],
 }
+
+// methods
+const animate = () => {
+    gsap.from(
+        [reqHeaderOne.value],
+        {
+            scrollTrigger: {trigger: reqHeaderOne.value, start: "200px bottom"},
+            duration: 1.5, y: 50, opacity: 0, stagger: 0.3
+        }
+    )
+    gsap.from(
+        [reqHeaderTwo.value],
+        {
+            scrollTrigger: {trigger: reqHeaderTwo.value, start: "200px bottom"},
+            duration: 1.5, y: 50, opacity: 0, stagger: 0.3
+        }
+    )
+}
+
+// hooks
+onMounted(() => {
+    animate()
+})
 </script>
 
 <template>
@@ -38,7 +72,7 @@ const data = {
         <!-- this tag is only visible on small screens -->
 
         <!-- start of resoirces -->
-        <div class="flex flex-col gap-2">
+        <div ref="reqHeaderOne" class="flex flex-col gap-2">
             <h3 class="text-xl text-gray-900 font-semibold md:text-3xl">Resources</h3>
             <p class="text-xs text-gray-600 font-light md:text-base">Open user data provides only a  user resource for now, but more resources will be added in the future.</p>
             
@@ -56,7 +90,7 @@ const data = {
         </div>
         <!-- end of resoirces -->
 
-        <div class="mt-10 flex flex-col gap-2">
+        <div ref="reqHeaderTwo" class="mt-10 flex flex-col gap-2">
             <h3 class="text-xl text-gray-900 font-semibold md:text-3xl">Endpoints</h3>
             
             <!-- endpoint one -->

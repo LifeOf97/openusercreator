@@ -1,21 +1,53 @@
 <script setup>
 /* eslint-disable */
-
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import IconUserCircleSolid from './icons/IconUserCircleSolid.vue';
 import IconTwitter from './icons/IconTwitter.vue';
 import IconGithub from './icons/IconGithub.vue';
 import IconLinkedin from './icons/IconLinkedin.vue';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+
+// register gsap plugins
+gsap.registerPlugin(ScrollTrigger)
+
+
+// refs
+const footerOne = ref(null)
+const footerTwo = ref(null)
 
 const year = computed(() => {
     return new Date().getFullYear();
+})
+
+// methods
+const animate = () => {
+    gsap.from(
+        [footerOne.value],
+        {
+            scrollTrigger: {trigger: footerOne.value},
+            duration: 1, y: 30, opacity: 0, stagger: 0.3
+        }
+    )
+    gsap.from(
+        [footerTwo.value],
+        {
+            scrollTrigger: {trigger: footerTwo.value},
+            duration: 1, y: 30, opacity: 0, stagger: 0.3
+        }
+    )
+}
+
+// hooks
+onMounted(() => {
+    animate()
 })
 </script>
 
 <template>
     <main class="w-11/12 mx-auto flex flex-col gap-5 items-center justify-between text-xs text-gray-400 py-10 md:text-sm md:flex-row">
 
-        <div class="flex flex-col gap-2 md:gap-4">
+        <div ref="footerOne" class="flex flex-col gap-2 md:gap-4">
             <div class="flex items-center gap-2">
                 <p>&copy; {{year}}</p>
                 <div class="flex items-center">
@@ -39,7 +71,7 @@ const year = computed(() => {
             </div>
         </div>
 
-        <div class="flex flex-col gap-2 md:gap-4">
+        <div ref="footerTwo" class="flex flex-col gap-2 md:gap-4">
             <div class="flex items-center gap-2">
                 <p>Developed by the</p>
                 <a href="https://twitter.com/realestkma" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-600">RealestKMA</a>

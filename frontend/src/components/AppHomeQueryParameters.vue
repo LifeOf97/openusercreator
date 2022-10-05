@@ -1,7 +1,18 @@
 <script setup>
 /* eslint-disable */
+import { ref, onMounted} from 'vue';
 import { RouterLink } from 'vue-router';
 import IconLinkSolid from './icons/IconLinkSolid.vue';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+
+// register gsap plugins
+gsap.registerPlugin(ScrollTrigger)
+
+// refs
+const qryHeaderOne = ref(null)
+const qryHeaderTwo = ref(null)
+const qryHeaderThree = ref(null)
 
 // data
 const data = {
@@ -41,6 +52,36 @@ const data = {
         },
     ]
 }
+
+// methods
+const animate = () => {
+    gsap.from(
+        [qryHeaderOne.value],
+        {
+            scrollTrigger: {trigger: qryHeaderOne.value, start: "200px bottom"},
+            duration: 1.5, y: 50, opacity: 0, stagger: 0.3
+        }
+    )
+    gsap.from(
+        [qryHeaderTwo.value],
+        {
+            scrollTrigger: {trigger: qryHeaderTwo.value, start: "200px bottom"},
+            duration: 1.5, y: 50, opacity: 0, stagger: 0.3
+        }
+    )
+    gsap.from(
+        [qryHeaderThree.value],
+        {
+            scrollTrigger: {trigger: qryHeaderThree.value, start: "200px bottom"},
+            duration: 1.5, y: 50, opacity: 0, stagger: 0.3
+        }
+    )
+}
+
+// hooks
+onMounted(() => {
+    animate()
+})
 </script>
 
 <template>
@@ -55,14 +96,14 @@ const data = {
 
         <div class="flex flex-col gap-10">
 
-            <div class="flex flex-col gap-2">
+            <div ref="qryHeaderOne" class="flex flex-col gap-2">
                 <h3 class="text-xl text-gray-900 font-semibold md:text-3xl">URL Parameters</h3>
                 <p class="text-xs text-gray-600 font-light md:text-base">
                     Open user data provides the following features that requires url query params.
                 </p>
             </div>
 
-            <div class="flex flex-col gap-2">
+            <div ref="qryHeaderTwo" class="flex flex-col gap-2">
                 <h4 class="text-gray-600 text-lg font-medium md:text-xl">Pagination</h4>
                 <p class="text-xs text-gray-600 font-light md:text-sm">
                     Open user data includes support for customizable pagination styles. With these,
@@ -82,7 +123,7 @@ const data = {
                 </p>
             </div>
 
-            <div class="flex flex-col gap-2">
+            <div ref="qryHeaderThree" class="flex flex-col gap-2">
                 <h4 class="text-gray-600 text-lg font-medium md:text-2xl">Filtering</h4>
                 <p class="text-xs text-gray-600 font-light md:text-sm">
                     Usually the returned data from any successful request to the backend is the whole object in the database.
