@@ -14,7 +14,9 @@ const router = createRouter({
       name: "home",
       component: HomeView,
       meta: {
-        title: "Welcome | Open User Data"
+        title: "Welcome | Open User Data",
+        transition: 1,
+        transitionName: "",
       }
     },
     {
@@ -28,26 +30,46 @@ const router = createRouter({
           path: "",
           name: "dashboarduser",
           component: () =>  import("../components/AppDashboard.vue"),
+          meta: {
+            transition: 2,
+            transitionName: "",
+          }
         },
         {
           path: "settings",
           name: "dashboardusersettings",
           component: () =>  import("../components/AppDashboardSettings.vue"),
+          meta: {
+            transition: 3,
+            transitionName: "",
+          }
         },
         {
           path: "apps/:appName",
           name: "dashboardapp",
           component: () =>  import("../components/AppDashboardApp.vue"),
+          meta: {
+            transition: 4,
+            transitionName: "",
+          }
         },
         {
           path: "apps/:appName/settings",
           name: "dashboardappsettings",
           component: () =>  import("../components/AppDashboardAppSettings.vue"),
+          meta: {
+            transition: 5,
+            transitionName: "",
+          }
         },
         {
           path: "apps/create",
           name: "dashboardappcreate",
           component: () =>  import("../components/AppDashboardAppCreate.vue"),
+          meta: {
+            transition: 6,
+            transitionName: "",
+          }
         },
       ]
     },
@@ -61,36 +83,60 @@ const router = createRouter({
           path: "signup",
           name: "signup",
           component: () => import("../components/AppSignUp.vue"),
-          meta: {title: "Sign up | Open User Data"}
+          meta: {
+            title: "Sign up | Open User Data",
+            transition: 2,
+            transitionName: "",
+          }
         },
         {
           path: "signup/social/:provider",
           name: "signupsocial",
           component: () => import("../components/AppSignUpSocial.vue"),
+          meta: {
+            transition: 3,
+            transitionName: "",
+          }
         },
         {
           path: "signin",
           name: "signin",
           component: () => import("../components/AppSignIn.vue"),
-          meta: {title: "Sign In | Open User Data"}
+          meta: {
+            title: "Sign In | Open User Data",
+            transition: 4,
+            transitionName: "",
+          }
         },
         {
           path: "help/forgot-password",
           name: "forgotpassword",
           component: () => import("../components/AppForgotPassword.vue"),
-          meta: {title: 'Forgot password | Open User Data'}
+          meta: {
+            title: 'Forgot password | Open User Data',
+            transition: 5,
+            transitionName: "",
+          }
         },
         {
           path: "help/success/reset-password/:uid/:token",
           name: "resetpassword",
           component: () => import("../components/AppResetPassword.vue"),
-          meta: {title: 'Reset password | Open User Data'}
+          meta: {
+            title: 'Reset password | Open User Data',
+            transition: 6,
+            transitionName: "",
+          }
         },
         {
           path: "verify-email",
           name: "verifyemail",
           component: () => import("../components/AppVerifyEmail.vue"),
-          meta: {title: 'Verify Email | Open User Data'}
+          meta: {
+            title: 'Verify Email | Open User Data',
+            transition: 7,
+            transitionName: "",
+          }
         },
       ]
     },
@@ -98,7 +144,11 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import("../components/AppNotFound.vue"),
-      meta: {title: `404 | Page not found | Open User Data`}
+      meta: {
+        title: '404 | Page not found | Open User Data',
+        transition: 2,
+        transitionName: "",
+      }
     },
   ],
   scrollBehavior(to, from, savedPosition) {
@@ -108,7 +158,13 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
+  // set page title
   document.title = to.meta.title
+
+  // set the transition name of the incoming route, bases on transition id
+  to.meta.transitionName = to.meta.transition > from.meta.transition ? "slide-left":"slide-right";
+  
+  // stores
   const authStore = useAuthStore()
 
   if (to.name == 'home' && JSON.parse(localStorage.getItem('is_auth'))) {
@@ -118,5 +174,6 @@ router.beforeEach(async (to, from) => {
     return {name: 'signin', query: {redirect: to.path}}
   }
 })
+
 
 export default router;

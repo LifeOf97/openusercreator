@@ -55,7 +55,7 @@ export const useAuthStore = defineStore("auth", () => {
         setTimeout(() => {
           notify.open = false
           notify.detail = notify.state = null
-        }, 10000);
+        }, 5000);
       })
       .catch((err) => {
         if (err.response) {

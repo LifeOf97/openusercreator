@@ -27,7 +27,8 @@ import IconLinkSolid from './icons/IconLinkSolid.vue';
                         Open user data uses JWT (JSON WEB TOKEN) for it's token based authentication.
                         Once you make a POST request with a valid username/email & password to the login
                         via token endpoint, a refresh and access token will be sent back as response.
-                        This access token should be passed in the Authorization request header as a Bearer token:
+                        This access token should be passed in the Authorization request header as a Bearer token
+                        for further request requiring authentication.
                     </p>
                 </div>
 

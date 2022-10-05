@@ -13,24 +13,24 @@ const data = {
             id: 1,
             title: "Create",
             detail: `
-                With open user data, creators can create new user accounts under
-                an application through your creator’s dashboard or creator API endpoint.
+                With open user data, creators can create new users under
+                an app via the app uri API endpoint.
             `
         },
         {
             id: 2,
             title: "Read",
             detail: `
-                You can retrieve a particular user data by their username, a refined list of
-                users in a paginated form and also query for certain users by related first
-                name, last name, other name and date of birth.
+                You can retrieve a particular user by their username, and also a refined list of
+                users in a paginated form, you can also query for users matching your query param, like first
+                name, last name, other name and more.
             `
         },
         {
             id: 3,
             title: "Update",
             detail: `
-                User data can be updated via it’s creator endpoint. To update a user data the
+                Users can be updated via it’s app endpoint. To update a user data the
                 user has to be authenticated either via token authentication or session authentication.
             `
         },
@@ -40,7 +40,7 @@ const data = {
             detail: `
                 You can also delete a user permanently from the system through it’s creator endoint.
                 Note the only way to delete a  user is to make an authenticated request to the delete
-                usrer creators endpoint.
+                user endpoint.
             `
         },
     ],
@@ -66,7 +66,7 @@ const data = {
                     <h3 class="text-xl font-semibold text-gray-900 md:text-3xl">Create, Read, Update & Delete</h3>
                     <p class="text-xs text-gray-600 font-light md:text-sm">
                         Open user data provides full CRUD operations over REST API.
-                        You can create new users, retrieve one or more user data,
+                        You can create new users, retrieve one or more users,
                         update the data of a user instance and also delete users
                         permanently from the systtem.
                     </p>

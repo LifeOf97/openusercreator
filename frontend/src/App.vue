@@ -23,8 +23,15 @@ const getUserProfile = () => {
 </script>
 
 <template>
-  <main>
-    <RouterView />
+  <main class="overflow-hidden">
+
+    <!-- router view -->
+    <RouterView v-slot="{Component, route}">
+      <Transition :name="route.meta.transitionName" mode="out-in">
+        <Component :is="Component" :key="route.path" />
+      </Transition>
+    </RouterView>
+    <!-- router view -->
 
     <!-- notification -->
     <transition
@@ -88,7 +95,9 @@ const getUserProfile = () => {
 .slide-right-enter-active,
 .slide-right-leave-active,
 .slide-left-enter-active,
-.slide-left-leave-active {
+.slide-left-leave-active,
+.scale-enter-active,
+.scale-leave-active {
   @apply transition-all duration-200
 }
 
@@ -98,5 +107,10 @@ const getUserProfile = () => {
 
 .slide-left-enter-from {
   @apply translate-x-20 opacity-0
+}
+
+.scale-enter-from,
+.scale-leave-to {
+  @apply scale-0
 }
 </style>

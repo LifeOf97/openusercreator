@@ -12,7 +12,7 @@ const data = {
             detail: `
                 You can filter based on the following parameters, username, first_name, last_name,
                 other_name, gender, dob, dob__year, dob__year__gt and dob__year__lt. And they can
-                also be appended to each other using the & ampersand sign. Note, values are case insensitive.
+                also be chained to each other using the & ampersand sign. Note, values are case insensitive.
             `,
             method: "GET",
             endpoint: "/users?first_name=john&last_name=doe&dob__year_gt=2000"
@@ -22,8 +22,8 @@ const data = {
             title: "Data Searching",
             detail: `
                 You can search for a specific data passing any of this values to the search parameter. username,
-                first_name, last_name and other_name this values should be an exact match of the user you are
-                searching for. Note, values are case insensitive. Open user data uses the keyword q for searching.
+                first_name, last_name and other_name. This values should be an exact match of the user you are
+                searching for. Note, values are case insensitive. Open user data uses the keyword "q" for searching.
             `,
             method: "GET",
             endpoint: "/users?q=john"

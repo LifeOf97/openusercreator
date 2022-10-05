@@ -12,10 +12,10 @@ const data = {
         {id: 1, method: "GET", endpoint: "/:cid/:app_name/users/"},
         {id: 2, method: "GET", endpoint: "/:cid/:app_name/users/:username/"},
         {id: 3, method: "POST", endpoint: "/:cid/:app_name/users/app/add/"},
-        {id: 4, method: "GET", endpoint: "/:cid/:app_name/users/app/i/"},
-        {id: 5, method: "PUT", endpoint: "/:cid/:app_name/users/app/i/update/"},
-        {id: 6, method: "PATCH", endpoint: "/:cid/:app_name/users/app/i/update/"},
-        {id: 7, method: "DELETE", endpoint: "/:cid/:app_name/users/app/i/delete/"},
+        {id: 4, method: "GET", endpoint: "/:cid/:app_name/users/app/me/"},
+        {id: 5, method: "PUT", endpoint: "/:cid/:app_name/users/app/me/update/"},
+        {id: 6, method: "PATCH", endpoint: "/:cid/:app_name/users/app/me/update/"},
+        {id: 7, method: "DELETE", endpoint: "/:cid/:app_name/users/app/me/delete/"},
     ],
     endpointThree: [
         {id: 1, method: "POST", endpoint: "/auth/login/token/"},
@@ -50,7 +50,7 @@ const data = {
 
             <p class="text-xs text-gray-600 font-light md:text-base">
                 <b>NOTE:</b> A maximum of 50 users are returned by default, but you can however change this using the
-                <RouterLink to="#limitoffset" class="text-blue-500 hover:text-blue-600">limit/offset</RouterLink>
+                <RouterLink to="#QueryParameters" class="text-blue-500 hover:text-blue-600">limit/offset</RouterLink>
                 url query parameters to increase or decrease the number of users returned.
             </p>
         </div>
@@ -70,7 +70,7 @@ const data = {
             <!-- endpoint one -->
 
             <!-- endpoint two -->
-            <p class="py-2 text-xs text-gray-600 font-light md:text-base">The following endpoints requires a creator account.</p>
+            <p class="py-2 text-xs text-gray-600 font-light md:text-base">The following endpoints requires a creators account.</p>
             <ul class="pl-5 my-2 flex flex-col gap-3 list-inside text-xs text-gray-600 md:text-base">
                 <li v-for="data in data.endpointTwo" :key="data.id" class="flex items-center gap-2">
                     <span class="font-bold">{{data.method}}</span>
@@ -86,11 +86,11 @@ const data = {
                 <a href="#" class="text-blue-500 hover:text-blue-600 visited:text-yellow-500">/users/</a>
                 endpoint in read only mode by both creators and non creators. Requests to creators endpoint do not require application authentication,
                 all you need is to query one of the aforementioned endpoints passing in your creator’s id (cid) and
-                application name (app_name). This details can be found on your creators dashboard.
+                application name (app_name). This details can be found on the specific app details dashboard.
             </p>
 
             <!-- endpoint three -->
-            <p class="py-2 text-xs text-gray-600 font-light md:text-base">The following endpoints requires a creator account.</p>
+            <p class="py-2 text-xs text-gray-600 font-light md:text-base">The following endpoints are for authenticating a user.</p>
             <ul class="pl-5 my-2 flex flex-col gap-3 list-inside text-xs text-gray-600 md:text-base">
                 <li v-for="data in data.endpointThree" :key="data.id" class="flex items-center gap-2">
                     <p class="font-bold">{{data.method}}</p>
