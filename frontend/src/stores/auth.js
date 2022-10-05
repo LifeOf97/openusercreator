@@ -346,6 +346,75 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   ////////////////////////////////////////////
+  // forgot password functionality
+  ////////////////////////////////////////////
+  const forgotPassword = reactive({loading: false, success: false, error: null})
+
+  async function submitForgotPassword(data) {
+    forgotPassword.loading = true
+    forgotPassword.error = null
+
+    await axios.post("api/auth/help/forgot/password/", data)
+      .then((resp) => {
+        forgotPassword.loading = false
+        forgotPassword.success = true
+        forgotPassword.error = null
+
+        setTimeout(() => {
+          forgotPassword.success = false
+          router.push({name: 'home'})
+        }, 5000);
+      })
+      .catch((err) => {
+        forgotPassword.loading = false
+        forgotPassword.success = false
+        forgotPassword.error = "An error occured."
+      })
+  }
+
+  ////////////////////////////////////////////
+  // Reset password functionality
+  ////////////////////////////////////////////
+  const resetPassword = reactive({loading: false, error: null})
+
+  async function submitResetPassword(uid, token, data) {
+    resetPassword.loading = true
+    resetPassword.success = resetPassword.error = null
+
+    await axios.post(`api/auth/help/password/reset/confirm/${uid}/${token}/`, data)
+      .then((resp) => {
+        resetPassword.loading = false
+        resetPassword.error = null
+
+        // update notify
+        notify.open = true
+        notify.detail = resp.data['detail']
+        notify.state = "good"
+    
+        setTimeout(() => {
+          notify.open = false
+          notify.detail = notify.state = null
+        }, 10000);
+
+        // navigate to sign in page
+        setTimeout(() => {
+          router.push({name: 'signin'})
+        }, 3000);
+      })
+      .catch((err) => {
+        resetPassword.loading = false
+        if (err.response) {
+          'uid' in err.response.data ? resetPassword.error = `uid : ${err.response.data['uid'][0]}`:''
+          'token' in err.response.data ? resetPassword.error = `Token expired, please request a new password reset link`:''
+          'new_password1' in err.response.data ? resetPassword.error = `${err.response.data['new_password1'][0]}`:''
+          'new_password2' in err.response.data ? resetPassword.error = `${err.response.data['new_password2'][0]}`:''
+        }
+        else resetPassword.error = "An error occured"
+      })
+  }
+
+
+  ////////////////////////////////////////////
   // Verify email functionality
   ////////////////////////////////////////////
   const verifyEmail = reactive({loading: false, data: null, error: null})
@@ -377,6 +446,7 @@ export const useAuthStore = defineStore("auth", () => {
     signOut, submitSignOut, notify, socialData, socialGithub,
     socialGoogle, socialTwitter, getGithubUrl, getUserDataViaSocialProvider,
     getGoogleUrl, getTwitterUrl, signUpSocial, submitSignUpSocial,
-    verifyEmail, submitVerifyEmail
+    verifyEmail, submitVerifyEmail, forgotPassword, submitForgotPassword,
+    resetPassword, submitResetPassword
   };
 });

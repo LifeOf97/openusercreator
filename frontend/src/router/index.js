@@ -40,14 +40,14 @@ const router = createRouter({
           component: () =>  import("../components/AppDashboardApp.vue"),
         },
         {
-          path: "apps/create",
-          name: "dashboardappcreate",
-          component: () =>  import("../components/AppDashboardAppCreate.vue"),
-        },
-        {
           path: "apps/:appName/settings",
           name: "dashboardappsettings",
           component: () =>  import("../components/AppDashboardAppSettings.vue"),
+        },
+        {
+          path: "apps/create",
+          name: "dashboardappcreate",
+          component: () =>  import("../components/AppDashboardAppCreate.vue"),
         },
       ]
     },
@@ -81,7 +81,7 @@ const router = createRouter({
           meta: {title: 'Forgot password | Open User Data'}
         },
         {
-          path: "help/success/reset-password",
+          path: "help/success/reset-password/:uid/:token",
           name: "resetpassword",
           component: () => import("../components/AppResetPassword.vue"),
           meta: {title: 'Reset password | Open User Data'}

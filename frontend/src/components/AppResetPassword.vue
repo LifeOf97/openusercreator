@@ -1,21 +1,43 @@
 <script setup>
 /* eslint-disable */
 import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
-import AppInputField from './AppInputField.vue';
 import AppButton from './AppButton.vue';
 import IconExclamationTraingleOutline from './icons/IconExclamationTraingleOutline.vue';
-import IconEnvelopeOutline from './icons/IconEnvelopeOutline.vue';
 import AppPasswordField from './AppPasswordField.vue';
+
+// route && router
+const route = useRoute()
 
 // refs
 const password1 = ref("")
 const password2 = ref("")
-const loading = ref(false)
+const error = ref(null)
 
 // stores
-const signInStore = useAuthStore()
+const authStore = useAuthStore()
+
+// methods
+const submit = () => {
+    error.value = null
+
+    const data = {
+        uid: route.params['uid'],
+        token: route.params['token'],
+        new_password1: password1.value,
+        new_password2: password2.value
+    }
+
+    if (password2.value === password1.value) {
+        authStore.submitResetPassword(
+            route.params['uid'],
+            route.params['token'],
+            data
+        )
+    }
+    else error.value = "Password fields does not match"
+}
 </script>
                 
 <template>
@@ -35,10 +57,14 @@ const signInStore = useAuthStore()
             </div>
 
             <!-- form errors -->
-            <div class="hidden mt-7 w-full list-inside list-disc">
-                <span class="flex items-center gap-2">
+            <div  v-if="error || authStore.resetPassword.error" class="mt-7 w-full flex flex-col gap-1">
+                <span v-if="error" class="flex items-center gap-2">
                     <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
-                    <p class="text-xs text-red-500 font-normal md:text-sm">Error details</p>
+                    <p class="text-xs text-red-500 font-normal md:text-sm">{{error}}</p>
+                </span>
+                <span v-if="authStore.resetPassword.error" class="flex items-center gap-2">
+                    <IconExclamationTraingleOutline class="w-4 h-4 stroke-red-500" />
+                    <p class="text-xs text-red-500 font-normal md:text-sm">{{authStore.resetPassword.error}}</p>
                 </span>
             </div>
             <!-- form errors -->
@@ -49,11 +75,15 @@ const signInStore = useAuthStore()
                 </p>
             </div>
 
-            <form @submit.prevent="loading = !loading" class="w-full flex flex-col gap-4 mb-5">
-                <AppPasswordField v-model="password1" label="Password" :disable="loading" class="bg-gray-50" />
-                <AppPasswordField v-model="password2" label="Confirm password" :disable="loading" class="bg-gray-50" />
+            <form @submit.prevent="submit()" class="w-full flex flex-col gap-4 mb-5">
+                <AppPasswordField v-model="password1" label="Password" :disable="authStore.resetPassword.loading" class="bg-gray-50" />
+                <AppPasswordField v-model="password2" label="Confirm password" :disable="authStore.resetPassword.loading" class="bg-gray-50" />
 
-                <AppButton label="Reset my password" type="submit" :loading="loading" loadingText="Reseting..."
+                <AppButton
+                    label="Save password"
+                    type="submit"
+                    :loading="authStore.resetPassword.loading"
+                    loadingText="Reseting..."
                     class="mt-2 text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </form>
 

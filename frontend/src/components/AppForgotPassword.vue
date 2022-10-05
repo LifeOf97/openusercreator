@@ -10,10 +10,9 @@ import IconEnvelopeOutline from './icons/IconEnvelopeOutline.vue';
 
 // refs
 const email = ref("")
-const loading = ref(false)
 
 // stores
-const signInStore = useAuthStore()
+const authStore = useAuthStore()
 </script>
             
 <template>
@@ -48,16 +47,42 @@ const signInStore = useAuthStore()
                 </p>
             </div>
 
-            <form @submit.prevent="loading = !loading" class="w-full flex flex-col gap-4 mb-5">
-                <AppInputField v-model="email" type="text" label="Email address" iconPos="left"
-                    :disable="loading" class="bg-gray-50">
+            <form @submit.prevent="authStore.submitForgotPassword({email: email})" class="w-full flex flex-col gap-4 mb-5">
+                <AppInputField
+                    v-model.lower="email"
+                    type="email"
+                    label="Email address"
+                    iconPos="left"
+                    :disable="authStore.forgotPassword.loading || authStore.forgotPassword.success"
+                    class="bg-gray-50">
                     <template #icon>
                         <IconEnvelopeOutline class="w-5 h-5 stroke-gray-400" />
                     </template>
                 </AppInputField>
-                <AppButton label="Send instruction" type="submit" :loading="loading" loadingText="Sending..."
+                <AppButton
+                    label="Send instruction"
+                    type="submit"
+                    :loading="authStore.forgotPassword.loading"
+                    loadingText="Sending..."
+                    :disabled="authStore.forgotPassword.loading || authStore.forgotPassword.success"
                     class="mt-2 text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </form>
+
+            <div v-if="authStore.forgotPassword.error || authStore.forgotPassword.success" class="w-full mt-2 flex flex-col gap-5">
+                <div class="w-full flex items-center">
+                    <div class="w-full border-b border-gray-300"></div>
+                    <span
+                        :class="authStore.forgotPassword.success ? 'text-green-500':'text-red-500'"
+                        class="w-full text-xs font-medium text-center sm:text-sm">Messsage</span>
+                    <div class="w-full border-b border-gray-300"></div>
+                </div>
+                <p v-if="authStore.forgotPassword.success" class="text-xs text-left text-gray-600 font-normal md:text-sm">
+                    If this email address belongs to an account, you will recieve an email to reset your email address.
+                </p>
+                <p v-else-if="authStore.forgotPassword.error" class="text-xs text-left text-gray-600 font-normal md:text-sm">
+                    {{authStore.forgotPassword.error}}
+                </p>
+            </div>
 
         </div>
         <!-- form inputs -->
