@@ -84,26 +84,6 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
 
-class CustomDjRestAuthLoginSerializer(dj_rest_auth_serializer.LoginSerializer):
-    """"
-    Custom dj_rest_auth Login_serializer class, subclassing the default LoginSerializer from dj_rest_auth
-    to get rid of the email field, because the username field can server both purposes.
-    """
-    username = serializers.CharField()
-    password = serializers.CharField()
-    email = None
-
-
-class CustomDjRestAuthJWTSerializer(dj_rest_auth_serializer.JWTSerializer):
-    """
-    Custom dj_rest_auth jwt_serializer class subclassing the default JWTSerializer to get rid of the user
-    instance data returned.
-    """
-    access_token = serializers.CharField()
-    refresh_token = serializers.CharField()
-    user = None
-
-
 class OpenuserappSerializer(serializers.ModelSerializer):
     creator = serializers.SlugRelatedField(slug_field='uid', queryset=AppUser.objects.all())
 
@@ -136,3 +116,11 @@ class OpenuserappSerializer(serializers.ModelSerializer):
 # This serializers are ment for the swagger documentation
 class VerifyEmailResponseSerializer(serializers.Serializer):
     detail = serializers.CharField()
+
+
+class CustomPasswordResetSerializer(dj_rest_auth_serializer.PasswordResetSerializer):
+    def get_email_options(self):
+        print("CUSTOM EMAIL:\n")
+        return {
+            'email_template_name': 'account/email/password_reset_key_message.txt'
+        }

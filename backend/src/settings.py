@@ -51,12 +51,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'drf_spectacular',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.github',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.twitter',
 ]
 
 SITE_ID = 1
@@ -178,7 +172,6 @@ AUTH_USER_MODEL = 'creator.AppUser'
 # Authentication classes settings
 AUTHENTICATION_BACKENDS = (
     'creator.authentications.AppUserBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
     # 'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -221,10 +214,14 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-
 # Django rest auth settigns
 OLD_PASSWORD_FIELD_ENABLED = True
 # LOGOUT_ON_PASSWORD_CHANGE = True
+
+# Dj rest auth settings
+REST_AUTH_SERIALIZERS = {
+    "PASSWORD_RESET_SERIALIZER": "creator.serializers.CustomPasswordResetSerializer"
+}
 
 # Simplejwt settings
 SIMPLE_JWT = {
