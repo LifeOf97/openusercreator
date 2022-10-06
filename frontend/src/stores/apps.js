@@ -60,6 +60,36 @@ export const useAppStore = defineStore("apps", () => {
       })
   }
 
+
+  //////////////////////////////////////////////
+  // Create a new apps
+  //////////////////////////////////////////////
+  const appUserCount = reactive({
+    loading: false,
+    data: JSON.parse(localStorage.getItem("app_user_count")),
+    error: null
+  })
+
+  async function getAppUserCount(url) {
+    appUserCount.loading = true
+    appUserCount.error = appUserCount.data = null
+
+    await axios.get(`${url}count/`)
+      .then((resp) => {
+        appUserCount.loading = false
+        appUserCount.error = null
+        appUserCount.data = resp.data['detail']
+
+        localStorage.setItem("app_user_count", JSON.stringify(resp.data['detail']))
+      })
+      .catch((err) => {
+        appUserCount.loading = false
+        appUserCount.data = null
+        appUserCount.error = "An error occured"
+      })
+  }
+
+
   //////////////////////////////////////////////
   // Create a new apps
   //////////////////////////////////////////////
@@ -263,7 +293,7 @@ export const useAppStore = defineStore("apps", () => {
     deleteApp, myApps, getMyApps, appInView,
     updateAppDetails, updateAppProfiles, updateAppPassword,
     submitUpdateApp, deleteApp, submitDeleteApp, createApp,
-    submitCreateApp
+    submitCreateApp, appUserCount, getAppUserCount
   };
 
 });

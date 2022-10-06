@@ -63,25 +63,19 @@ const disableDetailBtn = computed(() => {
     )
 })
 
-// const disableDetailBtn = computed(() => {
-//     return (
-//         (appName.value == "" && appDes.value == "") ||
-//         (appName.value == useSlugify(appStore.appInView['name']).data.value ||
-//         !appNameIsValid.value || !appNameIsAvailable.value
-//     )
-// })
-
 const disableProfilesBtn = computed(() => {
     return (
         appUserProfiles.value == "" ||
-        appUserProfiles.value == appStore.appInView['profiles']
+        appUserProfiles.value == appStore.appInView['profiles'] ||
+        appUserProfiles.value == appStore.appUserCount.data
     )
 })
 
 const disablePasswordBtn = computed(() => {
     return (
         appUserPassword.value == "" ||
-        appUserPassword.value == appStore.appInView['profile_password']
+        appUserPassword.value == appStore.appInView['profile_password'] ||
+        appUserPassword.value.length < 8
     )
 })
 
@@ -231,7 +225,7 @@ onMounted(() => {
                                     <td>
                                         <AppInputField
                                             v-model="appUserProfiles"
-                                            :label="appStore.appInView['profiles']"
+                                            :label="appStore.appUserCount.data || appStore.appInView['profiles']"
                                             type="number"
                                             :minLen="5"
                                             :maxLen="50" />

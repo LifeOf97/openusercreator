@@ -32,6 +32,9 @@ const formatDate = (value) => {
 onMounted(() => {
     // set title
     useTitle(`Apps | ${useSlugify(appStore.appInView['name']).data.value}`)
+
+    // get app users count
+    appStore.getAppUserCount(appStore.appInView['endpoint'])
 })
 </script>
     
@@ -112,7 +115,7 @@ onMounted(() => {
                                         <IconUserGroupOutline class="w-5 h-5 stroke-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App User Profiles:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['profiles']}}</td>
+                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{ appStore.appUserCount.data || appStore.appInView['profiles']}}</td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">

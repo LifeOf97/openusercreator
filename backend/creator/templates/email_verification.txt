@@ -12,4 +12,4 @@ If you did not make this request, please disregard this email.
 
 Love {{ heart|safe }}, {{ author|safe }}
 Creator Openuserdata REST API
-(alias: {{ alias|safe }})
+Alias: {{ alias|safe }}

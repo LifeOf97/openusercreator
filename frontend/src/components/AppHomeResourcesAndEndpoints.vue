@@ -20,13 +20,13 @@ const data = {
         {id: 2, method: "GET", endpoint: "/users/:username/"}
     ],
     endpointTwo: [
-        {id: 1, method: "GET", endpoint: "/:cid/:app_name/users/"},
-        {id: 2, method: "GET", endpoint: "/:cid/:app_name/users/:username/"},
-        {id: 3, method: "POST", endpoint: "/:cid/:app_name/users/app/add/"},
-        {id: 4, method: "GET", endpoint: "/:cid/:app_name/users/app/me/"},
-        {id: 5, method: "PUT", endpoint: "/:cid/:app_name/users/app/me/update/"},
-        {id: 6, method: "PATCH", endpoint: "/:cid/:app_name/users/app/me/update/"},
-        {id: 7, method: "DELETE", endpoint: "/:cid/:app_name/users/app/me/delete/"},
+        {id: 1, method: "GET", endpoint: "/:cid/:app_name/app/users/"},
+        {id: 2, method: "GET", endpoint: "/:cid/:app_name/app/users/:username/"},
+        {id: 3, method: "POST", endpoint: "/:cid/:app_name/app/users/new/"},
+        {id: 4, method: "GET", endpoint: "/:cid/:app_name/app/users/me/"},
+        {id: 5, method: "PUT", endpoint: "/:cid/:app_name/app/users/me/update/"},
+        {id: 6, method: "PATCH", endpoint: "/:cid/:app_name/app/users/me/update/"},
+        {id: 7, method: "DELETE", endpoint: "/:cid/:app_name/app/users/me/delete/"},
     ],
     endpointThree: [
         {id: 1, method: "POST", endpoint: "/auth/login/token/"},
