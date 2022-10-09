@@ -66,7 +66,6 @@ const disableDetailBtn = computed(() => {
 const disableProfilesBtn = computed(() => {
     return (
         appUserProfiles.value == "" ||
-        appUserProfiles.value == appStore.appInView['profiles'] ||
         appUserProfiles.value == appStore.appUserCount.data
     )
 })

@@ -1,5 +1,5 @@
-from datetime import timedelta
 from dotenv import load_dotenv
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -17,7 +17,11 @@ DEVELOPER = {
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # load env file
-load_dotenv(dotenv_path=F"{BASE_DIR}/.env")
+if os.environ.get("ENVIRONMENT") == 'docker':
+    ...
+else:
+    load_dotenv(dotenv_path=F"{BASE_DIR}/.env.dev")
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -26,7 +30,7 @@ load_dotenv(dotenv_path=F"{BASE_DIR}/.env")
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", False)
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost',  '192.168.43.208']
 
@@ -95,29 +99,16 @@ WSGI_APPLICATION = 'src.wsgi.application'
 
 # in development and production
 
-# if in github actions
-if os.environ.get('GITHUB_WORKFLOW'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'github_actions',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': '127.0.0.1',
-            'PORT': 5432
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('POSTGRES_DB', 'github_actions'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('POSTGRES_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('POSTGRES_PORT', 5432)
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME'),
-            'USER': os.getenv('DB_USER'),
-            'PASSWORD': os.getenv('DB_PASS'),
-            'HOST': 'localhost',
-            'PORT': 5432
-        }
-    }
+}
 
 
 # Password validation
@@ -183,8 +174,8 @@ EMAIL_USE_SSL = True
 EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_SUBJECT_PREFIX = 'OpenUserCreator',
-EMAIL_FILE_PATH = BASE_DIR / 'email/'
+EMAIL_SUBJECT_PREFIX = 'Open User Creator',
+# EMAIL_FILE_PATH = BASE_DIR / 'email/'
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', 'kelvinmayoayeni@gmail.com')
 
 # Django security Settings
@@ -216,7 +207,6 @@ REST_FRAMEWORK = {
 
 # Django rest auth settigns
 OLD_PASSWORD_FIELD_ENABLED = True
-# LOGOUT_ON_PASSWORD_CHANGE = True
 
 # Dj rest auth settings
 REST_AUTH_SERIALIZERS = {
@@ -258,7 +248,11 @@ SIMPLE_JWT = {
 
 
 # Celery settings
-CELERY_BROKER_URL = os.environ.get('REDIS_URL')
+if os.environ.get("ENVIRONMENT", "local") == 'docker':
+    CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_REDIS', 'redis://redis:6379/0')
+else:
+    CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_REDIS', 'redis://127.0.0.1:6379/0')
+
 CELERY_TIMEZONE = 'Africa/Lagos'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
