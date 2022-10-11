@@ -7,7 +7,7 @@ import os
 import json
 
 
-URL = os.environ.get('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672')
+URL = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672')
 PARAMS = pika.URLParameters(URL)
 PARAMS.socket_timeout = 5
 EXCHANGE = ExchangeType.direct
@@ -16,7 +16,7 @@ DEFAULT_QUEUE_NAME = 'open_user_data'
 ACTIVATE_OPENUSERAPP_KEY = 'activate_openuserapp'
 
 # Connect to main Celery instance
-celery_app = Celery('src', broker=os.environ.get('REDIS_URL'))
+celery_app = Celery('src', broker=os.environ.get('CELERY_BROKER_REDIS', 'redis://redis:6379/0'))
 
 
 def main():

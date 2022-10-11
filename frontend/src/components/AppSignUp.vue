@@ -1,7 +1,7 @@
 <script setup>
 /* eslint-disable */
 import { computed, onMounted, ref } from 'vue';
-import { RouterLink, useRoute } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import AppInputField from './AppInputField.vue';
 import IconUserCircleOutline from './icons/IconUserCircleOutline.vue';
@@ -13,12 +13,14 @@ import IconGithub from './icons/IconGithub.vue';
 import IconGoogle from './icons/IconGoogle.vue';
 import IconTwitter from './icons/IconTwitter.vue';
 import IconKeyOutline from './icons/IconKeyOutline.vue';
+import AppCheckbox from './AppCheckbox.vue';
 
 // refs
 const username = ref("")
 const email = ref("")
 const password1 = ref("")
 const password2 = ref("")
+const termsAndCons = ref(false)
 const error = ref(null)
 
 // stores
@@ -114,6 +116,17 @@ onMounted(() => {
                         </template>
                     </AppPasswordField>
                 </div>
+
+                <!-- accept terms and condition -->
+                <AppCheckbox v-model="termsAndCons" label="termsAndCons" class="my-3">
+                    <template #label>
+                        I agree to Openuser's
+                        <RouterLink to="#" class="text-blue-500 hover:text-blue-600">Terms & Conditions</RouterLink> and
+                        <RouterLink to="#" class="text-blue-500 hover:text-blue-600">Privacy Policy</RouterLink>
+                    </template>
+                </AppCheckbox>
+                <!-- accept terms and condition -->
+
                 <AppButton label="Create Account" type="submit" :loading="authStore.signUp.loading"
                     class="text-white bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300" />
             </form>

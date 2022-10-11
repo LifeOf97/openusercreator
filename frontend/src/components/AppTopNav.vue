@@ -68,7 +68,7 @@ onClickOutside(root, () => toggleUserMenu.value = false)
                  <!-- Visible when no user is authenticated -->
                 <div v-else class="flex items-center gap-2">
                     <RouterLink :to="{name: 'signin'}" class="text-xs text-gray-800 bg-transparent px-4 py-2 rounded-md transition-colors duration-300 hover:bg-white md:text-base">Log in</RouterLink>
-                    <RouterLink :to="{name: 'signup'}" class="text-xs text-white bg-gray-600 px-4 py-2 rounded-md transition-colors duration-300 hover:bg-gray-900 md:text-base">Sign up</RouterLink>
+                    <RouterLink :to="{name: 'signup'}" class="text-xs text-white bg-gray-800 px-4 py-2 rounded-md transition-colors duration-300 hover:bg-gray-900 md:text-base">Sign up</RouterLink>
                 </div>
                  <!-- Visible when no user is authenticated -->
             </div>

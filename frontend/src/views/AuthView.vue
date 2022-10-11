@@ -14,7 +14,7 @@ const data = {
 </script>
 
 <template>
-    <main class="w-full h-screen min-h-[20rem] bg-cover bg-center md:min-h-[40rem]" :style="data.inlineStyles">
+    <main class="w-full h-screen bg-cover bg-no-repeat bg-center md:landscape:min-h-[46rem]" :style="data.inlineStyles">
 
         <div class="w-full h-full flex">
 

@@ -50,10 +50,10 @@ onMounted(() => {
 </script>
         
 <template>
-    <main class="w-full h-full bg-transparent">
+    <main class="w-full h-screen bg-transparent">
 
         <!-- form inputs -->
-        <div class="h-full flex flex-col items-center justify-center mt-24">
+        <div class="w-full h-full flex flex-col items-center mt-32">
 
             <!-- header -->
             <div class="w-full flex flex-col">
@@ -96,7 +96,11 @@ onMounted(() => {
                 </AppPasswordField>
 
                 <div class="mt-2 flex items-center justify-between">
-                    <AppCheckbox v-model="rememberMe" label="Remember me" />
+                    <AppCheckbox v-model="rememberMe" label="rememberMe">
+                        <template #label>
+                            Remember me
+                        </template>
+                    </AppCheckbox>
                     <RouterLink :to="{name: 'forgotpassword'}"
                         class="text-xs text-blue-400 font-medium hover:text-blue-500 sm:text-sm">Forgot password?
                     </RouterLink>

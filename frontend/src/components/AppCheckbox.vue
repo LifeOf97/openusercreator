@@ -23,7 +23,9 @@ const emit = defineEmits(['update:modelValue'])
             class="cursor-pointer focus:outline-none"
             />
 
-        <label :for="props.label" class="text-xs text-gray-600 font-normal cursor-pointer md:text-sm">{{props.label}}</label>
+        <label :for="props.label" class="text-xs text-gray-600 font-normal cursor-pointer md:text-sm">
+            <slot name="label">Lable</slot>
+        </label>
 
     </main>
 </template>

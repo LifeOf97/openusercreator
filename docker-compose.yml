@@ -13,7 +13,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn -c gunicorn.conf.py src.wsgi:application
     expose:
       - 8000
     env_file:
@@ -54,7 +54,7 @@ services:
     restart: always
     ports:
       - 8080:80
-      - 443:443
+      # - 443:443
     volumes:
       - dist_volume:/home/realestkma/app/dist
       - static_volume:/home/realestkma/app/staticfiles
