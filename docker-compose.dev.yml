@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - dist_volume:/home/realestkma/app/dist
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    expose:
+      - 8000
+    env_file:
+      - ./backend/.env
+    volumes:
+      - static_volume:/home/realestkma/app/staticfiles
+      - media_volume:/home/realestkma/app/mediafiles
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./backend/.env
+    
+  redis:
+    image: redis:7-alpine
+    expose:
+      - 6379
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command:  celery -A src worker -l INFO
+    restart: on-failure
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+
+  nginx-proxy:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:80
+      - 443:443
+    volumes:
+      - dist_volume:/home/realestkma/app/dist
+      - static_volume:/home/realestkma/app/staticfiles
+      - media_volume:/home/realestkma/app/mediafiles
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - vhost:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    depends_on:
+      - web
+      - api
+
+
+volumes:
+  postgres_data:
+  dist_volume:
+  static_volume:
+  media_volume:
+  certs:
+  html:
+  vhost:
+  acme:

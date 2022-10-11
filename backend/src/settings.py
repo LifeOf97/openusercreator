@@ -30,7 +30,7 @@ else:
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", False)
+DEBUG = int(os.environ.get("DEBUG", 0))
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost',  '192.168.43.208']
 
@@ -105,7 +105,7 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DB', 'github_actions'),
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('POSTGRES_HOST', '127.0.0.1'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
         'PORT': os.environ.get('POSTGRES_PORT', 5432)
     }
 }
@@ -168,28 +168,33 @@ AUTHENTICATION_BACKENDS = (
 
 # Email settings
 # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = BASE_DIR / 'email/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_SUBJECT_PREFIX = 'Open User Creator',
-# EMAIL_FILE_PATH = BASE_DIR / 'email/'
-DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', 'kelvinmayoayeni@gmail.com')
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', 'kelvinmayoayeni@gmail.com')
+
 
 # Django security Settings
 CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8080',
+    'http://192.168.43.208:8080'
+]
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTPONLY = False
 
 
 # DjangoRestFramework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
@@ -205,10 +210,8 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Django rest auth settigns
+# Django rest auth settings
 OLD_PASSWORD_FIELD_ENABLED = True
-
-# Dj rest auth settings
 REST_AUTH_SERIALIZERS = {
     "PASSWORD_RESET_SERIALIZER": "creator.serializers.CustomPasswordResetSerializer"
 }
@@ -251,7 +254,7 @@ SIMPLE_JWT = {
 if os.environ.get("ENVIRONMENT", "local") == 'docker':
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_REDIS', 'redis://redis:6379/0')
 else:
-    CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_REDIS', 'redis://127.0.0.1:6379/0')
+    CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 
 CELERY_TIMEZONE = 'Africa/Lagos'
 CELERY_ACCEPT_CONTENT = ['json']
@@ -280,7 +283,7 @@ SPECTACULAR_SETTINGS = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
-    "http://192.168.43.208:8080",
+    "http://192.168.43.208:8080"
 ]
 CORS_ALLOW_CREDENTIALS = True
 # CORS_PREFLIGHT_MAX_AGE =

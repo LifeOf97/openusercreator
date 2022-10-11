@@ -8,7 +8,7 @@ from django.contrib import admin
 
 
 class MyAdminSite(admin.AdminSite):
-    site_header: str = "Openuserapp Creator administration"
+    site_header: str = "Open User Creator administration"
 
 
 class AppUserAdmin(UserAdmin):
