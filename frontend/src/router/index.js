@@ -14,7 +14,7 @@ const router = createRouter({
       name: "home",
       component: HomeView,
       meta: {
-        title: "Welcome | Open User Data",
+        title: "Welcome | Open User",
         transition: 1,
         transitionName: "",
       }
@@ -84,7 +84,7 @@ const router = createRouter({
           name: "signup",
           component: () => import("../components/AppSignUp.vue"),
           meta: {
-            title: "Sign up | Open User Data",
+            title: "Sign up | Open User",
             transition: 2,
             transitionName: "",
           }
@@ -103,7 +103,7 @@ const router = createRouter({
           name: "signin",
           component: () => import("../components/AppSignIn.vue"),
           meta: {
-            title: "Sign In | Open User Data",
+            title: "Sign In | Open User",
             transition: 4,
             transitionName: "",
           }
@@ -113,7 +113,7 @@ const router = createRouter({
           name: "forgotpassword",
           component: () => import("../components/AppForgotPassword.vue"),
           meta: {
-            title: 'Forgot password | Open User Data',
+            title: 'Forgot password | Open User',
             transition: 5,
             transitionName: "",
           }
@@ -123,7 +123,7 @@ const router = createRouter({
           name: "resetpassword",
           component: () => import("../components/AppResetPassword.vue"),
           meta: {
-            title: 'Reset password | Open User Data',
+            title: 'Reset password | Open User',
             transition: 6,
             transitionName: "",
           }
@@ -133,7 +133,7 @@ const router = createRouter({
           name: "verifyemail",
           component: () => import("../components/AppVerifyEmail.vue"),
           meta: {
-            title: 'Verify Email | Open User Data',
+            title: 'Verify Email | Open User',
             transition: 7,
             transitionName: "",
           }
@@ -141,11 +141,31 @@ const router = createRouter({
       ]
     },
     {
+      path: "/terms-and-condition",
+      name: "termsandcondition",
+      component: () => import("../components/AppTermsAndCondition.vue"),
+      meta: {
+        title: 'Terms & Condition | Open User',
+        transition: 7,
+        transitionName: "",
+      }
+    },
+    {
+      path: "/privacy-policy",
+      name: "privacypolicy",
+      component: () => import("../components/AppPrivacyPolicy.vue"),
+      meta: {
+        title: 'Privacy Policy | Open User',
+        transition: 7,
+        transitionName: "",
+      }
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import("../components/AppNotFound.vue"),
       meta: {
-        title: '404 | Page not found | Open User Data',
+        title: '404 | Page not found | Open User',
         transition: 2,
         transitionName: "",
       }

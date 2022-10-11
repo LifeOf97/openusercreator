@@ -121,8 +121,8 @@ onMounted(() => {
                 <AppCheckbox v-model="termsAndCons" label="termsAndCons" class="my-3">
                     <template #label>
                         I agree to Openuser's
-                        <RouterLink to="#" class="text-blue-500 hover:text-blue-600">Terms & Conditions</RouterLink> and
-                        <RouterLink to="#" class="text-blue-500 hover:text-blue-600">Privacy Policy</RouterLink>
+                        <RouterLink :to="{name: 'termsandcondition'}" class="text-blue-500 hover:text-blue-600">Terms & Conditions</RouterLink> and
+                        <RouterLink :to="{name: 'privacypolicy'}" class="text-blue-500 hover:text-blue-600">Privacy Policy</RouterLink>
                     </template>
                 </AppCheckbox>
                 <!-- accept terms and condition -->

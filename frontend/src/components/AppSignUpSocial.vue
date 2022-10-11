@@ -8,6 +8,7 @@ import IconUserCircleOutline from './icons/IconUserCircleOutline.vue';
 import IconEnvelopeOutline from './icons/IconEnvelopeOutline.vue';
 import AppPasswordField from './AppPasswordField.vue';
 import AppButton from './AppButton.vue';
+import AppCheckbox from './AppCheckbox.vue';
 import IconExclamationTraingleOutline from './icons/IconExclamationTraingleOutline.vue';
 import IconGithub from './icons/IconGithub.vue';
 import IconGoogle from './icons/IconGoogle.vue';
@@ -180,6 +181,17 @@ useTitle(`Sign Up | ${authStore.social.toUpperCase()} | Open User Data`)
                         </template>
                     </AppPasswordField>
                 </div>
+
+                <!-- accept terms and condition -->
+                <AppCheckbox v-model="termsAndCons" label="termsAndCons" class="my-3">
+                    <template #label>
+                        I agree to Openuser's
+                        <RouterLink :to="{name: 'termsandcondition'}" class="text-blue-500 hover:text-blue-600">Terms & Conditions</RouterLink> and
+                        <RouterLink :to="{name: 'privacypolicy'}" class="text-blue-500 hover:text-blue-600">Privacy Policy</RouterLink>
+                    </template>
+                </AppCheckbox>
+                <!-- accept terms and condition -->
+
                 <AppButton
                     label="Create Account"
                     type="submit"
