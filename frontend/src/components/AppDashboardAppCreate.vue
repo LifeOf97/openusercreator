@@ -27,7 +27,7 @@ const formTabs = [
     {id: 1, title: "Name your App", tab: AppDashboardAppForm1},
     {id: 2, title: "Number of Users", tab: AppDashboardAppForm2},
     {id: 3, title: "Users Password", tab: AppDashboardAppForm3},
-    {id: 4, title: "Confirm App Details", tab: AppDashboardAppCreateConfirm},
+    {id: 4, title: "Review App Details", tab: AppDashboardAppCreateConfirm},
     {id: 5, title: "Application Created Successfully", tab: AppDashboardAppCreateSuccess},
 ]
 

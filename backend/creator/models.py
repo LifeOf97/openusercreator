@@ -230,7 +230,7 @@ class Openuserapp(models.Model):
 
     def save(self, *args, **kwargs):
         self.name = slugify(self.name.replace('_', ' '))
-        self.endpoint = F"http://127.0.0.1:8001/api/v1/{self.creator.uid}/{self.name}/app/users/"
+        self.endpoint = F"https://api.openuserdata.xyz/api/v1/{self.creator.uid}/{self.name}/app/users/"
         return super().save(*args, **kwargs)
 
     def __str__(self):

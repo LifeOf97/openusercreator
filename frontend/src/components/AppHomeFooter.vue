@@ -59,14 +59,12 @@ onMounted(() => {
             <div class="flex items-center gap-2">
                 <p class="text-gray-900 font-semibold">API Docs:</p>
                 <a 
-                    href="http://127.0.0.1:8001/api/v1/schema/swagger/"
+                    href="https://api.openuserdata.xyz/api/v1/schema/swagger/"
                     target="_blank"
-                    rel="noopener noreferrer"
                     class="text-blue-500 font-light hover:text-blue-600">Swagger,</a>
                 <a 
-                    href="http://127.0.0.1:8001/api/v1/schema/redoc/"
+                    href="https://api.openuserdata.xyz/api/v1/schema/redoc/"
                     target="_blank"
-                    rel="noopener noreferrer"
                     class="text-blue-500 font-light hover:text-blue-600">REDOC</a>
             </div>
         </div>

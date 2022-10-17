@@ -31,6 +31,7 @@ const password1 = ref("")
 const password2 = ref("")
 const error = ref(null)
 const endpoint = ref("")
+const termsAndCons = ref(false)
 
 // methods
 const submit = () => {

@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: openuser_web
+    volumes:
+      - dist_volume:/home/realestkma/app/dist
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: gunicorn -c gunicorn.conf.py src.wsgi:application
+    container_name: openuser_api
+    expose:
+      - 8000
+    env_file:
+      - ./backend/.env.prod
+    volumes:
+      - static_volume:/home/realestkma/app/staticfiles
+      - media_volume:/home/realestkma/app/mediafiles
+
+  redis:
+    image: redis:7-alpine
+    container_name: openuser_redis
+    expose:
+      - 6379
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command:  celery -A src worker -l INFO
+    container_name: openuser_celery
+    restart: on-failure
+    env_file:
+      - ./backend/.env.prod
+    depends_on:
+      - redis
+
+  nginx-proxy:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: openuser_nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - dist_volume:/home/realestkma/app/dist
+      - static_volume:/home/realestkma/app/staticfiles
+      - media_volume:/home/realestkma/app/mediafiles
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - vhost:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    depends_on:
+      - web
+      - api
+
+  nginx-proxy-letsencrypt:
+    image: nginxproxy/acme-companion:2.2
+    container_name: openuser_nginx-letsencrypt
+    env_file:
+      - ./backend/.env.prod
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - vhost:/etc/nginx/vhost.d
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - nginx-proxy
+
+
+volumes:
+  postgres_data:
+  dist_volume:
+  static_volume:
+  media_volume:
+  certs:
+  html:
+  vhost:
+  acme:

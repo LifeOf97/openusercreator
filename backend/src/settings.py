@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 if os.environ.get("ENVIRONMENT") == 'docker':
     ...
 else:
-    load_dotenv(dotenv_path=F"{BASE_DIR}/.env.dev")
+    load_dotenv(dotenv_path=F"{BASE_DIR}/.env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -32,7 +32,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", 0))
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost',  '192.168.43.208']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -170,7 +170,7 @@ AUTHENTICATION_BACKENDS = (
 # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 # EMAIL_FILE_PATH = BASE_DIR / 'email/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = os.environ.get('EMAIL_HOST_USER', 'smtp.gmail.com')
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')

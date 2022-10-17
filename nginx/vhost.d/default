@@ -1,3 +1,5 @@
+client_max_body_size 100m;
+
 location /static/ {
     alias /home/realestkma/app/staticfiles/;
     add_header Access-Control-Allow-Origin *;
