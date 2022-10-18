@@ -25,6 +25,11 @@ export const useAuthStore = defineStore("auth", () => {
   ////////////////////////////////////////////
   const signUp = reactive({loading: false, username: null, email: null, error: null})
 
+  function resetSignUp() {
+    signUp.loading = false
+    signUp.username = signUp.email = signUp.error = null
+  }
+
   async function submitSignUp(data) {
     signUp.loading = true
     signUp.username = signUp.email = signUp.error = null
@@ -74,6 +79,11 @@ export const useAuthStore = defineStore("auth", () => {
   // sign in functionality
   ////////////////////////////////////////////
   const signIn = reactive({loading: false, username: null, password: null, error: null})
+
+  function resetSignIn() {
+    signIn.loading = false
+    signIn.username = signIn.password = signIn.error = null
+  }
 
   async function submitSignIn(data) {
     signIn.loading = true
@@ -236,6 +246,11 @@ export const useAuthStore = defineStore("auth", () => {
   // social sign up functionalitiy
   ////////////////////////////////////////////
   const signUpSocial = reactive({loading: false, username: null, email: null, error: null})
+
+  function resetSignUpSocila() {
+    signUpSocial.loading = false
+    signUpSocial.username = signUpSocial.email = signUpSocial.error = null
+  }
 
   async function submitSignUpSocial(data) {
     signUpSocial.loading = true
@@ -441,12 +456,12 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   return {
-    isAuthenticated, social, setSocial, signUp, submitSignUp,
-    signIn, submitSignIn, getUser, userProfile, getUserProfile,
-    signOut, submitSignOut, notify, socialData, socialGithub,
-    socialGoogle, socialTwitter, getGithubUrl, getUserDataViaSocialProvider,
-    getGoogleUrl, getTwitterUrl, signUpSocial, submitSignUpSocial,
-    verifyEmail, submitVerifyEmail, forgotPassword, submitForgotPassword,
-    resetPassword, submitResetPassword
+    isAuthenticated, social, setSocial, signUp, submitSignUp, resetSignUp,
+    signIn, submitSignIn, resetSignIn, getUser, userProfile, getUserProfile, signOut,
+    submitSignOut, notify, socialData, socialGithub, socialGoogle,
+    socialTwitter, getGithubUrl, getUserDataViaSocialProvider, getGoogleUrl,
+    getTwitterUrl, signUpSocial, submitSignUpSocial, resetSignUpSocila, verifyEmail,
+    submitVerifyEmail, forgotPassword, submitForgotPassword, resetPassword,
+    submitResetPassword
   };
 });

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 # from django.contrib.sites.models import Site
 # from rest_framework.reverse import reverse
 from .pika_producers import RabbitMQProducer
+from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.conf import settings
 # from .models import Openuser
@@ -32,7 +33,7 @@ def send_email_verification(email):
     absolute_url_frontend = F"http://127.0.0.1:8080/auth/verify-email?token={token}"
 
     body = render_to_string(
-        'email_verification.txt',
+        'email_verification.html',
         context={
             'username': user.username,
             'url': absolute_url_frontend,
@@ -45,7 +46,8 @@ def send_email_verification(email):
 
     send_mail(
         subject="Verify Email Address",
-        message=body,
+        message=strip_tags(body),
+        html_message=body,
         recipient_list=[user.email, ],
         from_email=settings.DEFAULT_FROM_EMAIL
     )

@@ -106,6 +106,9 @@ onMounted(async () => {
 
 // set page title
 useTitle(`Sign Up | ${authStore.social.toUpperCase()} | Open User Data`)
+
+// reset form
+authStore.resetSignUpSocila()
 </script>
 
 <template>

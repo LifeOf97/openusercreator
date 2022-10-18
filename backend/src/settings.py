@@ -9,7 +9,7 @@ DEVELOPER = {
     'FIRST_NAME': 'Kelvin',
     'LAST_NAME': 'Mayowa',
     'OTHER_NAME': 'Ayeni',
-    'ALIAS': 'realestKMA',
+    'ALIAS': 'RealestKMA',
     'CURRENT_LOCATION': 'Abuja, Nigeria'
 }
 
@@ -167,16 +167,14 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Email settings
-# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-# EMAIL_FILE_PATH = BASE_DIR / 'email/'
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', 'kelvinmayoayeni@gmail.com')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST_USER', 'smtp.gmail.com')
-EMAIL_USE_SSL = True
-EMAIL_PORT = 465
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_SUBJECT_PREFIX = 'Open User Creator',
-DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', 'kelvinmayoayeni@gmail.com')
+EMAIL_SUBJECT_PREFIX = 'Open User Creator'
+EMAIL_USE_SSL = True
+EMAIL_PORT = 465
 
 
 # Django security Settings

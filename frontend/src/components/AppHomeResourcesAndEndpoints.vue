@@ -78,10 +78,7 @@ onMounted(() => {
             
             <ul class="pl-5 my-2 list-inside">
                 <li>
-                    <a
-                        href="https://api.openuserdata.xyz/api/v1/users/"
-                        target="_blank"
-                        class="text-xs text-blue-500 md:text-base hover:text-blue-600">/users</a>
+                    <a href="https://api.openuserdata.xyz/api/v1/users/" target="_blank" class="text-xs text-blue-500 md:text-base hover:text-blue-600">/users</a>
                 </li>
             </ul>
 
@@ -120,10 +117,7 @@ onMounted(() => {
                 <b>NOTE:</b> A creator account gives you the ability to create your own open user application which you can
                 then use to create users belonging to you under that specific application, this users can however be
                 retrieved by all other request to the
-                <a
-                    href="https://api.openuserdata.xyz/api/v1/users/"
-                    target="_blank"
-                    class="text-blue-500 hover:text-blue-600 visited:text-yellow-500">/users/</a>
+                <a href="https://api.openuserdata.xyz/api/v1/users/" target="_blank" class="text-blue-500 hover:text-blue-600 visited:text-yellow-500">/users/</a>
                 endpoint in read only mode by both creators and non creators. Requests to creators endpoint do not require application authentication,
                 all you need is to query one of the aforementioned endpoints passing in your creator’s id (cid) and
                 application name (app_name). This details can be found on the specific app details dashboard.

@@ -50,6 +50,9 @@ onMounted(() => {
     authStore.getGithubUrl()
     authStore.getTwitterUrl()
     authStore.getGoogleUrl()
+
+    // reset the sign up store state
+    authStore.resetSignUp()
 })
 </script>
 

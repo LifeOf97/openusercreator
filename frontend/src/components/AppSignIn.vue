@@ -46,6 +46,9 @@ onMounted(() => {
     authStore.getGithubUrl()
     authStore.getTwitterUrl()
     authStore.getGoogleUrl()
+
+    // reset sign in form
+    authStore.resetSignIn()
 })
 </script>
         
@@ -96,7 +99,7 @@ onMounted(() => {
                 </AppPasswordField>
 
                 <div class="mt-2 flex items-center justify-between">
-                    <AppCheckbox v-model="rememberMe" label="rememberMe">
+                    <AppCheckbox v-model="rememberMe" label="rememberMe" :required="false">
                         <template #label>
                             Remember me
                         </template>

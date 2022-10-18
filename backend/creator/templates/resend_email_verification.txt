@@ -4,11 +4,11 @@ To verify your email address please click on the link below.
 
 {{ url }}
 
-This link will expire in 3 minutes.
+This link will expire in 60 minutes.
 
 If you did not make this request, please disregard this email.
 
 
 Love {{ heart|safe }}, {{ author|safe }}
-Creator Openuserdata API
+Creator: Openuserdata API
 Alias: {{ alias|safe }}
