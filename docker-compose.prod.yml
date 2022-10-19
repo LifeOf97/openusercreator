@@ -19,7 +19,7 @@ services:
     expose:
       - 8000
     env_file:
-      - ./backend/.env.prod
+      - /home/ubuntu/.env.prod
     environment:
       - VIRTUAL_PATH=~^/(api|admin)/
     volumes:
@@ -29,6 +29,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: openuser-redis
+    restart: always
     expose:
       - 6379
 
@@ -40,7 +41,7 @@ services:
     container_name: openuser-celery
     restart: always
     env_file:
-      - ./backend/.env.prod
+      - /home/ubuntu/.env.prod
     depends_on:
       - redis
 
@@ -69,7 +70,7 @@ services:
     image: nginxproxy/acme-companion:2.2
     container_name: openuser-nginx-letsencrypt
     env_file:
-      - ./backend/.env.prod
+      - /home/ubuntu/.env.prod
     volumes:
       - certs:/etc/nginx/certs
       - html:/usr/share/nginx/html

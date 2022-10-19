@@ -2,6 +2,7 @@ from dj_rest_auth import serializers as dj_rest_auth_serializer
 from rest_framework.validators import UniqueTogetherValidator
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
 from rest_framework import serializers
 from django.utils.text import slugify
 from .models import Openuserapp
@@ -120,11 +121,14 @@ class VerifyEmailResponseSerializer(serializers.Serializer):
 
 
 class CustomPasswordResetSerializer(dj_rest_auth_serializer.PasswordResetSerializer):
+
     def get_email_options(self):
+        domain = Site.objects.get_current().domain
+
         return {
             'email_template_name': 'account/email/password_reset_key_message.txt',
             'extra_email_context': {
-                'frontend_url': 'http://192.168.43.208:8080/auth/help/success/reset-password',
+                'frontend_url': F'{domain}/auth/help/success/reset-password',
                 'wave': '\U0001F44B',
                 'heart': '\U0001F499',
                 'author': settings.DEVELOPER['LAST_NAME'],

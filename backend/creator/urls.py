@@ -11,7 +11,6 @@ urlpatterns = [
     path('<version>/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('<version>/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('<version>/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    # path('<version>/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
     # create/verify new creators urls endpoint
     path(
