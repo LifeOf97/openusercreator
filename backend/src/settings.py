@@ -17,7 +17,7 @@ DEVELOPER = {
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # load env file
-if os.environ.get("ENVIRONMENT") == 'docker':
+if os.environ.get("ENVIRONMENT", "local") in ['production', 'docker']:
     ...
 else:
     load_dotenv(dotenv_path=F"{BASE_DIR}/.env")
@@ -30,7 +30,7 @@ else:
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get("DEBUG", 0))
+DEBUG = bool(os.environ.get("DEBUG", 0))
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(' ')
 
@@ -177,22 +177,23 @@ EMAIL_PORT = 465
 
 
 # Django security Settings
-CSRF_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SECURE = False
-CSRF_TRUSTED_ORIGINS = [
-    "https://openuser.xyz",
-    'http://127.0.0.1:8080',
-    'http://192.168.43.208:8080'
-]
-SESSION_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 5
-SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+CSRF_COOKIE_SAMESITE = os.environ.get("CSRF_COOKIE_SAMESITE", 'Lax')
+CSRF_COOKIE_HTTPONLY = bool(os.environ.get("CSRF_COOKIE_HTTPONLY", False))
+CSRF_COOKIE_SECURE = bool(os.environ.get("CSRF_COOKIE_SECURE", False))
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", 'localhost').split(' ')
+SESSION_COOKIE_SAMESITE = os.environ.get("SESSION_COOKIE_SAMESITE", 'Lax')
+SESSION_COOKIE_HTTPONLY = bool(os.environ.get("SESSION_COOKIE_HTTPONLY", False))
+SESSION_COOKIE_SECURE = bool(os.environ.get("SESSION_COOKIE_SECURE", False))
+SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", 0))
+SECURE_HSTS_PRELOAD = bool(os.environ.get("SECURE_HSTS_PRELOAD", False))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = bool(os.environ.get("SECURE_HSTS_INCLUDE_SUBDOMAINS", False))
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+if os.environ.get('ENVIRONMENT', 'local') == 'production':
+    SECURE_SSL_REDIRECT = True
+else:
+    SECURE_SSL_REDIRECT = False
 
 
 # DjangoRestFramework settings
@@ -256,7 +257,7 @@ SIMPLE_JWT = {
 
 
 # Celery settings
-if os.environ.get("ENVIRONMENT", "local") == 'docker':
+if os.environ.get("ENVIRONMENT", "local") in ['production', 'docker']:
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_REDIS', 'redis://redis:6379/0')
 else:
     CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
