@@ -27,7 +27,7 @@ const route = useRoute()
             to="#ResourcesandEndpoints"
             :class="route.fullPath.endsWith('ResourcesandEndpoints') ? 'bg-blue-500 text-white border-transparent':'text-gray-500'"
             class="shrink-0 px-4 py-1 bg-white rounded-xl border border-gray-300 transition-all duration-300 hover:bg-blue-500 hover:border-transparent hover:text-white md:py-2">
-                Resources & Endpoints
+                Docs, Resources & Endpoints
         </RouterLink>
 
         <RouterLink

@@ -156,7 +156,7 @@ authStore.resetSignUpSocila()
 
             <span class="w-full mt-10 mb-7">
                 <p class="text-xs text-left text-gray-600 font-normal md:text-sm">
-                    The details populated in the fields below where provided by <b>{{authStore.social.toUpperCase()}}</b>
+                    The details populated in the fields below where provided by <b>{{authStore.social.toUpperCase()}}</b>,
                     please provide a password to continue your sign up via <b>{{authStore.social.toUpperCase()}}</b>.
                 </p>
             </span>

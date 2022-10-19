@@ -36,7 +36,7 @@ services:
       dockerfile: Dockerfile
     command:  celery -A src worker -l INFO
     container_name: openuser_celery
-    restart: on-failure
+    restart: always
     env_file:
       - ./backend/.env.prod
     depends_on:

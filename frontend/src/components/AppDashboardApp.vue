@@ -108,7 +108,9 @@ onMounted(() => {
                                         <IconLinkSolid class="w-5 h-5 fill-gray-400" />
                                         <p class="text-xs text-gray-400 font-normal md:text-sm">App URL:</p>
                                     </td>
-                                    <td class="text-xs text-gray-600 font-medium md:text-sm">{{appStore.appInView['endpoint']}}</td>
+                                    <td class="text-xs font-medium md:text-sm">
+                                        <a :href="appStore.appInView['endpoint']" target="_blank" class="text-blue-500 hover:text-blue-600">{{appStore.appInView['endpoint']}}</a>
+                                    </td>
                                 </tr>
                                 <tr class="border-b border-gray-100">
                                     <td class="flex items-center gap-3 py-4">

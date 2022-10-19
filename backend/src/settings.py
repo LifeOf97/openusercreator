@@ -32,7 +32,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", 0))
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(' ')
 
 
 # Application definition
@@ -57,8 +57,10 @@ INSTALLED_APPS = [
     'drf_spectacular',
 ]
 
+
 SITE_ID = 1
 LANGUAGE_CODE = 'en-us'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -208,6 +210,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+
 # Django rest auth settings
 OLD_PASSWORD_FIELD_ENABLED = True
 REST_AUTH_SERIALIZERS = {
@@ -243,7 +246,7 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=3),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=12),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 

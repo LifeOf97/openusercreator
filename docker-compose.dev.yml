@@ -18,6 +18,8 @@ services:
       - 8000
     env_file:
       - ./backend/.env.dev
+    environment:
+      - VIRTUAL_PATH=/
     volumes:
       - static_volume:/home/realestkma/app/staticfiles
       - media_volume:/home/realestkma/app/mediafiles

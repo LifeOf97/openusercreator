@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger)
 // refs
 const reqHeaderOne = ref(null)
 const reqHeaderTwo = ref(null)
+const reqHeaderThree = ref(null)
 
 // data
 const data = {
@@ -53,6 +54,13 @@ const animate = () => {
             duration: 1.5, y: 50, opacity: 0, stagger: 0.3
         }
     )
+    gsap.from(
+        [reqHeaderThree.value],
+        {
+            scrollTrigger: {trigger: reqHeaderThree.value, start: "200px bottom"},
+            duration: 1.5, y: 50, opacity: 0, stagger: 0.3
+        }
+    )
 }
 
 // hooks
@@ -67,12 +75,23 @@ onMounted(() => {
         <!-- this tag is only visible on small screens -->
         <RouterLink to="#ResourcesandEndpoints" class="inline-flex items-center gap-2 md:hidden">
             <IconLinkSolid class="w-5 h-5 fill-gray-400" />
-            <p class="px-4 py-2 bg-blue-500 rounded-full text-xs text-white font-semibold">Resources & Endpoint</p>
+            <p class="px-4 py-2 bg-blue-500 rounded-full text-xs text-white font-semibold">Docs, Resources & Endpoint</p>
         </RouterLink>
         <!-- this tag is only visible on small screens -->
 
-        <!-- start of resoirces -->
+        <!-- start of docs -->
         <div ref="reqHeaderOne" class="flex flex-col gap-2">
+            <h3 class="text-xl text-gray-900 font-semibold md:text-3xl">Documentation</h3>
+            
+            <span class="pl-5 my-2 flex flex-col gap-2">
+                <a href="https://api.openuserdata.xyz/api/v1/schema/swagger/" target="_blank" class="text-xs text-blue-500 md:text-base hover:text-blue-600">Swagger</a>
+                <a href="https://api.openuserdata.xyz/api/v1/schema/redoc/" target="_blank" class="text-xs text-blue-500 md:text-base hover:text-blue-600">REDOC</a>
+            </span>
+        </div>
+        <!-- end of docs -->
+
+        <!-- start of resources -->
+        <div ref="reqHeaderTwo" class="flex flex-col gap-2">
             <h3 class="text-xl text-gray-900 font-semibold md:text-3xl">Resources</h3>
             <p class="text-xs text-gray-600 font-light md:text-base">Open user data provides only a  user resource for now, but more resources will be added in the future.</p>
             
@@ -88,9 +107,9 @@ onMounted(() => {
                 url query parameters to increase or decrease the number of users returned.
             </p>
         </div>
-        <!-- end of resoirces -->
+        <!-- end of resources -->
 
-        <div ref="reqHeaderTwo" class="mt-10 flex flex-col gap-2">
+        <div ref="reqHeaderThree" class="mt-10 flex flex-col gap-2">
             <h3 class="text-xl text-gray-900 font-semibold md:text-3xl">Endpoints</h3>
             
             <!-- endpoint one -->
