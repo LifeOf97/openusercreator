@@ -6,7 +6,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: openuser_web
+    container_name: openuser-web
     volumes:
       - dist_volume:/home/realestkma/app/dist
 
@@ -15,18 +15,20 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command: gunicorn -c gunicorn.conf.py src.wsgi:application
-    container_name: openuser_api
+    container_name: openuser-api
     expose:
       - 8000
     env_file:
       - ./backend/.env.prod
+    environment:
+      - VIRTUAL_PATH=~^/(api|admin)/
     volumes:
       - static_volume:/home/realestkma/app/staticfiles
       - media_volume:/home/realestkma/app/mediafiles
 
   redis:
     image: redis:7-alpine
-    container_name: openuser_redis
+    container_name: openuser-redis
     expose:
       - 6379
 
@@ -35,7 +37,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command:  celery -A src worker -l INFO
-    container_name: openuser_celery
+    container_name: openuser-celery
     restart: always
     env_file:
       - ./backend/.env.prod
@@ -46,7 +48,7 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    container_name: openuser_nginx-proxy
+    container_name: openuser-nginx-proxy
     restart: always
     ports:
       - 80:80
@@ -65,7 +67,7 @@ services:
 
   nginx-proxy-letsencrypt:
     image: nginxproxy/acme-companion:2.2
-    container_name: openuser_nginx-letsencrypt
+    container_name: openuser-nginx-letsencrypt
     env_file:
       - ./backend/.env.prod
     volumes:

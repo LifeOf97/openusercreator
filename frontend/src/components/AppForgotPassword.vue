@@ -77,7 +77,7 @@ const authStore = useAuthStore()
                     <div class="w-full border-b border-gray-300"></div>
                 </div>
                 <p v-if="authStore.forgotPassword.success" class="text-xs text-left text-gray-600 font-normal md:text-sm">
-                    If this email address belongs to an account, you will recieve an email to reset your email address.
+                    If this email address belongs to an account, you will recieve an email to reset your password.
                 </p>
                 <p v-else-if="authStore.forgotPassword.error" class="text-xs text-left text-gray-600 font-normal md:text-sm">
                     {{authStore.forgotPassword.error}}

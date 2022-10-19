@@ -3,7 +3,6 @@ from rest_framework import status, views, viewsets, permissions
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.translation import gettext_lazy as _
 from . import serializers, permissions as custom_perm
-from dj_rest_auth.jwt_auth import unset_jwt_cookies
 from drf_spectacular.types import OpenApiTypes
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
@@ -112,9 +111,6 @@ class UserApiView(viewsets.GenericViewSet):
         data = {'username': username, 'email': email, 'uid': uid, 'detail': 'Deleted successfully'}
         user.delete()
         response = Response(data=data, status=status.HTTP_204_NO_CONTENT)
-
-        # clears jwt authentication if present
-        unset_jwt_cookies(response)
         return response
 
 

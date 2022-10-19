@@ -103,11 +103,6 @@ urlpatterns = [
         name="login_via_token"
     ),
     path(
-        "<version>/auth/logout/token/",
-        dj_rest.LogoutView.as_view(),
-        name="logout_via_token"
-    ),
-    path(
         "<version>/auth/verify/token/",
         TokenVerifyView.as_view(),
         name="token_verify"

@@ -98,9 +98,6 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-
-# in development and production
-
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
@@ -184,11 +181,18 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SECURE = False
 CSRF_TRUSTED_ORIGINS = [
+    "https://openuser.xyz",
     'http://127.0.0.1:8080',
     'http://192.168.43.208:8080'
 ]
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = False
+# SECURE_HSTS_SECONDS = 5
+# SECURE_HSTS_PRELOAD = True
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # DjangoRestFramework settings
@@ -282,6 +286,7 @@ SPECTACULAR_SETTINGS = {
 
 # Django corsheaders settings
 CORS_ALLOWED_ORIGINS = [
+    "https://openuser.xyz",
     "http://localhost:8080",
     "http://127.0.0.1:8080",
     "http://192.168.43.208:8080"
