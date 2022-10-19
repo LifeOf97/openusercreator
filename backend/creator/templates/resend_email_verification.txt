@@ -1,8 +1,8 @@
 Hi {{ wave|safe }} {{ username }}.
 
-To verify your email address please click on the link below.
+To verify your email address please click on the link below. If link does not respond, copy the link and paste it into your browser's url bar.
 
-{{ url }}
+{{ url|urlize }}
 
 This link will expire in 60 minutes.
 

@@ -189,7 +189,7 @@ authStore.resetSignUpSocila()
                 <!-- accept terms and condition -->
                 <AppCheckbox v-model="termsAndCons" label="termsAndCons" class="my-3">
                     <template #label>
-                        I agree to Openuser's
+                        I agree to Open User's
                         <RouterLink :to="{name: 'termsandcondition'}" class="text-blue-500 hover:text-blue-600">Terms & Conditions</RouterLink> and
                         <RouterLink :to="{name: 'privacypolicy'}" class="text-blue-500 hover:text-blue-600">Privacy Policy</RouterLink>
                     </template>
