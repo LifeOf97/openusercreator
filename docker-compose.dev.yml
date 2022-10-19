@@ -33,6 +33,7 @@ services:
     
   redis:
     image: redis:7-alpine
+    restart: always
     expose:
       - 6379
 
@@ -41,7 +42,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command:  celery -A src worker -l INFO
-    restart: on-failure
+    restart: always
     env_file:
       - ./backend/.env.dev
     depends_on:
