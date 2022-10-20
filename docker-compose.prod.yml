@@ -65,19 +65,19 @@ services:
     depends_on:
       - api
 
-  nginx-proxy-letsencrypt:
-    image: nginxproxy/acme-companion:2.2
-    container_name: openuser-nginx-letsencrypt
-    env_file:
-      - /home/ubuntu/.env.prod
-    volumes:
-      - certs:/etc/nginx/certs
-      - html:/usr/share/nginx/html
-      - vhost:/etc/nginx/vhost.d
-      - acme:/etc/acme.sh
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    depends_on:
-      - nginx-proxy
+  # nginx-proxy-letsencrypt:
+  #   image: nginxproxy/acme-companion:2.2
+  #   container_name: openuser-nginx-letsencrypt
+  #   env_file:
+  #     - /home/ubuntu/.env.prod
+  #   volumes:
+  #     - certs:/etc/nginx/certs
+  #     - html:/usr/share/nginx/html
+  #     - vhost:/etc/nginx/vhost.d
+  #     - acme:/etc/acme.sh
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   depends_on:
+  #     - nginx-proxy
 
 
 volumes:
