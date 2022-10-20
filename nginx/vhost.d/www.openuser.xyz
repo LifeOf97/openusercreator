@@ -1,6 +1,6 @@
-location / {
+location /home/ {
     alias /home/realestkma/app/dist/;
-    add_header Access-Control-Allow-Origin *;
+    index index.html;
 }
 
 location /static/ {
