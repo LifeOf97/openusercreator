@@ -25,6 +25,7 @@ services:
     volumes:
       - static_volume:/home/realestkma/app/staticfiles
       - media_volume:/home/realestkma/app/mediafiles
+      - dist_volume:/home/realestkma/app/dist
 
   redis:
     image: redis:7-alpine
