@@ -22,4 +22,4 @@ jobs:
         run:  docker ps -a
 
       - name: Run docker-compose up
-        run:  docker-compose -f docker-compose.prod.yml up --detach --build
+        run:  docker compose -f docker-compose.prod.yml up --detach --build
