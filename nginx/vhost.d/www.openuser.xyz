@@ -1,3 +1,8 @@
+location / {
+    alias /home/realestkma/app/dist/;
+    add_header Access-Control-Allow-Origin *;
+}
+
 location /static/ {
     alias /home/realestkma/app/staticfiles/;
     add_header Access-Control-Allow-Origin *;
