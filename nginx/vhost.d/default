@@ -1,5 +1,5 @@
 location / {
-    root /home/realestkma/app/dist/;
+    alias /home/realestkma/app/dist/;
     index index.html;
     try_files $uri $uri/ /index.html;
     add_header Access-Control-Allow-Origin *;
