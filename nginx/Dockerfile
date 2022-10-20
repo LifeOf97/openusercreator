@@ -7,4 +7,4 @@ COPY conf.d/custom.conf /etc/nginx/conf.d/custom.conf
 # COPY proxy.conf /etc/nginx/proxy.conf
 
 # symlink multiple host
-RUN ln -s www.openuser.xyz .openuser.xyz
+RUN ln -s /etc/nginx/vhost.d/www.openuser.xyz /etc/nginx/vhost.d/openuser.xyz

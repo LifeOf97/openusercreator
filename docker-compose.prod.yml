@@ -63,7 +63,6 @@ services:
       - vhost:/etc/nginx/vhost.d
       - /var/run/docker.sock:/tmp/docker.sock:ro
     depends_on:
-      - web
       - api
 
   nginx-proxy-letsencrypt:
@@ -82,7 +81,6 @@ services:
 
 
 volumes:
-  postgres_data:
   dist_volume:
   static_volume:
   media_volume:
