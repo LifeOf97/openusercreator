@@ -7,6 +7,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: openuser-web
+    env_file:
+      - /home/ubuntu/.env.prod
+    environment:
+      - VIRTUAL_PATH=/
     volumes:
       - dist_volume:/home/realestkma/app/dist
 
