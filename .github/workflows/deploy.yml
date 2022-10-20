@@ -1,4 +1,6 @@
 # This action deploys my containerized apps. Uses docker-compose up to start app
+# For some reason, docker-compose up does not update changes. so i had to add
+# more run steps
 
 name: CD Deploy (AWS)
 
@@ -18,8 +20,8 @@ jobs:
       - name: Ping AWS
         run:  ping -c4 aws.amazon.com
       
-      - name: Show docker containers
-        run:  docker ps -a
+      - name: Bring down docker containers
+        run:  docker-compose -f docker-compose.prod.yml down -v
 
-      - name: Run docker-compose up
+      - name: Bring up docker containers
         run:  docker-compose -f docker-compose.prod.yml up --detach --build
