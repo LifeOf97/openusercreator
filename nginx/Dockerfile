@@ -8,5 +8,5 @@ COPY vhost.d/www.openuser.xyz /etc/nginx/vhost.d/www.openuser.xyz_location
 # COPY proxy.conf /etc/nginx/proxy.conf
 
 # symlink multiple host
-RUN ln -s /etc/nginx/vhost.d/www.openuser.xyz /etc/nginx/vhost.d/openuser.xyz \
+RUN ln -s /etc/nginx/vhost.d/www.openuser.xyz /etc/nginx/vhost.d/openuser.xyz && \
     ln -s /etc/nginx/vhost.d/www.openuser.xyz_location /etc/nginx/vhost.d/openuser.xyz_location
