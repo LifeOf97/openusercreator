@@ -21,7 +21,7 @@ services:
     env_file:
       - /home/ubuntu/.env.prod
     environment:
-      - VIRTUAL_PATH=~^/(api|admin)/
+      - VIRTUAL_PATH=/
     volumes:
       - static_volume:/home/realestkma/app/staticfiles
       - media_volume:/home/realestkma/app/mediafiles
