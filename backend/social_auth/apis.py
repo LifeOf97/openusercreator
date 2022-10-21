@@ -84,7 +84,7 @@ class GithubLoginGenerateUrl(views.APIView):
         params = urlencode(
             {
                 'client_id': os.environ.get('GITHUB_CLIENT_ID'),
-                'redirect_uri': 'http://127.0.0.1:8080/auth/signup/social/github',
+                'redirect_uri': 'https://openuser.xyz/auth/signup/social/github',
                 'state': base64.b32hexencode(secrets.token_hex().encode()).decode()
             }
         )
@@ -117,7 +117,7 @@ class GithubLoginGetUser(views.APIView):
                 'client_id': os.environ.get('GITHUB_CLIENT_ID'),
                 'client_secret': os.environ.get('GITHUB_CLIENT_SECRET'),
                 'code': dict(request.GET)['code'][0],
-                'redirect_uri': 'http://127.0.0.1:8080/auth/signup/social/github',
+                'redirect_uri': 'http://openuser.xyz/auth/signup/social/github'
             }
         )
         headers = dict(Accept='application/json')
@@ -150,7 +150,7 @@ class GoogleLoginGenerateUrl(views.APIView):
                 'openid'
             ]
         )
-        flow.redirect_uri = "http://127.0.0.1:8080/auth/signup/social/google"
+        flow.redirect_uri = "http://openuser.xyz/auth/signup/social/google"
         # flow.redirect_uri = "http://127.0.0.1:8000/api/v1/auth/google/get/user/"
         auth_url, state = flow.authorization_url(
             access_type='offline',
@@ -206,7 +206,7 @@ class TwitterLoginGenerateUrl(views.APIView):
             client_secret=os.environ.get('TWITTER_API_SECRET')
         )
         data = urlencode(
-            {'oauth_callback': 'http://127.0.0.1:8080/auth/signup/social/twitter'}
+            {'oauth_callback': 'http://openuser.xyz/auth/signup/social/twitter'}
         )
 
         response = requests.post(request_token_url, auth=oauth, data=data)
