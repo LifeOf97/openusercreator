@@ -7,11 +7,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: openuser-web
-    expose:
-      - 8000
-    environment:
-      - VIRTUAL_PORT=8000
-      - VIRTUAL_PATH=/home/
     volumes:
       - dist_volume:/home/realestkma/app/dist
 
@@ -26,7 +21,7 @@ services:
     env_file:
       - /home/ubuntu/.env.prod
     environment:
-      - VIRTUAL_PATH=/
+      - VIRTUAL_PATH=~^/(api|admin)/
     volumes:
       - static_volume:/home/realestkma/app/staticfiles
       - media_volume:/home/realestkma/app/mediafiles
@@ -47,6 +42,11 @@ services:
     restart: always
     env_file:
       - /home/ubuntu/.env.prod
+    expose:
+      - 8000
+    environment:
+      - VIRTUAL_PORT=8000
+      - VIRTUAL_PATH=/
     depends_on:
       - redis
 
