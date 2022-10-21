@@ -18,8 +18,8 @@ import base64
 import os
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Build paths inside the project like this: HOME_DIR / 'subdir'.
+HOME_DIR = Path().home()
 
 User = get_user_model()
 
@@ -144,7 +144,7 @@ class GoogleLoginGenerateUrl(views.APIView):
     )
     def get(self, request, *args, **kwargs):
         flow = google_flow.Flow.from_client_secrets_file(
-            F'{BASE_DIR}/client_secret.json',
+            F'{HOME_DIR}/.google_client_secret.json',
             scopes=[
                 'https://www.googleapis.com/auth/userinfo.email',
                 'https://www.googleapis.com/auth/userinfo.profile',
