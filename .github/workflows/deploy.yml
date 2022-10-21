@@ -1,6 +1,6 @@
 # This action deploys my containerized apps. Uses docker-compose up to start app
-# For some reason, docker-compose up does not update changes. so i had to add
-# more run steps
+# some times, docker-compose up (step 4) just keeps loading for some minutes
+# then stops with an error, implying that the server is not responding
 
 name: CD Deploy (AWS)
 
@@ -16,10 +16,10 @@ jobs:
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v3
-      
+
       - name: Ping AWS
         run:  ping -c4 aws.amazon.com
-      
+
       - name: Show docker containers
         run:  docker compose -f docker-compose.prod.yml ps -a
 
