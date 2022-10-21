@@ -21,7 +21,7 @@ jobs:
         run:  ping -c4 aws.amazon.com
       
       - name: Bring down docker containers
-        run:  docker-compose -f docker-compose.prod.yml down -v
+        run:  docker compose -f docker-compose.prod.yml down -v
 
       - name: Bring up docker containers
-        run:  docker-compose -f docker-compose.prod.yml up --detach --build
+        run:  docker compose -f docker-compose.prod.yml up --detach --build
