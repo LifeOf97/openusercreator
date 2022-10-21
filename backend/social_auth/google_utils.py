@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from google_auth_oauthlib import flow as google_flow
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
 from pathlib import Path
 
 
@@ -9,6 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 User = get_user_model()
 AUTH_PROVIDER = 'Google'
+
+# site domain
+domain = Site.objects.get_current().domain
 
 
 def google_authenticate_user(state: str, code: str):
@@ -31,7 +35,7 @@ def google_authenticate_user(state: str, code: str):
         state=state
     )
 
-    flow.redirect_uri = "http://openuser.xyz/auth/signup/social/google"
+    flow.redirect_uri = F'{domain}/auth/signup/social/google'
     # flow.redirect_uri = "http://127.0.0.1:8000/api/v1/auth/google/get/user/"
     flow.fetch_token(code=code)
 
