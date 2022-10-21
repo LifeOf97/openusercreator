@@ -11,7 +11,7 @@ services:
       - 8000
     environment:
       - VIRTUAL_PORT=8000
-      - VIRTUAL_PATH=/
+      - VIRTUAL_PATH=/home/
     volumes:
       - dist_volume:/home/realestkma/app/dist
 
@@ -26,7 +26,7 @@ services:
     env_file:
       - /home/ubuntu/.env.prod
     environment:
-      - VIRTUAL_PATH=~^/(api|admin)/
+      - VIRTUAL_PATH=/
     volumes:
       - static_volume:/home/realestkma/app/staticfiles
       - media_volume:/home/realestkma/app/mediafiles
