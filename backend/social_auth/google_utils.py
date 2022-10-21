@@ -5,11 +5,11 @@ from django.conf import settings
 from pathlib import Path
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 User = get_user_model()
 AUTH_PROVIDER = 'Google'
+
+# Points to the home directory of the user "/home/:username/"
+HOME_DIR = Path().home()
 
 
 def google_authenticate_user(state: str, code: str):
@@ -23,7 +23,7 @@ def google_authenticate_user(state: str, code: str):
     code: the code value passed as a parameter to our google sign in callback url.
     """
     flow = google_flow.Flow.from_client_secrets_file(
-        F'{BASE_DIR}/client_secret.json',
+        F'{HOME_DIR}/.google_client.json',
         scopes=[
             'https://www.googleapis.com/auth/userinfo.email',
             'https://www.googleapis.com/auth/userinfo.profile',

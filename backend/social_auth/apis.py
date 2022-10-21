@@ -18,7 +18,7 @@ import base64
 import os
 
 
-# Build paths inside the project like this: HOME_DIR / 'subdir'.
+# Points to the home directory of the user "/home/:username/"
 HOME_DIR = Path().home()
 
 User = get_user_model()

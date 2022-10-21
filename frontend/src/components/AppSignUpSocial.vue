@@ -211,7 +211,7 @@ authStore.resetSignUpSocila()
                     </span>
                     <span v-else-if="authStore.socialData.error" class="flex flex-col items-center justify-center gap-2">
                         <p class="text-xs text-gray-900 font-medium md:text-sm">{{authStore.socialData.error}}</p>
-                        <AppButton type="button" @click.prevent="router.back()" label="Back" class="text-white bg-blue-500 hover:bg-blue-600" />
+                        <RouterLink :to="{name: 'signup'}" class="text-xs text-center font-normal transition-all duration-300 text-white px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 md:text-sm">Back</RouterLink>
                     </span>
                 </div>
                 <!-- start of effect to show/hide social sign up form -->
