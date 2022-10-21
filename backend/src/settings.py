@@ -286,11 +286,10 @@ SPECTACULAR_SETTINGS = {
 }
 
 # Django corsheaders settings
+CORS_ALLOW_CREDENTIALS = True
+CORS_PREFLIGHT_MAX_AGE = 86400
 CORS_ALLOWED_ORIGINS = [
     "https://openuser.xyz",
-    "http://localhost:8080",
+    "https://www.openuser.xyz",
     "http://127.0.0.1:8080",
-    "http://192.168.43.208:8080"
 ]
-CORS_ALLOW_CREDENTIALS = True
-# CORS_PREFLIGHT_MAX_AGE =
