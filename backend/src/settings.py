@@ -293,3 +293,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.openuser.xyz",
     "http://127.0.0.1:8080",
 ]
+
+# Domain name
+DOMAIN = 'https://openuser.xyz'
