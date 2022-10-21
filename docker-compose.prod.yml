@@ -31,6 +31,7 @@ services:
     environment:
       - VIRTUAL_PATH=~^/(api|admin)/
     volumes:
+      - /home/${USER}/.google_client.json:/home/realestkma/.google_client.json
       - static_volume:/home/realestkma/app/staticfiles
       - media_volume:/home/realestkma/app/mediafiles
 

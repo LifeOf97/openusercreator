@@ -144,7 +144,7 @@ class GoogleLoginGenerateUrl(views.APIView):
     )
     def get(self, request, *args, **kwargs):
         flow = google_flow.Flow.from_client_secrets_file(
-            F'{HOME_DIR}/.google_client_secret.json',
+            F'{HOME_DIR}/.google_client.json',
             scopes=[
                 'https://www.googleapis.com/auth/userinfo.email',
                 'https://www.googleapis.com/auth/userinfo.profile',
