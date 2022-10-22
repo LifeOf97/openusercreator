@@ -124,8 +124,9 @@ class CustomPasswordResetSerializer(dj_rest_auth_serializer.PasswordResetSeriali
     def get_email_options(self):
         return {
             'email_template_name': 'account/email/password_reset_key_message.txt',
+            'subject_template_name': 'account/email/password_reset_key_subject.txt',
             'extra_email_context': {
-                'frontend_url': 'https://openuser.xyz/auth/help/success/reset-password',
+                'frontend_url': F'{settings.DOMAIN}/auth/help/success/reset-password',
                 'wave': '\U0001F44B',
                 'heart': '\U0001F499',
                 'author': settings.DEVELOPER['LAST_NAME'],
